@@ -16,7 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.stream.Collectors;
 
-import static pl.tscript3r.tracciato.infrastructure.ControllerMappings.AUTH_LOGIN;
+import static pl.tscript3r.tracciato.infrastructure.EndpointsMappings.AUTH_MAPPING;
+
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -24,7 +25,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
-        setFilterProcessesUrl(AUTH_LOGIN);
+        setFilterProcessesUrl(AUTH_MAPPING);
     }
 
     @Override
