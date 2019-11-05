@@ -1,7 +1,7 @@
 package pl.tscript3r.tracciato.infrastructure.response;
 
-public enum ResponseStatus {
+enum ResponseStatus {
 
-    SUCCESS, FAIL
+    SUCCESS, FAIL, ERROR
 
 }

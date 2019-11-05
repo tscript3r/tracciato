@@ -23,6 +23,26 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class ControllerExceptionHandler {
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public final ResponseEntity handleMessageNotReadableException() {
+        return ResponseResolver.getFailResponse(HttpStatus.BAD_REQUEST, "Body empty / not readable");
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public final ResponseEntity handleBindingFail(MethodArgumentNotValidException e) {
+        BindingResult bindingResult = e.getBindingResult();
+        Map<String, String> results = new HashMap<>();
+        bindingResult.getAllErrors().forEach(objectError ->
+                results.put(((FieldError) objectError).getField(), objectError.getDefaultMessage())
+        );
+        return ResponseResolver.getFailResponse(HttpStatus.BAD_REQUEST, "Validation", results);
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public final ResponseEntity handleMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+        return ResponseResolver.getFailResponse(HttpStatus.METHOD_NOT_ALLOWED, e.getMessage());
+    }
+
     @ExceptionHandler(Exception.class)
     public final ResponseEntity handleUnknownException(Exception exception, WebRequest webRequest) {
         log.error("Request: {} User: {} Params: {}",
@@ -36,29 +56,9 @@ public class ControllerExceptionHandler {
         return ResponseResolver.getErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error");
     }
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public final ResponseEntity handleMessageNotReadableException() {
-        return ResponseResolver.getErrorResponse(HttpStatus.BAD_REQUEST, "Body empty / not readable");
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public final ResponseEntity handleBindingFail(MethodArgumentNotValidException e) {
-        BindingResult bindingResult = e.getBindingResult();
-        Map<String, String> results = new HashMap<>();
-        bindingResult.getAllErrors().forEach(objectError ->
-            results.put(((FieldError) objectError).getField(), objectError.getDefaultMessage())
-        );
-        return ResponseResolver.getErrorResponse(HttpStatus.BAD_REQUEST, "Validation failed", results);
-    }
-
     @ExceptionHandler(NotImplementedException.class)
     public final ResponseEntity handleNotImplementedException() {
         return ResponseResolver.getErrorResponse(HttpStatus.NOT_IMPLEMENTED,"Not implemented yet");
-    }
-
-    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public final ResponseEntity handleMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
-        return ResponseResolver.getErrorResponse(HttpStatus.METHOD_NOT_ALLOWED, e.getMessage());
     }
 
 }
