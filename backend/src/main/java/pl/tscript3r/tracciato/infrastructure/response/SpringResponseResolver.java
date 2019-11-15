@@ -1,4 +1,4 @@
-package pl.tscript3r.tracciato.infrastructure.spring.web;
+package pl.tscript3r.tracciato.infrastructure.response;
 
 import io.vavr.control.Either;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -6,9 +6,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import pl.tscript3r.tracciato.infrastructure.response.ResponseDto;
-import pl.tscript3r.tracciato.infrastructure.response.ResponseResolver;
-import pl.tscript3r.tracciato.infrastructure.response.ResponseStatus;
 import pl.tscript3r.tracciato.infrastructure.response.error.FaultResponse;
 import pl.tscript3r.tracciato.infrastructure.response.error.FaultResponseDto;
 
@@ -21,7 +18,7 @@ import static pl.tscript3r.tracciato.infrastructure.response.ResponseStatus.SUCC
 
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public final class ResponseResolverImpl implements ResponseResolver<ResponseEntity> {
+public final class SpringResponseResolver implements ResponseResolver<ResponseEntity> {
 
     private static final String RESOURCE_NOT_FOUND = "Resource not found";
 
