@@ -1,5 +1,6 @@
 package pl.tscript3r.tracciato.infrastructure.spring.web;
 
+import io.vavr.control.Either;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
@@ -8,56 +9,43 @@ import org.springframework.stereotype.Component;
 import pl.tscript3r.tracciato.infrastructure.response.ResponseDto;
 import pl.tscript3r.tracciato.infrastructure.response.ResponseResolver;
 import pl.tscript3r.tracciato.infrastructure.response.ResponseStatus;
+import pl.tscript3r.tracciato.infrastructure.response.error.FaultResponse;
 import pl.tscript3r.tracciato.infrastructure.response.error.FaultResponseDto;
-import pl.tscript3r.tracciato.infrastructure.response.error.MethodPathFaultResponseDto;
-import pl.tscript3r.tracciato.infrastructure.response.error.ValidationFaultResponseDto;
 
-import java.util.Map;
+import javax.validation.constraints.NotNull;
 
-import static pl.tscript3r.tracciato.infrastructure.response.ResponseStatus.ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.OK;
 import static pl.tscript3r.tracciato.infrastructure.response.ResponseStatus.FAIL;
+import static pl.tscript3r.tracciato.infrastructure.response.ResponseStatus.SUCCESS;
 
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public final class ResponseResolverImpl implements ResponseResolver<ResponseEntity> {
 
-    private ResponseResolverImpl() {
+    private static final String RESOURCE_NOT_FOUND = "Resource not found";
+
+    @Override
+    public ResponseEntity get(@NotNull Integer httpStatus, @NotNull ResponseStatus responseStatus, Object payload) {
+        return new ResponseEntity<>(new ResponseDto(responseStatus, payload), HttpStatus.valueOf(httpStatus));
     }
 
     @Override
-    public ResponseEntity getAccessDeniedResponse(String httpMethod, String path) {
-        return new ResponseEntity<>(new ResponseDto(FAIL,
-                getMethodPathFaultResponseDto("Forbidden", httpMethod, path)), HttpStatus.FORBIDDEN);
+    public ResponseEntity get(Object payload) {
+        if (payload == null)
+            return get(NOT_FOUND.value(), FAIL, FaultResponseDto.get(RESOURCE_NOT_FOUND));
+        else
+            return get(OK.value(), SUCCESS, payload);
     }
 
     @Override
-    public ResponseEntity getNotFoundFailResponse(String httpMethod, String path) {
-        return new ResponseEntity<>(new ResponseDto(FAIL,
-                getMethodPathFaultResponseDto("Not found", httpMethod, path)), HttpStatus.NOT_FOUND);
-    }
-
-    private MethodPathFaultResponseDto getMethodPathFaultResponseDto(String reason, String httpMethod, String path) {
-        return new MethodPathFaultResponseDto(reason, httpMethod, path);
+    public ResponseEntity get(@NotNull Either<FaultResponse, Object> payload) {
+        return null;
     }
 
     @Override
-    public ResponseEntity getFailResponse(Integer httpStatus, String message, Map<String, String> fields) {
-        return new ResponseEntity<>(new ResponseDto(FAIL,
-                new ValidationFaultResponseDto(message, fields)), HttpStatus.valueOf(httpStatus));
-    }
-
-    @Override
-    public ResponseEntity getFailResponse(Integer httpStatus, String message) {
-        return new ResponseEntity<>(getResponseDto(FAIL, message), HttpStatus.valueOf(httpStatus));
-    }
-
-    @Override
-    public ResponseEntity getErrorResponse(Integer httpStatus, String message) {
-        return new ResponseEntity<>(getResponseDto(ERROR, message), HttpStatus.valueOf(httpStatus));
-    }
-
-    private ResponseDto getResponseDto(ResponseStatus responseStatus, String message) {
-        return new ResponseDto(responseStatus, new FaultResponseDto(message));
+    public ResponseEntity get(@NotNull Either<FaultResponse, Object> payload, @NotNull Integer httpStatus) {
+        return null;
     }
 
 }

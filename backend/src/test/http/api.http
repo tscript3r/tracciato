@@ -8,4 +8,14 @@ GET http://localhost:8080/
 GET http://localhost:8080/api/v1/users
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJ0cmFjY2lhdG8iLCJhdWQiOiJzZWN1cmUtYXBwIiwic3ViIjoidXNlciIsImV4cCI6MTU3MzM4NzA4Miwicm9sIjpbIlJPTEVfVVNFUiJdfQ.n9b28yp2FTZnhTzZSIDYfE_0azdOWCrMiI4yXQ8WrE9j_QS5r0xBC8OPICNrw7wY8U14ee9izlLsLdb6TG1snw
 
+### Register user
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+  "username": "andrew",
+  "password": "password",
+  "email": "andrew@email.com"
+}
+
 ###

@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static pl.tscript3r.tracciato.infrastructure.spring.security.SecurityConstants.TOKEN_PREFIX;
@@ -33,24 +34,19 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws IOException, ServletException {
-        var authentication = getAuthentication(request);
-        if (authentication == null) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        getAuthentication(request).ifPresent(
+                authentication -> SecurityContextHolder.getContext().setAuthentication(authentication)
+        );
         filterChain.doFilter(request, response);
     }
 
-    private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
+    private Optional<UsernamePasswordAuthenticationToken> getAuthentication(HttpServletRequest request) {
+        Optional<UsernamePasswordAuthenticationToken> resultOptional = Optional.empty();
         var token = request.getHeader(SecurityConstants.TOKEN_HEADER);
         if (StringUtils.isNotEmpty(token) && token.startsWith(TOKEN_PREFIX)) {
             try {
-                var signingKey = SecurityConstants.JWT_SECRET.getBytes();
-
                 var parsedToken = Jwts.parser()
-                        .setSigningKey(signingKey)
+                        .setSigningKey(SecurityConstants.JWT_SECRET.getBytes())
                         .parseClaimsJws(token.replace(TOKEN_PREFIX, ""));
 
                 var username = parsedToken
@@ -62,9 +58,9 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                         .map(authority -> new SimpleGrantedAuthority((String) authority))
                         .collect(Collectors.toList());
 
-                if (StringUtils.isNotEmpty(username)) {
-                    return new UsernamePasswordAuthenticationToken(username, null, authorities);
-                }
+                if (StringUtils.isNotEmpty(username))
+                    resultOptional = Optional.of(new UsernamePasswordAuthenticationToken(username, null, authorities));
+
             } catch (ExpiredJwtException exception) {
                 log.warn("Request to parse expired JWT : {} failed : {}", token, exception.getMessage());
             } catch (UnsupportedJwtException exception) {
@@ -78,6 +74,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             }
         }
 
-        return null;
+        return resultOptional;
     }
 }
