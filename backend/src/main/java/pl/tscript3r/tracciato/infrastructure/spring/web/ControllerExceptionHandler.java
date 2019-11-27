@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
@@ -17,8 +16,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import pl.tscript3r.tracciato.infrastructure.response.ResponseResolver;
-import pl.tscript3r.tracciato.infrastructure.response.ResponseStatus;
-import pl.tscript3r.tracciato.infrastructure.response.error.FaultResponseDto;
+import pl.tscript3r.tracciato.infrastructure.response.error.FailureResponseDto;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
@@ -27,8 +25,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.*;
-import static pl.tscript3r.tracciato.infrastructure.response.ResponseStatus.ERROR;
-import static pl.tscript3r.tracciato.infrastructure.response.ResponseStatus.FAIL;
 
 // TODO Add: Caused following exception: org.springframework.web.HttpMediaTypeNotSupportedException: Content type
 //  'text/plain;charset=UTF-8' not supported
@@ -37,14 +33,13 @@ import static pl.tscript3r.tracciato.infrastructure.response.ResponseStatus.FAIL
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice
 @AllArgsConstructor
-public class ControllerExceptionHandler {
+public final class ControllerExceptionHandler {
 
     private final ResponseResolver<ResponseEntity> responseResolver;
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public final ResponseEntity handleMessageNotReadableException() {
-        return responseResolver.get(HttpStatus.BAD_REQUEST.value(), ResponseStatus.FAIL,
-                FaultResponseDto.get("Body no readable / empty"));
+        return responseResolver.resolve(FailureResponseDto.get("Body not readable / empty"), BAD_REQUEST.value());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -54,19 +49,20 @@ public class ControllerExceptionHandler {
         bindingResult.getAllErrors().forEach(objectError ->
                 results.put(((FieldError) objectError).getField(), objectError.getDefaultMessage())
         );
-        return responseResolver.get(BAD_REQUEST.value(), FAIL, FaultResponseDto.get("Validation").add("fields", results));
+        return responseResolver.resolve(FailureResponseDto.get("Validation").add("fields", results), BAD_REQUEST.value());
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public final ResponseEntity handleMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
-        return responseResolver.get(METHOD_NOT_ALLOWED.value(), FAIL, e.getMessage());
+        return responseResolver.resolve(e.getMessage(), METHOD_NOT_ALLOWED.value());
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
     public final ResponseEntity handleNotFoundError(HttpServletRequest request) {
-        return responseResolver.get(NOT_FOUND.value(), FAIL,
-                FaultResponseDto.get("Resource not found").add("method", request.getMethod()).add("uri", request.getRequestURI())
-        );
+        return responseResolver.resolve(FailureResponseDto.get("Resource not found")
+                        .add("method", request.getMethod())
+                        .add("uri", request.getRequestURI()),
+                NOT_FOUND.value());
     }
 
     @ExceptionHandler(Exception.class)
@@ -80,12 +76,12 @@ public class ControllerExceptionHandler {
                         .collect(Collectors.toList()),
                 webRequest.getUserPrincipal());
         log.error("Caused following exception: {}", exception.toString(), exception);
-        return responseResolver.get(INTERNAL_SERVER_ERROR.value(), ERROR, FaultResponseDto.get("Internal server error"));
+        return responseResolver.resolve(FailureResponseDto.get("Internal server error"), INTERNAL_SERVER_ERROR.value());
     }
 
     @ExceptionHandler(NotImplementedException.class)
     public final ResponseEntity handleNotImplementedException() {
-        return responseResolver.get(NOT_IMPLEMENTED.value(), ERROR, FaultResponseDto.get("Not implemented yet"));
+        return responseResolver.resolve(FailureResponseDto.get("Not implemented yet"), NOT_IMPLEMENTED.value());
     }
 
 }

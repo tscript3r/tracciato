@@ -6,18 +6,18 @@ import lombok.Getter;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FaultResponseDto {
+public class FailureResponseDto {
 
     @Getter
     private final String reason;
     private final Map<String, Object> additionalFields = new HashMap<>();
 
-    private FaultResponseDto(String reason) {
+    private FailureResponseDto(String reason) {
         this.reason = reason;
     }
 
-    public static FaultResponseDto get(String reason) {
-        return new FaultResponseDto(reason);
+    public static FailureResponseDto get(String reason) {
+        return new FailureResponseDto(reason);
     }
 
     @JsonAnyGetter
@@ -25,7 +25,7 @@ public class FaultResponseDto {
         return additionalFields;
     }
 
-    public FaultResponseDto add(String field, Object value) {
+    public FailureResponseDto add(String field, Object value) {
         additionalFields.put(field, value);
         return this;
     }

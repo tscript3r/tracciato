@@ -1,15 +1,11 @@
 package pl.tscript3r.tracciato.infrastructure.response.error;
 
-import pl.tscript3r.tracciato.infrastructure.response.ResponseStatus;
+import pl.tscript3r.tracciato.infrastructure.response.Response;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public interface FaultResponse {
-
-    ResponseStatus getResponseStatus();
-
-    Integer getHttpStatus();
+public interface FailureResponse extends Response {
 
     String getReason();
 
