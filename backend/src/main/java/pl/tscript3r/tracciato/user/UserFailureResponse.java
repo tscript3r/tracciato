@@ -1,0 +1,58 @@
+package pl.tscript3r.tracciato.user;
+
+import pl.tscript3r.tracciato.infrastructure.response.error.FailureResponse;
+
+import java.util.HashMap;
+import java.util.Map;
+
+class UserFailureResponse implements FailureResponse {
+
+    static final String VALIDATION_REASON = "Validation";
+    static final String USERNAME_NOT_FOUND_REASON = "Username not found";
+    static final String USER_ID_NOT_FOUND_REASON = "User id not found";
+
+    private final String reason;
+    private final int httpStatus;
+    private final Map<String, Object> additionalFields = new HashMap<>();
+
+    static UserFailureResponse idNotFound(long id) {
+        return new UserFailureResponse(USER_ID_NOT_FOUND_REASON, 404)
+                .addField("id", id);
+    }
+
+    static UserFailureResponse usernameNotFound(String username) {
+        return new UserFailureResponse(USERNAME_NOT_FOUND_REASON, 404)
+                .addField("username", username);
+    }
+
+    static UserFailureResponse bindingFail(Map<String, String> failedBindings) {
+        return new UserFailureResponse(VALIDATION_REASON, 400)
+                .addField("fields", failedBindings);
+    }
+
+    private UserFailureResponse(String reason, int httpStatus) {
+        this.reason = reason;
+        this.httpStatus = httpStatus;
+    }
+
+    @Override
+    public String getReason() {
+        return reason;
+    }
+
+    @Override
+    public Integer getHttpStatus() {
+        return httpStatus;
+    }
+
+    @Override
+    public Map<String, Object> getAdditionalFields() {
+        return additionalFields;
+    }
+
+    private UserFailureResponse addField(String key, Object value) {
+        additionalFields.put(key, value);
+        return this;
+    }
+
+}

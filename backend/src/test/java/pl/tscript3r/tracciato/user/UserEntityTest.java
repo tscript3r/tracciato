@@ -18,7 +18,7 @@ class UserEntityTest {
     public static final String EDY_EMAIL = "edys@mail.com";
     public static final String EDY_PASSWORD = "edysPassword";
 
-    public UserEntity getJohnUserEntity() {
+    public static UserEntity getJohnUserEntity() {
         var user = new UserEntity();
         user.setId(1L);
         user.setUsername(JOHNS_USERNAME);
@@ -27,7 +27,7 @@ class UserEntityTest {
         return user;
     }
 
-    public UserEntity getEdyUserEntity() {
+    public static UserEntity getEdyUserEntity() {
         var user = new UserEntity();
         user.setId(2L);
         user.setUsername(EDY_USERNAME);
