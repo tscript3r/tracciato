@@ -11,4 +11,6 @@ interface UserRepositoryAdapter extends RepositoryAdapter<Long, UserEntity> {
 
     Option<UserEntity> findByEmail(String email);
 
+    Option<UserEntity> findByUsername(String username);
+
 }

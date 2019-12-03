@@ -54,4 +54,12 @@ public class InMemoryUserRepositoryAdapter implements UserRepositoryAdapter {
         dbMap.remove(id);
     }
 
+    @Override
+    public Option<UserEntity> findByUsername(String username) {
+        return Option.ofOptional(dbMap.values().stream()
+                .filter(userEntity -> userEntity.getUsername()
+                        .equalsIgnoreCase(username))
+                .findFirst());
+    }
+
 }

@@ -23,9 +23,11 @@ class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException e) throws IOException {
         ResponseEntityToHttpServletResponse.convert(
-                responseResolver.resolve(FailureResponseDto.get("Forbidden")
+                responseResolver.resolve(
+                        FailureResponseDto.get("Forbidden")
                                 .add("method", request.getMethod())
-                        .add("uri", request.getRequestURI()), FORBIDDEN.value()),
+                                .add("uri", request.getRequestURI()),
+                        FORBIDDEN.value()),
                 response
         );
     }

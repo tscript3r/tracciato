@@ -1,9 +1,14 @@
 package pl.tscript3r.tracciato.infrastructure.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public enum ResponseStatus {
 
+    @JsonProperty("success")
     SUCCESS(100, 299),
+    @JsonProperty("fail")
     FAIL(400, 499),
+    @JsonProperty("error")
     ERROR(500, 599);
 
     private final int httpStatusFromRange;

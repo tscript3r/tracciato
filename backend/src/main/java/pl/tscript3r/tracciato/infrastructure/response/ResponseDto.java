@@ -1,14 +1,16 @@
 package pl.tscript3r.tracciato.infrastructure.response;
 
 import lombok.Getter;
+import lombok.ToString;
 
 import static pl.tscript3r.tracciato.infrastructure.response.ResponseStatus.*;
 
 @Getter
-public class ResponseDto {
+@ToString
+public class ResponseDto<T> {
 
     private final String status;
-    private final Object payload;
+    private final T payload;
 
     public static ResponseDto success(Object payload) {
         return of(SUCCESS, payload);
@@ -23,10 +25,10 @@ public class ResponseDto {
     }
 
     public static ResponseDto of(ResponseStatus responseStatus, Object payload) {
-        return new ResponseDto(responseStatus, payload);
+        return new ResponseDto<>(responseStatus, payload);
     }
 
-    private ResponseDto(ResponseStatus status, Object payload) {
+    private ResponseDto(ResponseStatus status, T payload) {
         this.status = status.toString().toLowerCase();
         this.payload = payload;
     }

@@ -9,9 +9,14 @@ import pl.tscript3r.tracciato.user.api.UserDto;
 public class UserFacade {
 
     private final UserRegistration userRegistration;
+    private final UserAuthentication userAuthentication;
 
     public Either<FailureResponse, UserDto> register(UserDto userDto) {
         return userRegistration.register(userDto);
+    }
+
+    public Either<FailureResponse, UserDto> login(String username, String password) {
+        return userAuthentication.login(username, password);
     }
 
 }

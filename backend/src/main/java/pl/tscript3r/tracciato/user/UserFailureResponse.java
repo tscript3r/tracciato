@@ -10,6 +10,7 @@ class UserFailureResponse implements FailureResponse {
     static final String VALIDATION_REASON = "Validation";
     static final String USERNAME_NOT_FOUND_REASON = "Username not found";
     static final String USER_ID_NOT_FOUND_REASON = "User id not found";
+    static final String INVALID_CREDENTIALS_REASON = "Invalid credentials";
 
     private final String reason;
     private final int httpStatus;
@@ -28,6 +29,10 @@ class UserFailureResponse implements FailureResponse {
     static UserFailureResponse bindingFail(Map<String, String> failedBindings) {
         return new UserFailureResponse(VALIDATION_REASON, 400)
                 .addField("fields", failedBindings);
+    }
+
+    static UserFailureResponse invalidCredentials() {
+        return new UserFailureResponse(INVALID_CREDENTIALS_REASON, 400);
     }
 
     private UserFailureResponse(String reason, int httpStatus) {

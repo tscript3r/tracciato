@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static pl.tscript3r.tracciato.user.UserEntityTest.*;
 
 @DisplayName("User validator")
 @DisplayNameGeneration(ReplaceCamelCaseAndUnderscores.class)
@@ -28,9 +29,17 @@ class UserValidatorTest {
 
     public static UserDto getValidJohnsUserDto() {
         UserDto validUserDto = new UserDto();
-        validUserDto.setEmail(UserEntityTest.JOHNS_EMAIL);
-        validUserDto.setUsername(UserEntityTest.JOHNS_USERNAME);
-        validUserDto.setPassword(UserEntityTest.JOHNS_PASSWORD);
+        validUserDto.setEmail(JOHNS_EMAIL);
+        validUserDto.setUsername(JOHNS_USERNAME);
+        validUserDto.setPassword(JOHNS_PASSWORD);
+        return validUserDto;
+    }
+
+    public static UserDto getValidEdyUserDto() {
+        UserDto validUserDto = new UserDto();
+        validUserDto.setEmail(EDY_EMAIL);
+        validUserDto.setUsername(EDY_USERNAME);
+        validUserDto.setPassword(EDY_PASSWORD);
         return validUserDto;
     }
 

@@ -1,13 +1,3 @@
-### Authenticate user
-POST http://localhost:8080/api/v1/authenticate?username=user&password=password
-
-### Public API
-GET http://localhost:8080/
-
-### Private API
-GET http://localhost:8080/api/v1/users
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJ0cmFjY2lhdG8iLCJhdWQiOiJzZWN1cmUtYXBwIiwic3ViIjoidXNlciIsImV4cCI6MTU3MzM4NzA4Miwicm9sIjpbIlJPTEVfVVNFUiJdfQ.n9b28yp2FTZnhTzZSIDYfE_0azdOWCrMiI4yXQ8WrE9j_QS5r0xBC8OPICNrw7wY8U14ee9izlLsLdb6TG1snw
-
 ### Register user
 POST http://localhost:8080/api/v1/users
 Content-Type: application/json
@@ -18,4 +8,12 @@ Content-Type: application/json
   "email": "andrew@email.com"
 }
 
-###
+### Authenticate user
+POST http://localhost:8080/api/v1/authenticate?username=andrew&password=password
+
+### Public API
+GET http://localhost:8080/
+
+### Private API
+GET http://localhost:8080/api/v1/users
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJ0cmFjY2lhdG8iLCJhdWQiOiJzZWN1cmUtYXBwIiwic3ViIjoidXNlciIsImV4cCI6MTU3MzM4NzA4Miwicm9sIjpbIlJPTEVfVVNFUiJdfQ.n9b28yp2FTZnhTzZSIDYfE_0azdOWCrMiI4yXQ8WrE9j_QS5r0xBC8OPICNrw7wY8U14ee9izlLsLdb6TG1snw

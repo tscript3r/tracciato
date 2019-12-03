@@ -16,16 +16,23 @@ class InMemoryUserRepositoryAdapterTest {
     InMemoryUserRepositoryAdapter inMemoryUserRepositoryAdapter;
     UserEntity savedJohnsEntity;
 
+    static InMemoryUserRepositoryAdapter getInMemoryUserRepositoryAdapter() {
+        var result = new InMemoryUserRepositoryAdapter();
+        result.save(UserEntityTest.getJohnUserEntity());
+        return result;
+    }
+
     @BeforeEach
     void setUp() {
-        inMemoryUserRepositoryAdapter = new InMemoryUserRepositoryAdapter();
-        savedJohnsEntity = inMemoryUserRepositoryAdapter.save(UserEntityTest.getJohnUserEntity());
+        inMemoryUserRepositoryAdapter = getInMemoryUserRepositoryAdapter();
+        savedJohnsEntity = inMemoryUserRepositoryAdapter.findByUsername(JOHNS_USERNAME)
+                .get();
     }
 
     @Test
     void usernameExists_Should_ReturnTrue_When_SavedUsernameIsPassed() {
         // given
-        var username = savedJohnsEntity.getUsername();
+        var username = JOHNS_USERNAME;
 
         // when
         var result = inMemoryUserRepositoryAdapter.usernameExists(username);
@@ -37,7 +44,7 @@ class InMemoryUserRepositoryAdapterTest {
     @Test
     void usernameExists_Should_IgnoreCase_When_SameUsernameUpperCaseIsPassed() {
         // given
-        var username = savedJohnsEntity.getUsername().toUpperCase();
+        var username = JOHNS_USERNAME.toUpperCase();
 
         // when
         var result = inMemoryUserRepositoryAdapter.usernameExists(username);
@@ -61,7 +68,7 @@ class InMemoryUserRepositoryAdapterTest {
     @Test
     void emailExists_Should_ReturnTrue_When_SavedEmailIsPassed() {
         // given
-        var email = savedJohnsEntity.getEmail();
+        var email = JOHNS_EMAIL;
 
         // when
         var result = inMemoryUserRepositoryAdapter.emailExists(email);
@@ -73,7 +80,7 @@ class InMemoryUserRepositoryAdapterTest {
     @Test
     void emailExists_Should_IgnoreCase_When_SameEmailUpperCaseIsPassed() {
         // given
-        var email = savedJohnsEntity.getEmail().toUpperCase();
+        var email = JOHNS_EMAIL.toUpperCase();
 
         // when
         var result = inMemoryUserRepositoryAdapter.emailExists(email);
@@ -97,7 +104,7 @@ class InMemoryUserRepositoryAdapterTest {
     @Test
     void findByEmail_Should_FindWantedEntity_When_ExistingEmailIsPassed() {
         // given
-        var email = savedJohnsEntity.getEmail();
+        var email = JOHNS_EMAIL;
 
         // when
         var result = inMemoryUserRepositoryAdapter.findByEmail(email);
@@ -121,7 +128,7 @@ class InMemoryUserRepositoryAdapterTest {
     @Test
     void findById_Should_ReturnWantedEntity_When_ExistingIdIsPassed() {
         // given
-        var id = savedJohnsEntity.getId();
+        var id = JOHNS_ID;
 
         // when
         var result = inMemoryUserRepositoryAdapter.findById(id);
@@ -148,7 +155,7 @@ class InMemoryUserRepositoryAdapterTest {
     void save_Should_OverrideExistingEntity_When_EntityWithExistingIdIsPassed() {
         // given
         var eddysEntity = getEdyUserEntity();
-        eddysEntity.setId(savedJohnsEntity.getId());
+        eddysEntity.setId(JOHNS_ID);
 
         // when
         var result = inMemoryUserRepositoryAdapter.save(eddysEntity);
@@ -161,13 +168,39 @@ class InMemoryUserRepositoryAdapterTest {
     @Test
     void delete_Should_RemoveExistingEntity_When_ItsIdIsPassed() {
         // given
-        var existingId = savedJohnsEntity.getId();
+        var existingId = JOHNS_ID;
 
         // when
         inMemoryUserRepositoryAdapter.delete(existingId);
 
         // then
         assertTrue(inMemoryUserRepositoryAdapter.findById(existingId).isEmpty());
+    }
+
+    @Test
+    void findByUsername_Should_SuccessfullyFindUser_When_GivenUsernameIsOwnedBySomeUser() {
+        // given
+        var existingUsername = JOHNS_USERNAME;
+
+        // when
+        var searchResults = inMemoryUserRepositoryAdapter.findByUsername(existingUsername);
+
+        // then
+        assertTrue(searchResults.isDefined());
+        var foundUser = searchResults.get();
+        assertEquals(savedJohnsEntity.getUsername(), foundUser.getUsername());
+    }
+
+    @Test
+    void findByUsername_Should_NotFindAnyUser_When_GivenUsernameIsNotOwnedByAnyUser() {
+        // given
+        var nonExistingUsername = "Anonymous";
+
+        // when
+        var searchResults = inMemoryUserRepositoryAdapter.findByUsername(nonExistingUsername);
+
+        // then
+        assertTrue(searchResults.isEmpty());
     }
 
 }

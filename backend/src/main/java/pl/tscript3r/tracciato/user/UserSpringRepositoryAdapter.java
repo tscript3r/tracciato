@@ -38,4 +38,9 @@ class UserSpringRepositoryAdapter implements UserRepositoryAdapter {
         return Option.ofOptional(userSpringRepository.findByEmailIgnoreCase(email));
     }
 
+    @Override
+    public Option<UserEntity> findByUsername(String username) {
+        return Option.ofOptional(userSpringRepository.findByUsernameIgnoreCase(username));
+    }
+
 }

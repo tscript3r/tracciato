@@ -12,4 +12,6 @@ interface UserSpringRepository extends JpaRepository<UserEntity, Long> {
 
     Optional<UserEntity> findByEmailIgnoreCase(String email);
 
+    Optional<UserEntity> findByUsernameIgnoreCase(String username);
+
 }
