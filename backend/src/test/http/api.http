@@ -12,8 +12,10 @@ Content-Type: application/json
 POST http://localhost:8080/api/v1/authenticate?username=andrew&password=password
 
 ### Public API
-GET http://localhost:8080/
+GET http://localhost:8080/api/v1/users/secure
 
 ### Private API
-GET http://localhost:8080/api/v1/users
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJ0cmFjY2lhdG8iLCJhdWQiOiJzZWN1cmUtYXBwIiwic3ViIjoidXNlciIsImV4cCI6MTU3MzM4NzA4Miwicm9sIjpbIlJPTEVfVVNFUiJdfQ.n9b28yp2FTZnhTzZSIDYfE_0azdOWCrMiI4yXQ8WrE9j_QS5r0xBC8OPICNrw7wY8U14ee9izlLsLdb6TG1snw
+GET http://localhost:8080/api/v1/users/secure
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJ0cmFjY2lhdG8iLCJhdWQiOiJzZWN1cmUtYXBwIiwic3ViIjoiOWJiNmQwODktYzE3YS00ODcxLWJmOWEtNjZmZTc3ZjE3OWNmIiwiZXhwIjoxNTc2NDA4MzcyfQ.FO6k-C60ME65nc9hEPt_eGUCTgIA1XTmbEm1lIdfiPSvjWL3Q0KU-xyAHRLB1CyJ63PG44_U8idaga1_jwozLQ
+
+###

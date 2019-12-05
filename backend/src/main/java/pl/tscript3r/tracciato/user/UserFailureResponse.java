@@ -16,22 +16,22 @@ class UserFailureResponse implements FailureResponse {
     private final int httpStatus;
     private final Map<String, Object> additionalFields = new HashMap<>();
 
-    static UserFailureResponse idNotFound(long id) {
+    static FailureResponse idNotFound(long id) {
         return new UserFailureResponse(USER_ID_NOT_FOUND_REASON, 404)
                 .addField("id", id);
     }
 
-    static UserFailureResponse usernameNotFound(String username) {
+    static FailureResponse usernameNotFound(String username) {
         return new UserFailureResponse(USERNAME_NOT_FOUND_REASON, 404)
                 .addField("username", username);
     }
 
-    static UserFailureResponse bindingFail(Map<String, String> failedBindings) {
+    static FailureResponse bindingFail(Map<String, String> failedBindings) {
         return new UserFailureResponse(VALIDATION_REASON, 400)
                 .addField("fields", failedBindings);
     }
 
-    static UserFailureResponse invalidCredentials() {
+    static FailureResponse invalidCredentials() {
         return new UserFailureResponse(INVALID_CREDENTIALS_REASON, 400);
     }
 

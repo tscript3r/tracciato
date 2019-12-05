@@ -1,26 +1,19 @@
 package pl.tscript3r.tracciato.infrastructure.spring.security;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-import io.vavr.control.Either;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import pl.tscript3r.tracciato.infrastructure.response.ResponseResolver;
 import pl.tscript3r.tracciato.infrastructure.spring.util.ResponseEntityToHttpServletResponse;
+import pl.tscript3r.tracciato.user.UserFacade;
 
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Date;
-import java.util.stream.Collectors;
 
 import static pl.tscript3r.tracciato.infrastructure.EndpointsMappings.AUTH_MAPPING;
 
@@ -28,11 +21,14 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final AuthenticationManager authenticationManager;
     private final ResponseResolver<ResponseEntity> responseResolver;
+    private final UserFacade userFacade;
 
     JwtAuthenticationFilter(AuthenticationManager authenticationManager,
-                            ResponseResolver<ResponseEntity> responseResolver) {
+                            ResponseResolver<ResponseEntity> responseResolver,
+                            UserFacade userFacade) {
         this.authenticationManager = authenticationManager;
         this.responseResolver = responseResolver;
+        this.userFacade = userFacade;
         setFilterProcessesUrl(AUTH_MAPPING);
         setAuthenticationFailureHandler(this);
     }
@@ -42,7 +38,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         var username = request.getParameter("username");
         var password = request.getParameter("password");
         var authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
-
         return authenticationManager.authenticate(authenticationToken);
     }
 
@@ -50,34 +45,19 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                             FilterChain filterChain, Authentication authentication) {
         var user = ((UsernamePasswordAuthenticationToken) authentication);
-
-        var roles = user.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
-
-        var signingKey = SecurityConstants.JWT_SECRET.getBytes();
-
-        var token = Jwts.builder()
-                .signWith(Keys.hmacShaKeyFor(signingKey), SignatureAlgorithm.HS512)
-                .setHeaderParam("typ", SecurityConstants.TOKEN_TYPE)
-                .setIssuer(SecurityConstants.TOKEN_ISSUER)
-                .setAudience(SecurityConstants.TOKEN_AUDIENCE)
-                .setSubject(user.getName())
-                .setExpiration(new Date(System.currentTimeMillis() + 864000000))
-                .claim("rol", roles)
-                .compact();
-
-        response.addHeader(SecurityConstants.TOKEN_HEADER, SecurityConstants.TOKEN_PREFIX + token);
+        userFacade.getToken(user.getName())
+                .peek(s -> response.addHeader(SecurityConstants.TOKEN_HEADER, SecurityConstants.TOKEN_PREFIX + s))
+                .peekLeft(failureResponse ->
+                        ResponseEntityToHttpServletResponse.convert(responseResolver.resolve(failureResponse), response)
+                );
     }
 
     @Override
-    public void onAuthenticationFailure(HttpServletRequest httpServletRequest,
-                                        HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException {
+    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
+                                        AuthenticationException e) {
         if (e instanceof CustomAuthenticationCredentialsNotFoundException) {
             var failureResponse = ((CustomAuthenticationCredentialsNotFoundException) e).getFailureResponse();
-            ResponseEntityToHttpServletResponse.convert(responseResolver.resolve(Either.left(failureResponse)),
-                    httpServletResponse);
+            ResponseEntityToHttpServletResponse.convert(responseResolver.resolve(failureResponse), response);
         }
     }
 

@@ -4,6 +4,8 @@ import io.vavr.control.Option;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+import java.util.function.Predicate;
 
 public class InMemoryUserRepositoryAdapter implements UserRepositoryAdapter {
 
@@ -29,10 +31,12 @@ public class InMemoryUserRepositoryAdapter implements UserRepositoryAdapter {
 
     @Override
     public Option<UserEntity> findByEmail(String email) {
+        return find(userEntity -> userEntity.getEmail().equalsIgnoreCase(email));
+    }
+
+    private Option<UserEntity> find(Predicate<UserEntity> userEntityPredicate) {
         return Option.ofOptional(dbMap.values().stream()
-                .filter(userEntity ->
-                        userEntity.getEmail()
-                                .equalsIgnoreCase(email))
+                .filter(userEntityPredicate)
                 .findFirst());
     }
 
@@ -56,10 +60,12 @@ public class InMemoryUserRepositoryAdapter implements UserRepositoryAdapter {
 
     @Override
     public Option<UserEntity> findByUsername(String username) {
-        return Option.ofOptional(dbMap.values().stream()
-                .filter(userEntity -> userEntity.getUsername()
-                        .equalsIgnoreCase(username))
-                .findFirst());
+        return find(userEntity -> userEntity.getUsername().equalsIgnoreCase(username));
+    }
+
+    @Override
+    public Option<UserEntity> findByUuid(UUID uuid) {
+        return find(userEntity -> userEntity.getUuid().equals(uuid));
     }
 
 }

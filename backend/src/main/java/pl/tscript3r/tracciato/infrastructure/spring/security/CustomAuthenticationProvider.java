@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import pl.tscript3r.tracciato.user.UserFacade;
 import pl.tscript3r.tracciato.user.api.UserDto;
 
-import java.util.ArrayList;
+import java.util.Collections;
 
 @Component
 @AllArgsConstructor
@@ -28,7 +28,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     private Authentication map(UserDto userDto) {
         return new UsernamePasswordAuthenticationToken(
-                userDto.getUsername(), userDto.getPassword(), new ArrayList<>());
+                userDto.getUsername(), userDto.getPassword(), Collections.emptySet());
     }
 
     @Override

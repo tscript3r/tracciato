@@ -8,6 +8,8 @@ import javax.validation.constraints.NotNull;
 
 public interface ResponseResolver<T> {
 
+    T resolve(@NotNull FailureResponse failureResponse);
+
     T resolve(@Nullable Object payload, @NotNull Integer httpStatus);
 
     T resolve(@NotNull Either<? extends FailureResponse, ?> response);

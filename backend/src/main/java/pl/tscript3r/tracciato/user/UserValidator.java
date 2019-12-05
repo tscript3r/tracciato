@@ -33,8 +33,8 @@ class UserValidator {
             return Either.left(createUserFailureResponse(userDto, validationResults));
     }
 
-    private UserFailureResponse createUserFailureResponse(UserDto userDto,
-                                                          Set<ConstraintViolation<UserDto>> validationResults) {
+    private FailureResponse createUserFailureResponse(UserDto userDto,
+                                                      Set<ConstraintViolation<UserDto>> validationResults) {
         final Map<String, String> bindingFails = new HashMap<>();
         validationResults.forEach(objectError ->
                 bindingFails.put(objectError.getPropertyPath().toString(), objectError.getMessage())

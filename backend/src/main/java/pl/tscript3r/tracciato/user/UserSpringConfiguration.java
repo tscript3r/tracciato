@@ -24,7 +24,8 @@ class UserSpringConfiguration {
         UserValidator userValidator = new UserValidator(userRepositoryAdapter);
         UserRegistration userRegistration = new UserRegistration(userRepositoryAdapter, userValidator, passwordEncoder);
         UserAuthentication userAuthentication = new UserAuthentication(userRepositoryAdapter, passwordEncoder);
-        return new UserFacade(userRegistration, userAuthentication);
+        JWTTokenResolver jwtTokenResolver = new JWTTokenResolver();
+        return new UserFacade(userRegistration, userAuthentication, jwtTokenResolver);
     }
 
 }

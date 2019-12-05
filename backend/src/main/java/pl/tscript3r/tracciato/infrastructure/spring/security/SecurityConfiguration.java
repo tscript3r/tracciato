@@ -19,6 +19,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import pl.tscript3r.tracciato.infrastructure.response.ResponseResolver;
+import pl.tscript3r.tracciato.user.UserFacade;
 
 import java.util.Arrays;
 
@@ -32,6 +33,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final Environment environment;
     private final ObjectFactory<ResponseResolver<ResponseEntity>> responseResolverObjectFactory;
     private final AuthenticationProvider authenticationProvider;
+    private final UserFacade userFacade;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -39,8 +41,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests().antMatchers(PUBLIC_MAPPINGS).permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilter(new JwtAuthenticationFilter(authenticationManager(), responseResolverObjectFactory.getObject()))
-                .addFilter(new JwtAuthorizationFilter(authenticationManager()))
+                .addFilter(
+                        new JwtAuthenticationFilter(authenticationManager(), responseResolverObjectFactory.getObject(), userFacade)
+                )
+                .addFilter(
+                        new JwtAuthorizationFilter(authenticationManager(), userFacade)
+                )
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .exceptionHandling()

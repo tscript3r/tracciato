@@ -22,6 +22,11 @@ public final class SpringResponseResolver implements ResponseResolver<ResponseEn
     private static final String RESOURCE_NOT_FOUND = "Resource not found";
 
     @Override
+    public ResponseEntity resolve(@NotNull FailureResponse failureResponse) {
+        return createFailureResponse(failureResponse);
+    }
+
+    @Override
     public ResponseEntity resolve(Object payload, @NotNull Integer httpStatus) {
         return new ResponseEntity<>(ResponseDto.of(ResponseStatus.get(httpStatus), payload), valueOf(httpStatus));
     }

@@ -3,6 +3,8 @@ package pl.tscript3r.tracciato.user;
 import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
 
+import java.util.UUID;
+
 @RequiredArgsConstructor
 class UserSpringRepositoryAdapter implements UserRepositoryAdapter {
 
@@ -35,12 +37,16 @@ class UserSpringRepositoryAdapter implements UserRepositoryAdapter {
 
     @Override
     public Option<UserEntity> findByEmail(String email) {
-        return Option.ofOptional(userSpringRepository.findByEmailIgnoreCase(email));
+        return Option.of(userSpringRepository.findByEmailIgnoreCase(email));
     }
 
     @Override
     public Option<UserEntity> findByUsername(String username) {
-        return Option.ofOptional(userSpringRepository.findByUsernameIgnoreCase(username));
+        return Option.of(userSpringRepository.findByUsernameIgnoreCase(username));
     }
 
+    @Override
+    public Option<UserEntity> findByUuid(UUID uuid) {
+        return Option.of(userSpringRepository.findByUuid(uuid));
+    }
 }

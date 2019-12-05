@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 import pl.tscript3r.tracciato.ReplaceCamelCaseAndUnderscores;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static pl.tscript3r.tracciato.user.UserEntityTest.JOHNS_PASSWORD;
-import static pl.tscript3r.tracciato.user.UserEntityTest.getJohnUserEntity;
+import static pl.tscript3r.tracciato.infrastructure.spring.security.SecurityConstants.TOKEN_PREFIX;
+import static pl.tscript3r.tracciato.user.UserEntityTest.*;
 
 @DisplayName("User facade")
 @DisplayNameGeneration(ReplaceCamelCaseAndUnderscores.class)
@@ -117,6 +117,31 @@ class UserFacadeTest {
 
         // then
         assertTrue(results.isLeft());
+    }
+
+    @Test
+    void getToken_Should_ReturnJwtToken_When_ExistingUsernamePassed() {
+        // given
+        var existingUsername = JOHNS_USERNAME;
+
+        // when
+        var tokenEither = userFacade.getToken(existingUsername);
+
+        // then
+        assertTrue(tokenEither.isRight());
+    }
+
+    @Test
+    void validateAndGetUuidFromToken_Should_ReturnExistingUuid_When_ValidTokenIsPassed() {
+        // given
+        var token = userFacade.getToken(JOHNS_USERNAME).get();
+
+        // when
+        var uuidOption = userFacade.validateAndGetUuidFromToken(TOKEN_PREFIX + token);
+
+        // then
+        assertTrue(uuidOption.isDefined());
+        assertEquals(JOHNS_UUID, uuidOption.get());
     }
 
 }

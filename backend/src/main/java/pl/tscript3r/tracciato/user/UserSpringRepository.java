@@ -2,7 +2,7 @@ package pl.tscript3r.tracciato.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
+import java.util.UUID;
 
 interface UserSpringRepository extends JpaRepository<UserEntity, Long> {
 
@@ -10,8 +10,10 @@ interface UserSpringRepository extends JpaRepository<UserEntity, Long> {
 
     Boolean existsByEmailIgnoreCase(String email);
 
-    Optional<UserEntity> findByEmailIgnoreCase(String email);
+    UserEntity findByEmailIgnoreCase(String email);
 
-    Optional<UserEntity> findByUsernameIgnoreCase(String username);
+    UserEntity findByUsernameIgnoreCase(String username);
+
+    UserEntity findByUuid(UUID uuid);
 
 }

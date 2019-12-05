@@ -6,6 +6,8 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
 import pl.tscript3r.tracciato.ReplaceCamelCaseAndUnderscores;
 
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static pl.tscript3r.tracciato.user.UserEntityTest.*;
 
@@ -178,7 +180,7 @@ class InMemoryUserRepositoryAdapterTest {
     }
 
     @Test
-    void findByUsername_Should_SuccessfullyFindUser_When_GivenUsernameIsOwnedBySomeUser() {
+    void findByUsername_Should_SuccessfullyFindUser_When_GivenUsernameIsExisting() {
         // given
         var existingUsername = JOHNS_USERNAME;
 
@@ -198,6 +200,30 @@ class InMemoryUserRepositoryAdapterTest {
 
         // when
         var searchResults = inMemoryUserRepositoryAdapter.findByUsername(nonExistingUsername);
+
+        // then
+        assertTrue(searchResults.isEmpty());
+    }
+
+    @Test
+    void findByUuid_Should_FindByUuid_When_GivenUuidIsExisting() {
+        // given
+        var existingUuid = JOHNS_UUID;
+
+        // when
+        var searchResults = inMemoryUserRepositoryAdapter.findByUuid(existingUuid);
+
+        // then
+        assertTrue(searchResults.isDefined());
+    }
+
+    @Test
+    void findByUuid_Should_NotFindByUuid_When_GivenUuidIsNotExisting() {
+        // given
+        var existingUuid = UUID.randomUUID();
+
+        // when
+        var searchResults = inMemoryUserRepositoryAdapter.findByUuid(existingUuid);
 
         // then
         assertTrue(searchResults.isEmpty());

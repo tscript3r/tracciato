@@ -5,6 +5,8 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
 import pl.tscript3r.tracciato.ReplaceCamelCaseAndUnderscores;
 
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("User entity")
@@ -14,9 +16,11 @@ class UserEntityTest {
     public static final String JOHNS_USERNAME = "John";
     public static final String JOHNS_EMAIL = "johns@email.com";
     public static final String JOHNS_PASSWORD = "johnsPassword";
+    public static final UUID JOHNS_UUID = UUID.randomUUID();
     public static final String EDY_USERNAME = "Edy666";
     public static final String EDY_EMAIL = "edys@mail.com";
     public static final String EDY_PASSWORD = "edysPassword";
+    public static final UUID EDY_UUID = UUID.randomUUID();
     public static final long JOHNS_ID = 1L;
     public static final long EDY_ID = 2L;
 
@@ -26,6 +30,7 @@ class UserEntityTest {
         user.setUsername(JOHNS_USERNAME);
         user.setEmail(JOHNS_EMAIL);
         user.setPassword(JOHNS_PASSWORD);
+        user.setUuid(JOHNS_UUID);
         return user;
     }
 
@@ -35,6 +40,7 @@ class UserEntityTest {
         user.setUsername(EDY_USERNAME);
         user.setEmail(EDY_EMAIL);
         user.setPassword(EDY_PASSWORD);
+        user.setUuid(EDY_UUID);
         return user;
     }
 
