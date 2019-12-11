@@ -20,7 +20,7 @@ public class RouteLocationEntity extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     private LocationPriority priority;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY) // TODO refactor
     private List<DayEntity> availability;
 
     private Instant duration;

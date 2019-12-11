@@ -5,7 +5,7 @@ import io.vavr.control.Option;
 
 public final class VavrUtils {
 
-    public static <U, T> Either<? extends U, ? extends T> unwrapOptionToEither(U left, Option<T> rightOption) {
+    public static <U, T> Either<? extends U, ? extends T> optionToEither(U left, Option<T> rightOption) {
         if (rightOption.isDefined())
             return Either.right(rightOption.get());
         else

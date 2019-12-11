@@ -5,9 +5,8 @@ import pl.tscript3r.tracciato.infrastructure.response.error.FailureResponse;
 import java.util.HashMap;
 import java.util.Map;
 
-class UserFailureResponse implements FailureResponse {
+public class UserFailureResponse implements FailureResponse {
 
-    static final String VALIDATION_REASON = "Validation";
     static final String USERNAME_NOT_FOUND_REASON = "Username not found";
     static final String USER_ID_NOT_FOUND_REASON = "User id not found";
     static final String INVALID_CREDENTIALS_REASON = "Invalid credentials";
@@ -26,12 +25,7 @@ class UserFailureResponse implements FailureResponse {
                 .addField("username", username);
     }
 
-    static FailureResponse bindingFail(Map<String, String> failedBindings) {
-        return new UserFailureResponse(VALIDATION_REASON, 400)
-                .addField("fields", failedBindings);
-    }
-
-    static FailureResponse invalidCredentials() {
+    public static FailureResponse invalidCredentials() {
         return new UserFailureResponse(INVALID_CREDENTIALS_REASON, 400);
     }
 

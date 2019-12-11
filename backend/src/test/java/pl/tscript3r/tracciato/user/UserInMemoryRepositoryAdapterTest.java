@@ -13,21 +13,21 @@ import static pl.tscript3r.tracciato.user.UserEntityTest.*;
 
 @DisplayName("In memory user repository adapter")
 @DisplayNameGeneration(ReplaceCamelCaseAndUnderscores.class)
-class InMemoryUserRepositoryAdapterTest {
+class UserInMemoryRepositoryAdapterTest {
 
-    InMemoryUserRepositoryAdapter inMemoryUserRepositoryAdapter;
+    UserInMemoryRepositoryAdapter userInMemoryRepositoryAdapter;
     UserEntity savedJohnsEntity;
 
-    static InMemoryUserRepositoryAdapter getInMemoryUserRepositoryAdapter() {
-        var result = new InMemoryUserRepositoryAdapter();
+    static UserInMemoryRepositoryAdapter getInMemoryUserRepositoryAdapter() {
+        var result = new UserInMemoryRepositoryAdapter();
         result.save(UserEntityTest.getJohnUserEntity());
         return result;
     }
 
     @BeforeEach
     void setUp() {
-        inMemoryUserRepositoryAdapter = getInMemoryUserRepositoryAdapter();
-        savedJohnsEntity = inMemoryUserRepositoryAdapter.findByUsername(JOHNS_USERNAME)
+        userInMemoryRepositoryAdapter = getInMemoryUserRepositoryAdapter();
+        savedJohnsEntity = userInMemoryRepositoryAdapter.findByUsername(JOHNS_USERNAME)
                 .get();
     }
 
@@ -37,7 +37,7 @@ class InMemoryUserRepositoryAdapterTest {
         var username = JOHNS_USERNAME;
 
         // when
-        var result = inMemoryUserRepositoryAdapter.usernameExists(username);
+        var result = userInMemoryRepositoryAdapter.usernameExists(username);
 
         //then
         assertTrue(result);
@@ -49,7 +49,7 @@ class InMemoryUserRepositoryAdapterTest {
         var username = JOHNS_USERNAME.toUpperCase();
 
         // when
-        var result = inMemoryUserRepositoryAdapter.usernameExists(username);
+        var result = userInMemoryRepositoryAdapter.usernameExists(username);
 
         //then
         assertTrue(result);
@@ -61,7 +61,7 @@ class InMemoryUserRepositoryAdapterTest {
         var username = EDY_USERNAME;
 
         // when
-        var result = inMemoryUserRepositoryAdapter.usernameExists(username);
+        var result = userInMemoryRepositoryAdapter.usernameExists(username);
 
         //then
         assertFalse(result);
@@ -73,7 +73,7 @@ class InMemoryUserRepositoryAdapterTest {
         var email = JOHNS_EMAIL;
 
         // when
-        var result = inMemoryUserRepositoryAdapter.emailExists(email);
+        var result = userInMemoryRepositoryAdapter.emailExists(email);
 
         //then
         assertTrue(result);
@@ -85,7 +85,7 @@ class InMemoryUserRepositoryAdapterTest {
         var email = JOHNS_EMAIL.toUpperCase();
 
         // when
-        var result = inMemoryUserRepositoryAdapter.emailExists(email);
+        var result = userInMemoryRepositoryAdapter.emailExists(email);
 
         //then
         assertTrue(result);
@@ -97,7 +97,7 @@ class InMemoryUserRepositoryAdapterTest {
         var email = EDY_EMAIL;
 
         // when
-        var result = inMemoryUserRepositoryAdapter.emailExists(email);
+        var result = userInMemoryRepositoryAdapter.emailExists(email);
 
         //then
         assertFalse(result);
@@ -109,7 +109,7 @@ class InMemoryUserRepositoryAdapterTest {
         var email = JOHNS_EMAIL;
 
         // when
-        var result = inMemoryUserRepositoryAdapter.findByEmail(email);
+        var result = userInMemoryRepositoryAdapter.findByEmail(email);
 
         // then
         assertTrue(result.contains(savedJohnsEntity));
@@ -121,7 +121,7 @@ class InMemoryUserRepositoryAdapterTest {
         var email = EDY_EMAIL;
 
         // when
-        var result = inMemoryUserRepositoryAdapter.findByEmail(email);
+        var result = userInMemoryRepositoryAdapter.findByEmail(email);
 
         // then
         assertTrue(result.isEmpty());
@@ -133,7 +133,7 @@ class InMemoryUserRepositoryAdapterTest {
         var id = JOHNS_ID;
 
         // when
-        var result = inMemoryUserRepositoryAdapter.findById(id);
+        var result = userInMemoryRepositoryAdapter.findById(id);
 
         // then
         assertTrue(result.contains(savedJohnsEntity));
@@ -146,11 +146,11 @@ class InMemoryUserRepositoryAdapterTest {
         eddysEntity.setId(null);
 
         // when
-        var result = inMemoryUserRepositoryAdapter.save(eddysEntity);
+        var result = userInMemoryRepositoryAdapter.save(eddysEntity);
 
         // then
         assertNotNull(result.getId());
-        assertTrue(inMemoryUserRepositoryAdapter.emailExists(result.getEmail()));
+        assertTrue(userInMemoryRepositoryAdapter.emailExists(result.getEmail()));
     }
 
     @Test
@@ -160,11 +160,11 @@ class InMemoryUserRepositoryAdapterTest {
         eddysEntity.setId(JOHNS_ID);
 
         // when
-        var result = inMemoryUserRepositoryAdapter.save(eddysEntity);
+        var result = userInMemoryRepositoryAdapter.save(eddysEntity);
 
         // then
-        assertTrue(inMemoryUserRepositoryAdapter.emailExists(result.getEmail()));
-        assertFalse(inMemoryUserRepositoryAdapter.emailExists(savedJohnsEntity.getEmail()));
+        assertTrue(userInMemoryRepositoryAdapter.emailExists(result.getEmail()));
+        assertFalse(userInMemoryRepositoryAdapter.emailExists(savedJohnsEntity.getEmail()));
     }
 
     @Test
@@ -173,10 +173,10 @@ class InMemoryUserRepositoryAdapterTest {
         var existingId = JOHNS_ID;
 
         // when
-        inMemoryUserRepositoryAdapter.delete(existingId);
+        userInMemoryRepositoryAdapter.delete(existingId);
 
         // then
-        assertTrue(inMemoryUserRepositoryAdapter.findById(existingId).isEmpty());
+        assertTrue(userInMemoryRepositoryAdapter.findById(existingId).isEmpty());
     }
 
     @Test
@@ -185,7 +185,7 @@ class InMemoryUserRepositoryAdapterTest {
         var existingUsername = JOHNS_USERNAME;
 
         // when
-        var searchResults = inMemoryUserRepositoryAdapter.findByUsername(existingUsername);
+        var searchResults = userInMemoryRepositoryAdapter.findByUsername(existingUsername);
 
         // then
         assertTrue(searchResults.isDefined());
@@ -199,7 +199,7 @@ class InMemoryUserRepositoryAdapterTest {
         var nonExistingUsername = "Anonymous";
 
         // when
-        var searchResults = inMemoryUserRepositoryAdapter.findByUsername(nonExistingUsername);
+        var searchResults = userInMemoryRepositoryAdapter.findByUsername(nonExistingUsername);
 
         // then
         assertTrue(searchResults.isEmpty());
@@ -211,7 +211,7 @@ class InMemoryUserRepositoryAdapterTest {
         var existingUuid = JOHNS_UUID;
 
         // when
-        var searchResults = inMemoryUserRepositoryAdapter.findByUuid(existingUuid);
+        var searchResults = userInMemoryRepositoryAdapter.findByUuid(existingUuid);
 
         // then
         assertTrue(searchResults.isDefined());
@@ -223,7 +223,7 @@ class InMemoryUserRepositoryAdapterTest {
         var existingUuid = UUID.randomUUID();
 
         // when
-        var searchResults = inMemoryUserRepositoryAdapter.findByUuid(existingUuid);
+        var searchResults = userInMemoryRepositoryAdapter.findByUuid(existingUuid);
 
         // then
         assertTrue(searchResults.isEmpty());

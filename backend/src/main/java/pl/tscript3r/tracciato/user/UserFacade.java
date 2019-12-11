@@ -2,7 +2,6 @@ package pl.tscript3r.tracciato.user;
 
 import io.jsonwebtoken.security.InvalidKeyException;
 import io.vavr.control.Either;
-import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
 import pl.tscript3r.tracciato.infrastructure.response.error.FailureResponse;
 import pl.tscript3r.tracciato.infrastructure.response.error.GlobalFailureResponse;
@@ -38,8 +37,9 @@ public class UserFacade {
             return Either.left(UserFailureResponse.invalidCredentials());
     }
 
-    public Option<UUID> validateAndGetUuidFromToken(String token) {
-        return jwtTokenResolver.getUuidAndValidateToken(token);
+    public Either<FailureResponse, UUID> validateAndGetUuidFromToken(String token) {
+        return jwtTokenResolver.getUuidAndValidateToken(token)
+                .toEither(UserFailureResponse.invalidCredentials());
     }
 
 }

@@ -20,7 +20,7 @@ class UserFacadeTest {
 
     @BeforeEach
     void setUp() {
-        userRepositoryAdapter = new InMemoryUserRepositoryAdapter();
+        userRepositoryAdapter = new UserInMemoryRepositoryAdapter();
         userFacade = UserSpringConfiguration.getInMemoryUserFacade(userRepositoryAdapter);
         existingJohnUserEntity = getJohnUserEntity();
         existingJohnUserEntity.setPassword(new BCryptPasswordEncrypt().encryptPassword(JOHNS_PASSWORD));
@@ -140,7 +140,7 @@ class UserFacadeTest {
         var uuidOption = userFacade.validateAndGetUuidFromToken(TOKEN_PREFIX + token);
 
         // then
-        assertTrue(uuidOption.isDefined());
+        assertTrue(uuidOption.isRight());
         assertEquals(JOHNS_UUID, uuidOption.get());
     }
 

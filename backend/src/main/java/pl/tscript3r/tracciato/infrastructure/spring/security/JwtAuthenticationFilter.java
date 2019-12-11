@@ -47,9 +47,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         var user = ((UsernamePasswordAuthenticationToken) authentication);
         userFacade.getToken(user.getName())
                 .peek(s -> response.addHeader(SecurityConstants.TOKEN_HEADER, SecurityConstants.TOKEN_PREFIX + s))
-                .peekLeft(failureResponse ->
-                        ResponseEntityToHttpServletResponse.convert(responseResolver.resolve(failureResponse), response)
-                );
+                .peekLeft(r -> ResponseEntityToHttpServletResponse.convert(responseResolver.resolve(r), response));
     }
 
     @Override

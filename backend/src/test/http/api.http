@@ -18,4 +18,20 @@ GET http://localhost:8080/api/v1/users/secure
 GET http://localhost:8080/api/v1/users/secure
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJ0cmFjY2lhdG8iLCJhdWQiOiJzZWN1cmUtYXBwIiwic3ViIjoiOWJiNmQwODktYzE3YS00ODcxLWJmOWEtNjZmZTc3ZjE3OWNmIiwiZXhwIjoxNTc2NDA4MzcyfQ.FO6k-C60ME65nc9hEPt_eGUCTgIA1XTmbEm1lIdfiPSvjWL3Q0KU-xyAHRLB1CyJ63PG44_U8idaga1_jwozLQ
 
+### Route creation
+POST http://localhost:8080/api/v1/route
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJ0cmFjY2lhdG8iLCJhdWQiOiJzZWN1cmUtYXBwIiwic3ViIjoiOWJiNmQwODktYzE3YS00ODcxLWJmOWEtNjZmZTc3ZjE3OWNmIiwiZXhwIjoxNTc2NDA4MzcyfQ.FO6k-C60ME65nc9hEPt_eGUCTgIA1XTmbEm1lIdfiPSvjWL3Q0KU-xyAHRLB1CyJ63PG44_U8idaga1_jwozLQ
+Content-Type: application/json
+
+{
+  "startDate": "12.12.2019 08:30",
+  "maxEndDate": "20.12.2019 18:00",
+  "traffic": "best_guess",
+  "name": "CW52"
+}
+
+### Get single route
+GET http://localhost:8080/api/v1/route/5013103b-a5f6-4166-b74f-10dfd6e9ce20
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJ0cmFjY2lhdG8iLCJhdWQiOiJzZWN1cmUtYXBwIiwic3ViIjoiOWJiNmQwODktYzE3YS00ODcxLWJmOWEtNjZmZTc3ZjE3OWNmIiwiZXhwIjoxNTc2NDA4MzcyfQ.FO6k-C60ME65nc9hEPt_eGUCTgIA1XTmbEm1lIdfiPSvjWL3Q0KU-xyAHRLB1CyJ63PG44_U8idaga1_jwozLQ
+
 ###

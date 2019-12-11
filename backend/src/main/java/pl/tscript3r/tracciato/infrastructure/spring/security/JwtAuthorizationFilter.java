@@ -37,7 +37,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     private Option<UsernamePasswordAuthenticationToken> getAuthentication(HttpServletRequest request) {
         var token = request.getHeader(SecurityConstants.TOKEN_HEADER);
         return userFacade.validateAndGetUuidFromToken(token)
-                .map(uuid -> new UsernamePasswordAuthenticationToken(uuid, "", Collections.emptySet()));
+                .map(uuid -> new UsernamePasswordAuthenticationToken(uuid, "", Collections.emptySet()))
+                .toOption();
     }
 
 }

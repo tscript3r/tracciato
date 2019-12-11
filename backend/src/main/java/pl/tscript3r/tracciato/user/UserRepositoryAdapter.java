@@ -5,7 +5,7 @@ import pl.tscript3r.tracciato.infrastructure.db.RepositoryAdapter;
 
 import java.util.UUID;
 
-interface UserRepositoryAdapter extends RepositoryAdapter<Long, UserEntity> {
+public interface UserRepositoryAdapter extends RepositoryAdapter<Long, UserEntity> {
 
     Boolean usernameExists(String username);
 

@@ -1,7 +1,19 @@
 package pl.tscript3r.tracciato.route;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public enum TrafficPrediction {
 
-    BEST_GUESS, OPTIMISTIC, PESSIMISTIC;
+    @JsonProperty("none")
+    NONE,
+
+    @JsonProperty("best_guess")
+    BEST_GUESS,
+
+    @JsonProperty("optimistic")
+    OPTIMISTIC,
+
+    @JsonProperty("pessimistic")
+    PESSIMISTIC;
 
 }

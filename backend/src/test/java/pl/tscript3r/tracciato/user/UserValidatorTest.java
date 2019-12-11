@@ -12,6 +12,7 @@ import pl.tscript3r.tracciato.ReplaceCamelCaseAndUnderscores;
 import pl.tscript3r.tracciato.infrastructure.response.error.FailureResponse;
 import pl.tscript3r.tracciato.user.api.UserDto;
 
+import javax.validation.Validation;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -50,9 +51,8 @@ class UserValidatorTest {
 
     @BeforeEach
     void setUp() {
-        userValidator = new UserValidator(userRepositoryAdapter);
-        when(userRepositoryAdapter.emailExists(any())).thenReturn(false);
-        when(userRepositoryAdapter.usernameExists(any())).thenReturn(false);
+        var validator = Validation.buildDefaultValidatorFactory().getValidator();
+        userValidator = new UserValidator(validator, userRepositoryAdapter);
     }
 
     @Test
