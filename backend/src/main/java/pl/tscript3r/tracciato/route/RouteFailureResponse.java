@@ -1,39 +1,21 @@
 package pl.tscript3r.tracciato.route;
 
+import pl.tscript3r.tracciato.infrastructure.response.error.AbstractFailureResponse;
 import pl.tscript3r.tracciato.infrastructure.response.error.FailureResponse;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.UUID;
 
-public class RouteFailureResponse implements FailureResponse {
+public class RouteFailureResponse extends AbstractFailureResponse {
 
-    private final String reason;
-    private final int httpStatus;
-    private final Map<String, Object> additionalFields = new HashMap<>();
+    private static final String ROUTE_UUID_NOT_FOUND = "Route UUID not found";
 
-    private RouteFailureResponse addField(String key, Object value) {
-        additionalFields.put(key, value);
-        return this;
+    static FailureResponse uuidNotFound(UUID uuid) {
+        return new RouteFailureResponse(ROUTE_UUID_NOT_FOUND, 404)
+                .addField("uuid", uuid.toString());
     }
 
     private RouteFailureResponse(String reason, int httpStatus) {
-        this.reason = reason;
-        this.httpStatus = httpStatus;
-    }
-
-    @Override
-    public String getReason() {
-        return reason;
-    }
-
-    @Override
-    public Integer getHttpStatus() {
-        return httpStatus;
-    }
-
-    @Override
-    public Map<String, Object> getAdditionalFields() {
-        return additionalFields;
+        super(reason, httpStatus);
     }
 
 }

@@ -2,7 +2,8 @@ package pl.tscript3r.tracciato.infrastructure.response.error;
 
 public enum GlobalFailureResponse implements FailureResponse {
 
-    INTERNAL_SERVER_ERROR(500, "Internal server error");
+    INTERNAL_SERVER_ERROR(500, "Internal server error"),
+    UNAUTHORIZED_ERROR(401, "Unauthorized");
 
     private final int httpStatusCode;
     private final String reason;

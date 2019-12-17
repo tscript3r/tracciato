@@ -11,27 +11,53 @@ Content-Type: application/json
 ### Authenticate user
 POST http://localhost:8080/api/v1/authenticate?username=andrew&password=password
 
+> {% client.global.set("auth_token", response.headers.valueOf("Authorization")); %}
+
 ### Public API
 GET http://localhost:8080/api/v1/users/secure
 
 ### Private API
 GET http://localhost:8080/api/v1/users/secure
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJ0cmFjY2lhdG8iLCJhdWQiOiJzZWN1cmUtYXBwIiwic3ViIjoiOWJiNmQwODktYzE3YS00ODcxLWJmOWEtNjZmZTc3ZjE3OWNmIiwiZXhwIjoxNTc2NDA4MzcyfQ.FO6k-C60ME65nc9hEPt_eGUCTgIA1XTmbEm1lIdfiPSvjWL3Q0KU-xyAHRLB1CyJ63PG44_U8idaga1_jwozLQ
+Authorization: {{auth_token}}
 
 ### Route creation
-POST http://localhost:8080/api/v1/route
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJ0cmFjY2lhdG8iLCJhdWQiOiJzZWN1cmUtYXBwIiwic3ViIjoiOWJiNmQwODktYzE3YS00ODcxLWJmOWEtNjZmZTc3ZjE3OWNmIiwiZXhwIjoxNTc2NDA4MzcyfQ.FO6k-C60ME65nc9hEPt_eGUCTgIA1XTmbEm1lIdfiPSvjWL3Q0KU-xyAHRLB1CyJ63PG44_U8idaga1_jwozLQ
+POST http://localhost:8080/api/v1/routes
+Authorization: {{auth_token}}
 Content-Type: application/json
 
 {
-  "startDate": "12.12.2019 08:30",
-  "maxEndDate": "20.12.2019 18:00",
+  "startDate": "18.12.2019 08:30",
+  "maxEndDate": "24.12.2019 18:00",
   "traffic": "best_guess",
   "name": "CW52"
 }
 
+> {% client.global.set("route_uuid", response.body.payload.uuid); %}
+
 ### Get single route
-GET http://localhost:8080/api/v1/route/5013103b-a5f6-4166-b74f-10dfd6e9ce20
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJ0cmFjY2lhdG8iLCJhdWQiOiJzZWN1cmUtYXBwIiwic3ViIjoiOWJiNmQwODktYzE3YS00ODcxLWJmOWEtNjZmZTc3ZjE3OWNmIiwiZXhwIjoxNTc2NDA4MzcyfQ.FO6k-C60ME65nc9hEPt_eGUCTgIA1XTmbEm1lIdfiPSvjWL3Q0KU-xyAHRLB1CyJ63PG44_U8idaga1_jwozLQ
+GET http://localhost:8080/api/v1/routes/{{route_uuid}}
+Authorization: {{auth_token}}
+
+### Add route location
+POST http://localhost:8080/api/v1/routes/{{route_uuid}}/locations
+Authorization: {{auth_token}}
+Content-Type: application/json
+
+{
+  "priority": "optional",
+  "onsideDuration": "01:30",
+  "existingLocationId": 1,
+  "availability": [
+    {
+      "date": "20.12.2019",
+      "excluded": true
+    },
+    {
+      "date": "19.12.2019",
+      "from": "12:00",
+      "to": "14:00"
+    }
+  ]
+}
 
 ###

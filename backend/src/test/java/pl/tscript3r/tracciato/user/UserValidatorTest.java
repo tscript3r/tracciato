@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static pl.tscript3r.tracciato.user.UserEntityTest.*;
+import static pl.tscript3r.tracciato.user.UserConst.*;
 
 @DisplayName("User validator")
 @DisplayNameGeneration(ReplaceCamelCaseAndUnderscores.class)

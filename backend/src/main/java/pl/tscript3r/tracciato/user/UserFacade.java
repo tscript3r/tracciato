@@ -15,6 +15,7 @@ public class UserFacade {
     private final UserRegistration userRegistration;
     private final UserAuthentication userAuthentication;
     private final JWTTokenResolver jwtTokenResolver;
+    private final UserResourceAuthorization userResourceAuthorization;
 
     public Either<FailureResponse, UserDto> register(UserDto userDto) {
         return userRegistration.register(userDto);
@@ -40,6 +41,13 @@ public class UserFacade {
     public Either<FailureResponse, UUID> validateAndGetUuidFromToken(String token) {
         return jwtTokenResolver.getUuidAndValidateToken(token)
                 .toEither(UserFailureResponse.invalidCredentials());
+    }
+
+    public <T> Either<FailureResponse, T> authorize(String token, UUID resourceOwnerUuid, T resource) {
+        var tokenValidation = validateAndGetUuidFromToken(token);
+        return tokenValidation.isRight() ?
+                userResourceAuthorization.authorize(tokenValidation.get(), resourceOwnerUuid, resource) :
+                Either.left(tokenValidation.getLeft());
     }
 
 }

@@ -9,7 +9,7 @@ import pl.tscript3r.tracciato.ReplaceCamelCaseAndUnderscores;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static pl.tscript3r.tracciato.user.UserEntityTest.*;
+import static pl.tscript3r.tracciato.user.UserConst.*;
 
 @DisplayName("In memory user repository adapter")
 @DisplayNameGeneration(ReplaceCamelCaseAndUnderscores.class)
@@ -20,7 +20,7 @@ class UserInMemoryRepositoryAdapterTest {
 
     static UserInMemoryRepositoryAdapter getInMemoryUserRepositoryAdapter() {
         var result = new UserInMemoryRepositoryAdapter();
-        result.save(UserEntityTest.getJohnUserEntity());
+        result.save(getJohnUserEntity());
         return result;
     }
 

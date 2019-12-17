@@ -1,12 +1,16 @@
 package pl.tscript3r.tracciato.infrastructure;
 
-public class EndpointsMappings {
+public final class EndpointsMappings {
 
     private static final String BASE_V1_MAPPING = "/api/v1";
+    public static final String ROUTE_UUID_VARIABLE = "routeUuid";
+    public static final String USER_UUID_VARIABLE = "userUuid";
 
     public static final String AUTH_MAPPING = BASE_V1_MAPPING + "/authenticate";
     public static final String USER_MAPPING = BASE_V1_MAPPING + "/users";
-    public static final String ROUTE_MAPPING = BASE_V1_MAPPING + "/route";
+    public static final String LOCATION_MAPPING = BASE_V1_MAPPING + "/{" + USER_UUID_VARIABLE + "}";
+    public static final String ROUTE_MAPPING = BASE_V1_MAPPING + "/routes";
+    public static final String ROUTE_LOCATION_MAPPING = ROUTE_MAPPING + "/{" + ROUTE_UUID_VARIABLE + "}/" + "locations";
 
     public static final String[] PUBLIC_MAPPINGS = {"/*", "/h2-console/**", AUTH_MAPPING, USER_MAPPING};
 

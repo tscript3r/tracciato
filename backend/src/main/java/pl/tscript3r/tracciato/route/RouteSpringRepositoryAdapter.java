@@ -3,6 +3,8 @@ package pl.tscript3r.tracciato.route;
 import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
 
+import java.util.UUID;
+
 @RequiredArgsConstructor
 public class RouteSpringRepositoryAdapter implements RouteRepositoryAdapter {
 
@@ -21,6 +23,11 @@ public class RouteSpringRepositoryAdapter implements RouteRepositoryAdapter {
     @Override
     public void delete(Long id) {
         routeSpringRepository.deleteById(id);
+    }
+
+    @Override
+    public Option<RouteEntity> findByUuid(UUID routeUuid) {
+        return Option.of(routeSpringRepository.findByUuid(routeUuid));
     }
 
 }

@@ -6,15 +6,20 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
+import pl.tscript3r.tracciato.infrastructure.validator.TimeBeforeAfter;
 import pl.tscript3r.tracciato.route.TrafficPrediction;
 
+import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import static pl.tscript3r.tracciato.infrastructure.DateTimeFormats.DATE_TIME_FORMAT;
+
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@TimeBeforeAfter(beforeField = "startDate", afterField = "maxEndDate", message = "Start date needs to be before max end date")
 public class NewRouteDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -27,13 +32,15 @@ public class NewRouteDto {
     private String name;
 
     @NotNull
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy HH:mm")
-    @DateTimeFormat(pattern = "dd.MM.yyyy HH:mm")
+    @Future
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_TIME_FORMAT)
+    @DateTimeFormat(pattern = DATE_TIME_FORMAT)
     private LocalDateTime startDate;
 
     @NotNull
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy HH:mm")
-    @DateTimeFormat(pattern = "dd.MM.yyyy HH:mm")
+    @Future
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_TIME_FORMAT)
+    @DateTimeFormat(pattern = DATE_TIME_FORMAT)
     private LocalDateTime maxEndDate;
 
     private TrafficPrediction traffic;

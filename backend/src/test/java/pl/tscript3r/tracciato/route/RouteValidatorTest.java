@@ -5,6 +5,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
 import pl.tscript3r.tracciato.ReplaceCamelCaseAndUnderscores;
+import pl.tscript3r.tracciato.infrastructure.validator.DefaultValidator;
+import pl.tscript3r.tracciato.route.api.NewRouteDto;
 
 import javax.validation.Validation;
 
@@ -17,12 +19,12 @@ import static pl.tscript3r.tracciato.route.RouteConst.START_DATE;
 @DisplayNameGeneration(ReplaceCamelCaseAndUnderscores.class)
 class RouteValidatorTest {
 
-    RouteValidator routeValidator;
+    DefaultValidator<NewRouteDto> routeValidator;
 
     @BeforeEach
     void setUp() {
         var validator = Validation.buildDefaultValidatorFactory().getValidator();
-        routeValidator = new RouteValidator(validator);
+        routeValidator = new DefaultValidator<>(validator);
     }
 
     @Test

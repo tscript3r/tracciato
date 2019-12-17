@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 @RequiredArgsConstructor
-public abstract class AbstractValidator<T> {
+public class DefaultValidator<T> {
 
     private final Validator validator;
 

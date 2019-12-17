@@ -3,6 +3,7 @@ package pl.tscript3r.tracciato.route;
 import io.vavr.control.Either;
 import lombok.RequiredArgsConstructor;
 import pl.tscript3r.tracciato.infrastructure.response.error.FailureResponse;
+import pl.tscript3r.tracciato.infrastructure.validator.DefaultValidator;
 import pl.tscript3r.tracciato.route.api.NewRouteDto;
 
 import java.util.UUID;
@@ -10,7 +11,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 class RouteFactory {
 
-    private final RouteValidator validator;
+    private final DefaultValidator<NewRouteDto> validator;
     private final RouteRepositoryAdapter routeRepositoryAdapter;
 
     synchronized Either<FailureResponse, NewRouteDto> create(NewRouteDto newRouteDto) {

@@ -1,19 +1,13 @@
 package pl.tscript3r.tracciato.user;
 
+import pl.tscript3r.tracciato.infrastructure.response.error.AbstractFailureResponse;
 import pl.tscript3r.tracciato.infrastructure.response.error.FailureResponse;
 
-import java.util.HashMap;
-import java.util.Map;
+public class UserFailureResponse extends AbstractFailureResponse {
 
-public class UserFailureResponse implements FailureResponse {
-
-    static final String USERNAME_NOT_FOUND_REASON = "Username not found";
-    static final String USER_ID_NOT_FOUND_REASON = "User id not found";
-    static final String INVALID_CREDENTIALS_REASON = "Invalid credentials";
-
-    private final String reason;
-    private final int httpStatus;
-    private final Map<String, Object> additionalFields = new HashMap<>();
+    private static final String USERNAME_NOT_FOUND_REASON = "Username not found";
+    private static final String USER_ID_NOT_FOUND_REASON = "User id not found";
+    private static final String INVALID_CREDENTIALS_REASON = "Invalid credentials";
 
     static FailureResponse idNotFound(long id) {
         return new UserFailureResponse(USER_ID_NOT_FOUND_REASON, 404)
@@ -25,33 +19,12 @@ public class UserFailureResponse implements FailureResponse {
                 .addField("username", username);
     }
 
-    public static FailureResponse invalidCredentials() {
+    static FailureResponse invalidCredentials() {
         return new UserFailureResponse(INVALID_CREDENTIALS_REASON, 400);
     }
 
     private UserFailureResponse(String reason, int httpStatus) {
-        this.reason = reason;
-        this.httpStatus = httpStatus;
-    }
-
-    @Override
-    public String getReason() {
-        return reason;
-    }
-
-    @Override
-    public Integer getHttpStatus() {
-        return httpStatus;
-    }
-
-    @Override
-    public Map<String, Object> getAdditionalFields() {
-        return additionalFields;
-    }
-
-    private UserFailureResponse addField(String key, Object value) {
-        additionalFields.put(key, value);
-        return this;
+        super(reason, httpStatus);
     }
 
 }

@@ -1,13 +1,13 @@
 package pl.tscript3r.tracciato.user;
 
-import pl.tscript3r.tracciato.infrastructure.validator.AbstractValidator;
+import pl.tscript3r.tracciato.infrastructure.validator.DefaultValidator;
 import pl.tscript3r.tracciato.user.api.UserDto;
 
 import javax.validation.Validator;
 import java.util.HashMap;
 import java.util.Map;
 
-class UserValidator extends AbstractValidator<UserDto> {
+class UserValidator extends DefaultValidator<UserDto> {
 
     private final UserRepositoryAdapter userRepositoryAdapter;
 

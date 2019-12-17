@@ -3,6 +3,8 @@ package pl.tscript3r.tracciato.route;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import pl.tscript3r.tracciato.infrastructure.validator.DefaultValidator;
+import pl.tscript3r.tracciato.route.api.NewRouteDto;
 import pl.tscript3r.tracciato.user.UserFacade;
 
 import javax.validation.Validation;
@@ -21,9 +23,9 @@ class RouteSpringConfiguration {
 
     private static RouteFacade get(RouteRepositoryAdapter routeRepositoryAdapter, UserFacade userFacade) {
         var validator = Validation.buildDefaultValidatorFactory().getValidator();
-        var routeValidator = new RouteValidator(validator);
+        var routeValidator = new DefaultValidator<NewRouteDto>(validator);
         var routeFactory = new RouteFactory(routeValidator, routeRepositoryAdapter);
-        return new RouteFacade(userFacade, routeFactory);
+        return new RouteFacade(userFacade, routeFactory, routeRepositoryAdapter);
     }
 
     @Bean

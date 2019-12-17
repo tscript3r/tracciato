@@ -19,6 +19,7 @@ import java.net.URL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static pl.tscript3r.tracciato.infrastructure.EndpointsMappings.USER_MAPPING;
 
+@Disabled
 @DisplayName("User controller")
 @DisplayNameGeneration(ReplaceCamelCaseAndUnderscores.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -34,7 +35,6 @@ class UserSpringControllerTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    @Disabled
     @Test
     void registerUser_Should_ReturnHttpStatus201_When_UserRegistrationSucceed() throws Exception {
         // given

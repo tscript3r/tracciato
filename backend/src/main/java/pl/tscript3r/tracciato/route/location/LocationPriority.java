@@ -1,7 +1,16 @@
 package pl.tscript3r.tracciato.route.location;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public enum LocationPriority {
 
-    OPTIONAL, MEDIUM, HIGH;
+    @JsonProperty("optional")
+    OPTIONAL,
+
+    @JsonProperty("medium")
+    MEDIUM,
+
+    @JsonProperty("high")
+    HIGH;
 
 }

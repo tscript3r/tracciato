@@ -6,17 +6,26 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
 import pl.tscript3r.tracciato.ReplaceCamelCaseAndUnderscores;
 
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static pl.tscript3r.tracciato.infrastructure.spring.security.SecurityConstants.TOKEN_PREFIX;
-import static pl.tscript3r.tracciato.user.UserEntityTest.*;
+import static pl.tscript3r.tracciato.user.UserConst.*;
 
 @DisplayName("User facade")
 @DisplayNameGeneration(ReplaceCamelCaseAndUnderscores.class)
-class UserFacadeTest {
+public class UserFacadeTest {
 
     UserFacade userFacade;
     UserRepositoryAdapter userRepositoryAdapter;
     UserEntity existingJohnUserEntity = getJohnUserEntity();
+
+    public static UserFacade getUserFacade(UserRepositoryAdapter userInMemoryRepositoryAdapter) {
+        var existingJohnUserEntity = getJohnUserEntity();
+        existingJohnUserEntity.setPassword(new BCryptPasswordEncrypt().encryptPassword(JOHNS_PASSWORD));
+        userInMemoryRepositoryAdapter.save(existingJohnUserEntity);
+        return UserSpringConfiguration.getInMemoryUserFacade(userInMemoryRepositoryAdapter);
+    }
 
     @BeforeEach
     void setUp() {
@@ -142,6 +151,42 @@ class UserFacadeTest {
         // then
         assertTrue(uuidOption.isRight());
         assertEquals(JOHNS_UUID, uuidOption.get());
+    }
+
+    @Test
+    void authorize_Should_ReturnFailureResponse_When_TokenIsInvalid() {
+        // given
+        var invalidToken = "Bearer INVALID";
+
+        // when
+        var results = userFacade.authorize(invalidToken, JOHNS_UUID, getJohnUserEntity());
+
+        // then
+        assertTrue(results.isLeft());
+    }
+
+    @Test
+    void authorize_Should_ReturnFailureResponse_When_ResourceOwnerUuidIsDifferentThenUsersUuidFromToken() {
+        // given
+        var validToken = userFacade.getToken(JOHNS_USERNAME);
+
+        // when
+        var results = userFacade.authorize(validToken.get(), UUID.randomUUID(), getJohnUserEntity());
+
+        // then
+        assertTrue(results.isLeft());
+    }
+
+    @Test
+    void authorize_Should_ReturnRight_When_ResourceOwnerUuidIsSameAsUsersUuidFromToken() {
+        // given
+        var validToken = userFacade.getToken(JOHNS_USERNAME);
+
+        // when
+        var results = userFacade.authorize("Bearer " + validToken.get(), existingJohnUserEntity.getUuid(), getJohnUserEntity());
+
+        // then
+        assertTrue(results.isRight());
     }
 
 }
