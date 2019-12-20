@@ -10,6 +10,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import pl.tscript3r.tracciato.infrastructure.response.ResponseResolver;
 import pl.tscript3r.tracciato.infrastructure.spring.util.ResponseEntityToHttpServletResponse;
 import pl.tscript3r.tracciato.user.UserFacade;
+import pl.tscript3r.tracciato.user.UserFailureResponse;
 
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
@@ -37,6 +38,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
         var username = request.getParameter("username");
         var password = request.getParameter("password");
+        if (username == null || password == null)
+            throw new CustomAuthenticationCredentialsNotFoundException(UserFailureResponse.invalidCredentials());
         var authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
         return authenticationManager.authenticate(authenticationToken);
     }
