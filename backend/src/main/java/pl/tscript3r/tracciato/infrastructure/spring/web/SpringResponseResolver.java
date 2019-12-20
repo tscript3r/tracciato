@@ -19,8 +19,6 @@ import static org.springframework.http.HttpStatus.valueOf;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public final class SpringResponseResolver implements ResponseResolver<ResponseEntity> {
 
-    private static final String RESOURCE_NOT_FOUND = "Resource not found";
-
     @Override
     public ResponseEntity resolve(@NotNull FailureResponse failureResponse) {
         return createFailureResponse(failureResponse);

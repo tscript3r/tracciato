@@ -16,12 +16,10 @@ class RouteLocationFacade {
     private final DefaultValidator<RouteLocationDto> routeLocationValidator;
 
     Either<FailureResponse, RouteLocationDto> add(String token, UUID routeUuid, RouteLocationDto routeLocationDto) {
-        var validationResults = routeLocationValidator.validate(routeLocationDto)
+        return routeLocationValidator.validate(routeLocationDto)
+                .map(RouteLocationMapper::map)
+                .flatMap(routeLocationEntity -> routeFacade.addLocation(token, routeUuid, routeLocationEntity))
                 .map(RouteLocationMapper::map);
-        if (validationResults.isRight())
-            return routeFacade.addLocation(token, routeUuid, validationResults.get())
-                    .map(RouteLocationMapper::map);
-        return Either.left(validationResults.getLeft());
     }
 
 }

@@ -19,7 +19,7 @@ public class UserFailureResponse extends AbstractFailureResponse {
                 .addField("username", username);
     }
 
-    static FailureResponse invalidCredentials() {
+    public static FailureResponse invalidCredentials() {
         return new UserFailureResponse(INVALID_CREDENTIALS_REASON, 400);
     }
 

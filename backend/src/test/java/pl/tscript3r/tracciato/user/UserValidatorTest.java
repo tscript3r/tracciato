@@ -19,30 +19,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static pl.tscript3r.tracciato.user.UserConst.*;
+import static pl.tscript3r.tracciato.user.UserConst.USERNAME_FIELD;
+import static pl.tscript3r.tracciato.user.UserConst.getValidJohnsUserDto;
 
 @DisplayName("User validator")
 @DisplayNameGeneration(ReplaceCamelCaseAndUnderscores.class)
 @ExtendWith(MockitoExtension.class)
 class UserValidatorTest {
-
-    public static final String USERNAME_FIELD = "username";
-
-    public static UserDto getValidJohnsUserDto() {
-        UserDto validUserDto = new UserDto();
-        validUserDto.setEmail(JOHNS_EMAIL);
-        validUserDto.setUsername(JOHNS_USERNAME);
-        validUserDto.setPassword(JOHNS_PASSWORD);
-        return validUserDto;
-    }
-
-    public static UserDto getValidEdyUserDto() {
-        UserDto validUserDto = new UserDto();
-        validUserDto.setEmail(EDY_EMAIL);
-        validUserDto.setUsername(EDY_USERNAME);
-        validUserDto.setPassword(EDY_PASSWORD);
-        return validUserDto;
-    }
 
     UserValidator userValidator;
 

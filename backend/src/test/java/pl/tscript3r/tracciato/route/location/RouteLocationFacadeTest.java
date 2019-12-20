@@ -11,7 +11,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import pl.tscript3r.tracciato.ReplaceCamelCaseAndUnderscores;
-import pl.tscript3r.tracciato.infrastructure.response.error.GlobalFailureResponse;
 import pl.tscript3r.tracciato.infrastructure.validator.DefaultValidator;
 import pl.tscript3r.tracciato.route.RouteFacade;
 import pl.tscript3r.tracciato.route.RouteFacadeTest;
@@ -52,10 +51,7 @@ class RouteLocationFacadeTest {
         routeFacade = RouteFacadeTest.getRouteFacade(userFacade);
         newRouteDto = routeFacade.create(any(), getValidNewRouteDto()).get();
         routeLocationFacade = new RouteLocationFacade(routeFacade, routeLocationValidator);
-        when(userFacade.authorize(any(), any(), any())).thenAnswer(invocationOnMock -> {
-            Object[] args = invocationOnMock.getArguments();
-            return Either.right((RouteLocationEntity) args[args.length - 1]);
-        });
+        when(userFacade.authorize(any(), any())).thenReturn(true);
     }
 
     @Test
@@ -74,7 +70,7 @@ class RouteLocationFacadeTest {
     void add_Should_ReturnFailureResponse_When_AuthorizationFails() {
         // given
         var validRouteLocationDto = getValidRouteLocationDtoWithNewLocation();
-        when(userFacade.authorize(any(), any(), any())).thenReturn(Either.left(GlobalFailureResponse.UNAUTHORIZED_ERROR));
+        when(userFacade.authorize(any(), any())).thenReturn(false);
 
         // when
         var results = routeLocationFacade.add("mocked", newRouteDto.getUuid(), validRouteLocationDto);

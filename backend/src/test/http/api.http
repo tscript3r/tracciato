@@ -26,8 +26,8 @@ Authorization: {{auth_token}}
 Content-Type: application/json
 
 {
-  "startDate": "18.12.2019 08:30",
-  "maxEndDate": "24.12.2019 18:00",
+  "startDate": "23.12.2019 08:30",
+  "maxEndDate": "27.12.2019 18:00",
   "traffic": "best_guess",
   "name": "CW52"
 }

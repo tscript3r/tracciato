@@ -1,5 +1,7 @@
 package pl.tscript3r.tracciato.user;
 
+import pl.tscript3r.tracciato.user.api.UserDto;
+
 import java.util.UUID;
 
 public final class UserConst {
@@ -14,6 +16,8 @@ public final class UserConst {
     public static final UUID EDY_UUID = UUID.randomUUID();
     public static final long JOHNS_ID = 1L;
     public static final long EDY_ID = 2L;
+
+    public static final String USERNAME_FIELD = "username";
 
     public static UserEntity getJohnUserEntity() {
         var user = new UserEntity();
@@ -33,6 +37,22 @@ public final class UserConst {
         user.setPassword(EDY_PASSWORD);
         user.setUuid(EDY_UUID);
         return user;
+    }
+
+    public static UserDto getValidJohnsUserDto() {
+        UserDto validUserDto = new UserDto();
+        validUserDto.setEmail(JOHNS_EMAIL);
+        validUserDto.setUsername(JOHNS_USERNAME);
+        validUserDto.setPassword(JOHNS_PASSWORD);
+        return validUserDto;
+    }
+
+    public static UserDto getValidEdyUserDto() {
+        UserDto validUserDto = new UserDto();
+        validUserDto.setEmail(EDY_EMAIL);
+        validUserDto.setUsername(EDY_USERNAME);
+        validUserDto.setPassword(EDY_PASSWORD);
+        return validUserDto;
     }
 
     private UserConst() {

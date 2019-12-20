@@ -95,7 +95,7 @@ public class RouteFacadeTest {
         // given
         var routeLocationEntity = RouteLocationConst.getValidRouteLocationEntity();
         var existingRoute = routeFacade.create("mocked", RouteConst.getValidNewRouteDto()).get();
-        when(userFacade.authorize(any(), any(), any())).thenReturn(Either.right(routeLocationEntity));
+        when(userFacade.authorize(any(), any())).thenReturn(true);
 
         // when
         var results = routeFacade.addLocation("mocked", existingRoute.getUuid(), routeLocationEntity);

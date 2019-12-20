@@ -9,6 +9,8 @@ import pl.tscript3r.tracciato.user.UserFacade;
 
 import java.util.UUID;
 
+import static pl.tscript3r.tracciato.infrastructure.response.error.GlobalFailureResponse.UNAUTHORIZED_ERROR;
+
 @AllArgsConstructor
 public class RouteFacade {
 
@@ -17,24 +19,22 @@ public class RouteFacade {
     private final RouteRepositoryAdapter routeRepositoryAdapter;
 
     public Either<FailureResponse, NewRouteDto> create(String token, NewRouteDto newRouteDto) {
-        // TODO refactor
-        var tokenValidation = userFacade.validateAndGetUuidFromToken(token)
-                .map(newRouteDto::setOwner);
-        return tokenValidation.isRight() ? routeFactory.create(newRouteDto) : tokenValidation;
+        return userFacade.validateAndGetUuidFromToken(token)
+                .map(newRouteDto::setOwner)
+                .flatMap(routeFactory::create);
     }
 
     public Either<FailureResponse, RouteLocationEntity> addLocation(String token, UUID routeUuid,
                                                                     RouteLocationEntity routeLocationEntity) {
-        var routeDaoOption = routeRepositoryAdapter.findByUuid(routeUuid)
-                .map(RouteDao::get);
-        if (routeDaoOption.isDefined()) {
-            var routeDao = routeDaoOption.get();
-            return userFacade.authorize(token, routeDao.getOwnerUuid(), routeLocationEntity)
-                    .peek(routeLocation -> {
-                        routeDao.addRouteLocation(routeLocation);
-                        routeRepositoryAdapter.save(routeDao.get());
-                    });
-        }
-        return Either.left(RouteFailureResponse.uuidNotFound(routeUuid));
+        return routeRepositoryAdapter.findByUuid(routeUuid)
+                .toEither(RouteFailureResponse.uuidNotFound(routeUuid))
+                .filterOrElse(routeEntity -> userFacade.authorize(token, routeEntity.getOwnerUuid()), routeEntity -> UNAUTHORIZED_ERROR)
+                .map(RouteDao::get)
+                .peek(routeDao -> {
+                    routeDao.addRouteLocation(routeLocationEntity);
+                    routeRepositoryAdapter.save(routeDao.get());
+                })
+                .map(routeDao -> routeLocationEntity);
     }
+
 }

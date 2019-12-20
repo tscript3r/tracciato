@@ -26,16 +26,13 @@ public class UserFacade {
     }
 
     public Either<FailureResponse, String> getToken(String username) {
-        var user = userAuthentication.findByUsername(username);
-        if (user.isDefined()) {
-            var uuid = user.get().getUuid();
-            try {
-                return Either.right(jwtTokenResolver.getToken(uuid));
-            } catch (InvalidKeyException e) {
-                return Either.left(GlobalFailureResponse.INTERNAL_SERVER_ERROR);
-            }
-        } else
-            return Either.left(UserFailureResponse.invalidCredentials());
+        try {
+            return userAuthentication.findByUsername(username)
+                    .toEither(UserFailureResponse.invalidCredentials())
+                    .flatMap(userDto -> Either.right(jwtTokenResolver.getToken(userDto.getUuid())));
+        } catch (InvalidKeyException e) {
+            return Either.left(GlobalFailureResponse.INTERNAL_SERVER_ERROR);
+        }
     }
 
     public Either<FailureResponse, UUID> validateAndGetUuidFromToken(String token) {
@@ -43,11 +40,10 @@ public class UserFacade {
                 .toEither(UserFailureResponse.invalidCredentials());
     }
 
-    public <T> Either<FailureResponse, T> authorize(String token, UUID resourceOwnerUuid, T resource) {
-        var tokenValidation = validateAndGetUuidFromToken(token);
-        return tokenValidation.isRight() ?
-                userResourceAuthorization.authorize(tokenValidation.get(), resourceOwnerUuid, resource) :
-                Either.left(tokenValidation.getLeft());
+    public Boolean authorize(String token, UUID resourceOwnerUuid) {
+        return validateAndGetUuidFromToken(token)
+                .filter(uuid -> userResourceAuthorization.authorize(uuid, resourceOwnerUuid))
+                .isDefined();
     }
 
 }

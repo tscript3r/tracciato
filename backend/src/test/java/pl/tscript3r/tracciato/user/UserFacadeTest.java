@@ -39,7 +39,7 @@ public class UserFacadeTest {
     @Test
     void register_Should_SuccessfullyRegisterNewUser_When_ValidUserDtoIsPassed() {
         // given
-        var userDto = UserValidatorTest.getValidEdyUserDto();
+        var userDto = UserConst.getValidEdyUserDto();
 
         // when
         var result = userFacade.register(userDto);
@@ -51,7 +51,7 @@ public class UserFacadeTest {
     @Test
     void register_Should_SetUsersUuid_When_SuccessfullyRegistered() {
         // given
-        var userDto = UserValidatorTest.getValidEdyUserDto();
+        var userDto = UserConst.getValidEdyUserDto();
 
         // when
         var result = userFacade.register(userDto);
@@ -63,7 +63,7 @@ public class UserFacadeTest {
     @Test
     void register_Should_EncodeUsersPassword_When_SuccessfullyRegistered() {
         // given
-        var userDto = UserValidatorTest.getValidEdyUserDto();
+        var userDto = UserConst.getValidEdyUserDto();
 
         // when
         var result = userFacade.register(userDto);
@@ -78,7 +78,7 @@ public class UserFacadeTest {
     @Test
     void register_Should_ReturnUserFailureResponseAndNotRegisterNewUser_When_NonValidUserDtoIsPassed() {
         // given
-        var nonValidUserDto = UserValidatorTest.getValidJohnsUserDto();
+        var nonValidUserDto = UserConst.getValidJohnsUserDto();
         nonValidUserDto.setEmail("not valid email");
 
         // when
@@ -159,10 +159,10 @@ public class UserFacadeTest {
         var invalidToken = "Bearer INVALID";
 
         // when
-        var results = userFacade.authorize(invalidToken, JOHNS_UUID, getJohnUserEntity());
+        var results = userFacade.authorize(invalidToken, JOHNS_UUID);
 
         // then
-        assertTrue(results.isLeft());
+        assertTrue(results);
     }
 
     @Test
@@ -171,10 +171,10 @@ public class UserFacadeTest {
         var validToken = userFacade.getToken(JOHNS_USERNAME);
 
         // when
-        var results = userFacade.authorize(validToken.get(), UUID.randomUUID(), getJohnUserEntity());
+        var results = userFacade.authorize(validToken.get(), UUID.randomUUID());
 
         // then
-        assertTrue(results.isLeft());
+        assertTrue(results);
     }
 
     @Test
@@ -183,10 +183,10 @@ public class UserFacadeTest {
         var validToken = userFacade.getToken(JOHNS_USERNAME);
 
         // when
-        var results = userFacade.authorize("Bearer " + validToken.get(), existingJohnUserEntity.getUuid(), getJohnUserEntity());
+        var results = userFacade.authorize("Bearer " + validToken.get(), existingJohnUserEntity.getUuid());
 
         // then
-        assertTrue(results.isRight());
+        assertTrue(results);
     }
 
 }
