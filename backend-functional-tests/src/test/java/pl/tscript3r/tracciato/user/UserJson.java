@@ -42,4 +42,7 @@ public class UserJson extends AbstractJson<UserDto> {
         return this;
     }
 
+    public String getUsername() {
+        return object.getUsername();
+    }
 }

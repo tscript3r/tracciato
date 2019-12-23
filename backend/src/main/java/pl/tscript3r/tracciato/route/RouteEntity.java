@@ -31,10 +31,10 @@ public class RouteEntity extends AbstractEntity {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<DayAvailabilityEntity> days = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private RouteLocationEntity startLocation;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private RouteLocationEntity endLocation;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

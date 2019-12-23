@@ -16,7 +16,8 @@ public class UsersFeaturesFunctionalTests extends AbstractFunctionalTests {
 
     @BeforeAll
     public void before() throws JSONException {
-        userFeatures.registerUser(UserJson.existing().json(), 201);
+        if (!userFeatures.isUsernameExisting(UserJson.existing().getUsername()))
+            userFeatures.registerUser(UserJson.existing().json(), 201);
     }
 
     @Test

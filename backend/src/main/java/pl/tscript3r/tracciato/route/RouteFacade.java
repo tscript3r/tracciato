@@ -8,6 +8,7 @@ import pl.tscript3r.tracciato.route.location.RouteLocationEntity;
 import pl.tscript3r.tracciato.user.UserFacade;
 
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import static pl.tscript3r.tracciato.infrastructure.response.error.GlobalFailureResponse.UNAUTHORIZED_ERROR;
 
@@ -26,15 +27,37 @@ public class RouteFacade {
 
     public Either<FailureResponse, RouteLocationEntity> addLocation(String token, UUID routeUuid,
                                                                     RouteLocationEntity routeLocationEntity) {
+        return authorizeAndGetRouteDao(token, routeUuid, routeLocationEntity, routeDao -> {
+            routeDao.addRouteLocation(routeLocationEntity);
+            routeRepositoryAdapter.save(routeDao.get());
+        });
+    }
+
+    private Either<FailureResponse, RouteLocationEntity> authorizeAndGetRouteDao(String token, UUID routeUuid,
+                                                                                 RouteLocationEntity routeLocationEntity,
+                                                                                 Consumer<? super RouteDao> peek) {
         return routeRepositoryAdapter.findByUuid(routeUuid)
                 .toEither(RouteFailureResponse.uuidNotFound(routeUuid))
                 .filterOrElse(routeEntity -> userFacade.authorize(token, routeEntity.getOwnerUuid()), routeEntity -> UNAUTHORIZED_ERROR)
                 .map(RouteDao::get)
-                .peek(routeDao -> {
-                    routeDao.addRouteLocation(routeLocationEntity);
-                    routeRepositoryAdapter.save(routeDao.get());
-                })
+                .peek(peek)
                 .map(routeDao -> routeLocationEntity);
+    }
+
+    public Either<FailureResponse, RouteLocationEntity> setStartLocation(String token, UUID routeUuid,
+                                                                         RouteLocationEntity routeLocationEntity) {
+        return authorizeAndGetRouteDao(token, routeUuid, routeLocationEntity, routeDao -> {
+            routeDao.setStartLocation(routeLocationEntity);
+            routeRepositoryAdapter.save(routeDao.get());
+        });
+    }
+
+    public Either<FailureResponse, RouteLocationEntity> setEndLocation(String token, UUID routeUuid,
+                                                                       RouteLocationEntity routeLocationEntity) {
+        return authorizeAndGetRouteDao(token, routeUuid, routeLocationEntity, routeDao -> {
+            routeDao.setEndLocation(routeLocationEntity);
+            routeRepositoryAdapter.save(routeDao.get());
+        });
     }
 
 }

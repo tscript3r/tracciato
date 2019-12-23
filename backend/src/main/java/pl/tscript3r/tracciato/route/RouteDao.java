@@ -25,6 +25,14 @@ public class RouteDao {
         routeLocations.add(routeLocationEntity);
     }
 
+    public void setStartLocation(RouteLocationEntity startLocation) {
+        routeEntity.setStartLocation(startLocation);
+    }
+
+    public void setEndLocation(RouteLocationEntity startLocation) {
+        routeEntity.setEndLocation(startLocation);
+    }
+
     public RouteEntity get() {
         return routeEntity;
     }
