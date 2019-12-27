@@ -5,6 +5,7 @@ import org.junit.Rule;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import pl.tscript3r.tracciato.route.RouteFeatures;
@@ -17,6 +18,7 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options
         classes = Application.class,
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("development")
+@ComponentScan
 public abstract class AbstractFunctionalTests {
 
     @Rule
