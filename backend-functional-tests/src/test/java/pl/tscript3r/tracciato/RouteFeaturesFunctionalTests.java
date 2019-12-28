@@ -2,6 +2,7 @@ package pl.tscript3r.tracciato;
 
 import org.json.JSONException;
 import org.junit.jupiter.api.*;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import pl.tscript3r.tracciato.route.RouteJson;
 import pl.tscript3r.tracciato.user.UserJson;
 
@@ -15,6 +16,7 @@ import static pl.tscript3r.tracciato.user.UserJson.EXISTING_USERNAME;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DisplayName("Route features")
 @DisplayNameGeneration(ReplaceCamelCaseAndUnderscores.class)
+@EnableAutoConfiguration
 public class RouteFeaturesFunctionalTests extends AbstractFunctionalTests {
 
     String token;

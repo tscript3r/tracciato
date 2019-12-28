@@ -2,6 +2,7 @@ package pl.tscript3r.tracciato;
 
 import org.json.JSONException;
 import org.junit.jupiter.api.*;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import pl.tscript3r.tracciato.user.UserJson;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -10,6 +11,7 @@ import static pl.tscript3r.tracciato.user.UserJson.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DisplayName("User features")
 @DisplayNameGeneration(ReplaceCamelCaseAndUnderscores.class)
+@EnableAutoConfiguration
 public class UsersFeaturesFunctionalTests extends AbstractFunctionalTests {
 
     public static final String USER_UUID_FIELD = "uuid";

@@ -3,6 +3,7 @@ package pl.tscript3r.tracciato;
 import org.json.JSONException;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import pl.tscript3r.tracciato.route.RouteJson;
 import pl.tscript3r.tracciato.route.location.RouteLocationFeatures;
 import pl.tscript3r.tracciato.route.location.RouteLocationJson;
@@ -16,6 +17,7 @@ import static pl.tscript3r.tracciato.user.UserJson.EXISTING_USERNAME;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DisplayName("Route location features")
 @DisplayNameGeneration(ReplaceCamelCaseAndUnderscores.class)
+@EnableAutoConfiguration
 public class RouteLocationFeaturesFunctionalTests extends AbstractFunctionalTests {
 
     String token;
