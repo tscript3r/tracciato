@@ -1,4 +1,4 @@
-package pl.tscript3r.tracciato.route.location.api;
+package pl.tscript3r.tracciato.availability.api;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;

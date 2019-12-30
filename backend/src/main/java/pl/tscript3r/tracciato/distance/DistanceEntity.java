@@ -1,4 +1,4 @@
-package pl.tscript3r.tracciato.route.location.distance;
+package pl.tscript3r.tracciato.distance;
 
 import lombok.Getter;
 import lombok.Setter;
