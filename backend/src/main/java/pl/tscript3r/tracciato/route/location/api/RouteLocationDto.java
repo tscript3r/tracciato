@@ -5,7 +5,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 import pl.tscript3r.tracciato.infrastructure.validator.OneNotEmpty;
-import pl.tscript3r.tracciato.route.location.LocationPriority;
+import pl.tscript3r.tracciato.location.LocationPriority;
+import pl.tscript3r.tracciato.location.api.LocationDto;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -33,7 +34,7 @@ public class RouteLocationDto {
 
     @NotNull
     @Valid
-    private List<DayAvailabilityDto> availability = new ArrayList<>();
+    private List<AvailabilityDto> availability = new ArrayList<>();
 
     @NotNull
     @DateTimeFormat(pattern = TIME_FORMAT)

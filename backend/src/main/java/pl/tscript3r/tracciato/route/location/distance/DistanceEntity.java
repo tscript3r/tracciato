@@ -3,7 +3,7 @@ package pl.tscript3r.tracciato.route.location.distance;
 import lombok.Getter;
 import lombok.Setter;
 import pl.tscript3r.tracciato.infrastructure.AbstractEntity;
-import pl.tscript3r.tracciato.route.location.LocationEntity;
+import pl.tscript3r.tracciato.location.LocationEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;

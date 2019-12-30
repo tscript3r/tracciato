@@ -1,4 +1,4 @@
-package pl.tscript3r.tracciato.route.location;
+package pl.tscript3r.tracciato.location;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

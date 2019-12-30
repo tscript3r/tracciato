@@ -1,6 +1,7 @@
 package pl.tscript3r.tracciato.route.location;
 
-import pl.tscript3r.tracciato.route.location.api.LocationDto;
+import pl.tscript3r.tracciato.location.LocationPriority;
+import pl.tscript3r.tracciato.location.api.LocationDto;
 import pl.tscript3r.tracciato.route.location.api.RouteLocationDto;
 
 public class RouteLocationConst {

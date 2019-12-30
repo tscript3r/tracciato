@@ -1,9 +1,9 @@
 package pl.tscript3r.tracciato.route.location;
 
 import org.modelmapper.ModelMapper;
-import pl.tscript3r.tracciato.route.location.api.DayAvailabilityDto;
+import pl.tscript3r.tracciato.route.location.api.AvailabilityDto;
 import pl.tscript3r.tracciato.route.location.api.RouteLocationDto;
-import pl.tscript3r.tracciato.route.location.day.DayAvailabilityEntity;
+import pl.tscript3r.tracciato.route.location.day.AvailabilityEntity;
 
 import java.time.Duration;
 import java.time.LocalTime;
@@ -25,9 +25,9 @@ public final class RouteLocationMapper {
         return routeLocationEntity;
     }
 
-    private static List<DayAvailabilityEntity> mapDayAvailabilityList(Collection<DayAvailabilityDto> routeLocationDtos) {
-        List<DayAvailabilityEntity> resultList = new ArrayList<>();
-        routeLocationDtos.forEach(dayAvailabilityDto -> resultList.add(modelMapper.map(dayAvailabilityDto, DayAvailabilityEntity.class)));
+    private static List<AvailabilityEntity> mapDayAvailabilityList(Collection<AvailabilityDto> routeLocationDtos) {
+        List<AvailabilityEntity> resultList = new ArrayList<>();
+        routeLocationDtos.forEach(availabilityDto -> resultList.add(modelMapper.map(availabilityDto, AvailabilityEntity.class)));
         return resultList;
     }
 

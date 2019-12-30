@@ -18,7 +18,7 @@ import static pl.tscript3r.tracciato.infrastructure.DateTimeFormats.TIME_FORMAT;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @TimeBeforeAfter(beforeField = "from", afterField = "to", switchEnableValue = true, switchField = "excluded",
         message = "Not excluded day needs to have from and to time set")
-public class DayAvailabilityDto {
+public class AvailabilityDto {
 
     @NotNull
     @Future

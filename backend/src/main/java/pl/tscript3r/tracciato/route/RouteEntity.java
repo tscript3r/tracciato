@@ -5,7 +5,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import pl.tscript3r.tracciato.infrastructure.AbstractEntity;
 import pl.tscript3r.tracciato.route.location.RouteLocationEntity;
-import pl.tscript3r.tracciato.route.location.day.DayAvailabilityEntity;
+import pl.tscript3r.tracciato.route.location.day.AvailabilityEntity;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -29,7 +29,7 @@ public class RouteEntity extends AbstractEntity {
     private TrafficPrediction trafficPrediction;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<DayAvailabilityEntity> days = new ArrayList<>();
+    private List<AvailabilityEntity> days = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private RouteLocationEntity startLocation;

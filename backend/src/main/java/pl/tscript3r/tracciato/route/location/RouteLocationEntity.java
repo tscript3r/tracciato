@@ -3,7 +3,9 @@ package pl.tscript3r.tracciato.route.location;
 import lombok.Getter;
 import lombok.Setter;
 import pl.tscript3r.tracciato.infrastructure.AbstractEntity;
-import pl.tscript3r.tracciato.route.location.day.DayAvailabilityEntity;
+import pl.tscript3r.tracciato.location.LocationEntity;
+import pl.tscript3r.tracciato.location.LocationPriority;
+import pl.tscript3r.tracciato.route.location.day.AvailabilityEntity;
 
 import javax.persistence.*;
 import java.time.Duration;
@@ -21,7 +23,7 @@ public class RouteLocationEntity extends AbstractEntity {
     private LocationPriority priority;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY) // TODO refactor
-    private List<DayAvailabilityEntity> availability;
+    private List<AvailabilityEntity> availability;
 
     private Duration onsideDuration;
 

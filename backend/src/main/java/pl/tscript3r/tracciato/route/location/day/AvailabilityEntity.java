@@ -12,7 +12,7 @@ import java.time.LocalTime;
 @Entity
 @Getter
 @Setter
-public class DayAvailabilityEntity extends AbstractEntity {
+public class AvailabilityEntity extends AbstractEntity {
 
     @Column(nullable = false)
     private LocalDate date;

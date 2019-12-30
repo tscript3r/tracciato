@@ -1,4 +1,4 @@
-package pl.tscript3r.tracciato.route.location;
+package pl.tscript3r.tracciato.location;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,4 +1,4 @@
-package pl.tscript3r.tracciato.route.location.api;
+package pl.tscript3r.tracciato.location.api;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
