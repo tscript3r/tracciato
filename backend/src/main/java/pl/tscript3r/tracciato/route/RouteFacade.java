@@ -10,7 +10,7 @@ import pl.tscript3r.tracciato.user.UserFacade;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-import static pl.tscript3r.tracciato.infrastructure.response.error.GlobalFailureResponse.UNAUTHORIZED_ERROR;
+import static pl.tscript3r.tracciato.infrastructure.response.error.GlobalFailureResponse.UNAUTHORIZED_FAILURE;
 
 @AllArgsConstructor
 public class RouteFacade {
@@ -38,7 +38,7 @@ public class RouteFacade {
                                                                                  Consumer<? super RouteDao> peek) {
         return routeRepositoryAdapter.findByUuid(routeUuid)
                 .toEither(RouteFailureResponse.uuidNotFound(routeUuid))
-                .filterOrElse(routeEntity -> userFacade.authorize(token, routeEntity.getOwnerUuid()), routeEntity -> UNAUTHORIZED_ERROR)
+                .filterOrElse(routeEntity -> userFacade.authorize(token, routeEntity.getOwnerUuid()), routeEntity -> UNAUTHORIZED_FAILURE)
                 .map(RouteDao::get)
                 .peek(peek)
                 .map(routeDao -> routeLocationEntity);

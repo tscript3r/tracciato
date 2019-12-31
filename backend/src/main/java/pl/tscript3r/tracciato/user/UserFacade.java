@@ -3,12 +3,14 @@ package pl.tscript3r.tracciato.user;
 import io.jsonwebtoken.security.InvalidKeyException;
 import io.vavr.control.Either;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import pl.tscript3r.tracciato.infrastructure.response.error.FailureResponse;
 import pl.tscript3r.tracciato.infrastructure.response.error.GlobalFailureResponse;
 import pl.tscript3r.tracciato.user.api.UserDto;
 
 import java.util.UUID;
 
+@Slf4j
 @RequiredArgsConstructor
 public class UserFacade {
 
@@ -31,6 +33,7 @@ public class UserFacade {
                     .toEither(UserFailureResponse.invalidCredentials())
                     .flatMap(userDto -> Either.right(jwtTokenResolver.getToken(userDto.getUuid())));
         } catch (InvalidKeyException e) {
+            log.error(e.getMessage(), e);
             return Either.left(GlobalFailureResponse.INTERNAL_SERVER_ERROR);
         }
     }

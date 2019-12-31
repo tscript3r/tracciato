@@ -118,4 +118,36 @@ public class RouteFacadeTest {
         assertTrue(results.isLeft());
     }
 
+    @Test
+    void setStartLocation_Should_SuccessfullySetStartLocation_When_ExistingRouteUuidGiven() {
+        // given
+        var routeLocationEntity = RouteLocationConst.getValidRouteLocationEntity();
+        var existingRoute = routeFacade.create("mocked", RouteConst.getValidNewRouteDto()).get();
+        when(userFacade.authorize(any(), any())).thenReturn(true);
+
+        // when
+        var results = routeFacade.setStartLocation("mocked", existingRoute.getUuid(), routeLocationEntity);
+
+        // then
+        assertTrue(results.isRight());
+        var routeEntity = routeRepositoryAdapter.findByUuid(existingRoute.getUuid());
+        assertNotNull(routeEntity.get().getStartLocation());
+    }
+
+    @Test
+    void setEndLocation_Should_SuccessfullySetEndLocation_When_ExistingRouteUuidGiven() {
+        // given
+        var routeLocationEntity = RouteLocationConst.getValidRouteLocationEntity();
+        var existingRoute = routeFacade.create("mocked", RouteConst.getValidNewRouteDto()).get();
+        when(userFacade.authorize(any(), any())).thenReturn(true);
+
+        // when
+        var results = routeFacade.setEndLocation("mocked", existingRoute.getUuid(), routeLocationEntity);
+
+        // then
+        assertTrue(results.isRight());
+        var routeEntity = routeRepositoryAdapter.findByUuid(existingRoute.getUuid());
+        assertNotNull(routeEntity.get().getEndLocation());
+    }
+
 }

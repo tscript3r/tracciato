@@ -2,19 +2,21 @@ package pl.tscript3r.tracciato.route.location;
 
 import lombok.Getter;
 import lombok.Setter;
+import pl.tscript3r.tracciato.availability.AvailabilityEntity;
 import pl.tscript3r.tracciato.infrastructure.AbstractEntity;
 import pl.tscript3r.tracciato.location.LocationEntity;
-import pl.tscript3r.tracciato.location.LocationPriority;
-import pl.tscript3r.tracciato.route.location.day.AvailabilityEntity;
 
 import javax.persistence.*;
 import java.time.Duration;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Getter
 @Setter
 public class RouteLocationEntity extends AbstractEntity {
+
+    private UUID ownerUuid;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private LocationEntity location;

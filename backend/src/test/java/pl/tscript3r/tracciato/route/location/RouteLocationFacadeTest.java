@@ -12,6 +12,9 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import pl.tscript3r.tracciato.ReplaceCamelCaseAndUnderscores;
 import pl.tscript3r.tracciato.infrastructure.validator.DefaultValidator;
+import pl.tscript3r.tracciato.location.LocationFacade;
+import pl.tscript3r.tracciato.location.LocationInMemoryRepositoryAdapter;
+import pl.tscript3r.tracciato.location.LocationSpringConfiguration;
 import pl.tscript3r.tracciato.route.RouteFacade;
 import pl.tscript3r.tracciato.route.RouteFacadeTest;
 import pl.tscript3r.tracciato.route.api.NewRouteDto;
@@ -24,6 +27,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static pl.tscript3r.tracciato.location.LocationConst.getValidLocationDto;
 import static pl.tscript3r.tracciato.route.RouteConst.getValidNewRouteDto;
 import static pl.tscript3r.tracciato.route.location.RouteLocationConst.getValidRouteLocationDtoWithNewLocation;
 
@@ -35,6 +39,8 @@ class RouteLocationFacadeTest {
 
     @Mock
     UserFacade userFacade;
+
+    LocationFacade locationFacade;
 
     RouteFacade routeFacade;
 
@@ -50,14 +56,31 @@ class RouteLocationFacadeTest {
         when(userFacade.validateAndGetUuidFromToken(any())).thenReturn(Either.right(UUID.randomUUID()));
         routeFacade = RouteFacadeTest.getRouteFacade(userFacade);
         newRouteDto = routeFacade.create(any(), getValidNewRouteDto()).get();
-        routeLocationFacade = new RouteLocationFacade(routeFacade, routeLocationValidator);
+        locationFacade = LocationSpringConfiguration.getInMemoryLocationFacade(userFacade, new LocationInMemoryRepositoryAdapter());
+        routeLocationFacade = new RouteLocationFacade(routeFacade, locationFacade, routeLocationValidator);
         when(userFacade.authorize(any(), any())).thenReturn(true);
     }
 
     @Test
-    void add_Should_SuccessfullySaveNewRouteLocationEntity_When_NewRouteLocationDtoIsValid() {
+    void add_Should_SuccessfullySaveNewRouteLocationEntity_When_RouteLocationDtoWithNewLocationIsValid() {
         // given
         var validRouteLocationDto = getValidRouteLocationDtoWithNewLocation();
+
+        // when
+        var results = routeLocationFacade.add("mocked", newRouteDto.getUuid(), validRouteLocationDto);
+
+        // then
+        assertTrue(results.isRight());
+    }
+
+    @Test
+    void add_Should_SuccessfullySaveNewRouteLocationEntity_When_RouteLocationDtoWithExistingLocationIsValid() {
+        // given
+        var validRouteLocationDto = getValidRouteLocationDtoWithNewLocation();
+        validRouteLocationDto.setLocation(null);
+        var validLocationDto = getValidLocationDto();
+        var existingLocationUuid = locationFacade.addLocation("mocked", validLocationDto).get().getUuid();
+        validRouteLocationDto.setExistingLocationUuid(existingLocationUuid);
 
         // when
         var results = routeLocationFacade.add("mocked", newRouteDto.getUuid(), validRouteLocationDto);
@@ -82,14 +105,63 @@ class RouteLocationFacadeTest {
     @Test
     void add_Should_ReturnFailureResponse_When_ValidationFails() {
         // given
-        var invalidRouteLocationDto = getValidRouteLocationDtoWithNewLocation();
-        invalidRouteLocationDto.setLocation(null);
+        var invalidRouteLocationDto = RouteLocationConst.getValidRouteLocationWithLocationUuid(null);
 
         // when
         var results = routeLocationFacade.add("mocked", newRouteDto.getUuid(), invalidRouteLocationDto);
 
         // then
         assertTrue(results.isLeft());
+    }
+
+    @Test
+    void add_Should_ReturnFailureResponse_When_RouteLocationWithNonExistingLocationUuidGiven() {
+        // given
+        var nonExistingLocationUuid = UUID.randomUUID();
+        var validRouteLocationDto = RouteLocationConst.getValidRouteLocationWithLocationUuid(nonExistingLocationUuid);
+
+        // when
+        var results = routeLocationFacade.add("mocked", newRouteDto.getUuid(), validRouteLocationDto);
+
+        // then
+        assertTrue(results.isLeft());
+    }
+
+    @Test
+    void add_Should_ReturnFailureResponse_When_RouteLocationHasNoNewLocationAndNotUuidGiven() {
+        // given
+        var invalidRouteLocationDto = getValidRouteLocationDtoWithNewLocation();
+        invalidRouteLocationDto.setLocation(null);
+
+        // when
+        var result = routeLocationFacade.add("mocked", newRouteDto.getUuid(), invalidRouteLocationDto);
+
+        // then
+        assertTrue(result.isLeft());
+    }
+
+    @Test
+    void setStartLocation_Should_SuccessfullySetStartLocation_When_RouteLocationWithValidNewLocationGiven() {
+        // given
+        var validRouteLocationDto = getValidRouteLocationDtoWithNewLocation();
+
+        // when
+        var results = routeLocationFacade.setStartLocation("mocked", newRouteDto.getUuid(), validRouteLocationDto);
+
+        // then
+        assertTrue(results.isRight());
+    }
+
+    @Test
+    void setEndLocation_Should_SuccessfullySetEndLocation_When_RouteLocationWithValidNewLocationGiven() {
+        // given
+        var validRouteLocationDto = getValidRouteLocationDtoWithNewLocation();
+
+        // when
+        var results = routeLocationFacade.setEndLocation("mocked", newRouteDto.getUuid(), validRouteLocationDto);
+
+        // then
+        assertTrue(results.isRight());
     }
 
 }

@@ -20,14 +20,31 @@ GET http://localhost:8080/api/v1/users/secure
 GET http://localhost:8080/api/v1/users/secure
 Authorization: {{auth_token}}
 
+### Add location to user
+POST http://localhost:8080/api/v1/locations
+Authorization: {{auth_token}}
+Content-Type: application/json
+
+{
+  "city": "Berlin",
+  "street": "Warschauerstrasse",
+  "number": "12"
+}
+
+> {% client.global.set("location_uuid", response.body.payload.uuid); %}
+
+### Get users added locations
+GET http://localhost:8080/api/v1/locations
+Authorization: {{auth_token}}
+
 ### Route creation
 POST http://localhost:8080/api/v1/routes
 Authorization: {{auth_token}}
 Content-Type: application/json
 
 {
-  "startDate": "23.12.2019 08:30",
-  "maxEndDate": "27.12.2019 18:00",
+  "startDate": "23.12.2020 08:30",
+  "maxEndDate": "27.12.2020 18:00",
   "traffic": "best_guess",
   "name": "CW52"
 }
@@ -38,7 +55,7 @@ Content-Type: application/json
 GET http://localhost:8080/api/v1/routes/{{route_uuid}}
 Authorization: {{auth_token}}
 
-### Add route location
+### Add route location with existing in db location
 POST http://localhost:8080/api/v1/routes/{{route_uuid}}/locations
 Authorization: {{auth_token}}
 Content-Type: application/json
@@ -46,14 +63,40 @@ Content-Type: application/json
 {
   "priority": "optional",
   "onsideDuration": "01:30",
-  "existingLocationId": 1,
+  "existingLocationUuid": "{{location_uuid}}",
   "availability": [
     {
-      "date": "20.12.2019",
+      "date": "20.12.2020",
       "excluded": true
     },
     {
-      "date": "19.12.2019",
+      "date": "19.12.2020",
+      "from": "12:00",
+      "to": "14:00"
+    }
+  ]
+}
+
+### Add route location with non existing in db location
+POST http://localhost:8080/api/v1/routes/{{route_uuid}}/locations
+Authorization: {{auth_token}}
+Content-Type: application/json
+
+{
+  "priority": "optional",
+  "onsideDuration": "01:30",
+  "location": {
+    "city": "Warszawa",
+    "street": "Marszałkowska",
+    "number": "5"
+  },
+  "availability": [
+    {
+      "date": "20.12.2020",
+      "excluded": true
+    },
+    {
+      "date": "19.12.2020",
       "from": "12:00",
       "to": "14:00"
     }

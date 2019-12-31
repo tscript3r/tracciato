@@ -3,9 +3,9 @@ package pl.tscript3r.tracciato.route;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import pl.tscript3r.tracciato.availability.AvailabilityEntity;
 import pl.tscript3r.tracciato.infrastructure.AbstractEntity;
 import pl.tscript3r.tracciato.route.location.RouteLocationEntity;
-import pl.tscript3r.tracciato.route.location.day.AvailabilityEntity;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

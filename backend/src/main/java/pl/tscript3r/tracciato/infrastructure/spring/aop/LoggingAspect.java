@@ -26,8 +26,7 @@ public class LoggingAspect {
     public void springBeanPointcut() {
     }
 
-    @Pointcut("within(pl.tscript3r.tracciato.infrastructure..*)" +
-            " || within(pl.tscript3r.tracciato.user..*)")
+    @Pointcut("within(pl.tscript3r.tracciato..*)")
     public void applicationPackagePointcut() {
     }
 

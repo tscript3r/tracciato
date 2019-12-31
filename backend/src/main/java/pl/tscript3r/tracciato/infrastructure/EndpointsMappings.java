@@ -8,7 +8,7 @@ public final class EndpointsMappings {
 
     public static final String AUTH_MAPPING = BASE_V1_MAPPING + "/authenticate";
     public static final String USER_MAPPING = BASE_V1_MAPPING + "/users";
-    public static final String LOCATION_MAPPING = BASE_V1_MAPPING + "/{" + USER_UUID_VARIABLE + "}";
+    public static final String LOCATION_MAPPING = BASE_V1_MAPPING + "/locations";
     public static final String ROUTE_MAPPING = BASE_V1_MAPPING + "/routes";
     public static final String ROUTE_LOCATION_MAPPING = ROUTE_MAPPING + "/{" + ROUTE_UUID_VARIABLE + "}/" + "locations";
 
