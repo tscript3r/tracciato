@@ -32,6 +32,22 @@ public abstract class AbstractFeatures implements ApplicationListener<WebServerI
                 .asString();
     }
 
+    protected String getRequest(String token, String uri, String content, int expectedHttpStatus) {
+        var requestSpecification = given().port(servicePort).contentType(ContentType.JSON);
+        if (token != null)
+            requestSpecification = requestSpecification.header(new Header(TOKEN_HEADER, token));
+        if (content != null)
+            requestSpecification = requestSpecification.body(content);
+        return requestSpecification
+                .when()
+                .get(uri)
+                .then()
+                .statusCode(expectedHttpStatus)
+                .contentType(ContentType.JSON)
+                .extract()
+                .asString();
+    }
+
     @Override
     public void onApplicationEvent(@NotNull WebServerInitializedEvent webServerInitializedEvent) {
         this.servicePort = webServerInitializedEvent.getWebServer().getPort();

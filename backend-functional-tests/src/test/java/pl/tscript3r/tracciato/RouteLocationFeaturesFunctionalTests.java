@@ -35,6 +35,11 @@ public class RouteLocationFeaturesFunctionalTests extends AbstractFunctionalTest
     }
 
     @Test
+    void addRouteLocation_Should_RejectRequest_When_TokenHeaderIsMissing() throws JSONException {
+        routeLocationFeatures.addRouteLocation(null, routeUuid, RouteLocationJson.newValid().json(), 403);
+    }
+
+    @Test
     void addRouteLocation_Should_Fail_When_NoLocationDtoAndNoExistingLocationIdIsPassed() throws JSONException {
         var routeLocationJson = RouteLocationJson.newValid();
         routeLocationJson.setLocationDto(null);
@@ -53,7 +58,9 @@ public class RouteLocationFeaturesFunctionalTests extends AbstractFunctionalTest
     @Test
     void addRouteLocation_Should_Fail_When_ExistingLocationIdAndLocationDtoIsSet() throws JSONException {
         var routeLocationJson = RouteLocationJson.newValid();
-        routeLocationJson.setExistingLocationId(1L);
+        var uuid = UUID.randomUUID();
+
+        routeLocationJson.setExistingLocationId(uuid);
 
         routeLocationFeatures.addRouteLocation(token, routeUuid, routeLocationJson.json(), 400);
     }
@@ -64,9 +71,19 @@ public class RouteLocationFeaturesFunctionalTests extends AbstractFunctionalTest
     }
 
     @Test
+    void addRouteStartLocation_Should_Fail_When_TokenHeaderIsMissing() throws JSONException {
+        routeLocationFeatures.setRouteStartLocation(null, routeUuid, RouteLocationJson.newValid().json(), 403);
+    }
+
+    @Test
     void addRouteStartLocation_Should_Succeed_When_ValidRouteLocationJsonIsPassed() throws JSONException {
         var routeLocationJson = RouteLocationJson.newValid();
         routeLocationFeatures.setRouteStartLocation(token, routeUuid, routeLocationJson.json(), 201);
+    }
+
+    @Test
+    void addRouteEndLocation_Should_Fail_When_TokenHeaderIsMissing() throws JSONException {
+        routeLocationFeatures.setRouteEndLocation(null, routeUuid, RouteLocationJson.newValid().json(), 403);
     }
 
     @Test

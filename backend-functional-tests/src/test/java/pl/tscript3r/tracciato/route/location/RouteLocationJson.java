@@ -4,6 +4,8 @@ import pl.tscript3r.tracciato.AbstractJson;
 import pl.tscript3r.tracciato.location.api.LocationDto;
 import pl.tscript3r.tracciato.route.location.api.RouteLocationDto;
 
+import java.util.UUID;
+
 public class RouteLocationJson extends AbstractJson<RouteLocationDto> {
 
     public static RouteLocationJson newValid() {
@@ -23,8 +25,8 @@ public class RouteLocationJson extends AbstractJson<RouteLocationDto> {
         return this;
     }
 
-    public RouteLocationJson setExistingLocationId(Long l) {
-        object.setExistingLocationId(l);
+    public RouteLocationJson setExistingLocationId(UUID uuid) {
+        object.setExistingLocationUuid(uuid);
         return this;
     }
 

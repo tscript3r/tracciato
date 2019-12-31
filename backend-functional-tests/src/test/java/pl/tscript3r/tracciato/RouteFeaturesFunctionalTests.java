@@ -29,6 +29,11 @@ public class RouteFeaturesFunctionalTests extends AbstractFunctionalTests {
     }
 
     @Test
+    void addRoute_Should_RejectRequest_When_TokenHeaderIsMissing() throws JSONException {
+        routeFeatures.addRoute(null, RouteJson.newValid().json(), 403);
+    }
+
+    @Test
     void addRoute_Should_Fail_When_RouteNameIsToShort() throws JSONException {
         routeFeatures.addRoute(token, RouteJson.newValid().name("12").json(), 400);
     }
