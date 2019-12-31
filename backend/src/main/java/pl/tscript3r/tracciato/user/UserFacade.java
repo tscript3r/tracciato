@@ -14,6 +14,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserFacade {
 
+    // TODO by editing, deleting, locking user remove cached jwt token
+
     private final UserRegistration userRegistration;
     private final UserAuthentication userAuthentication;
     private final JWTTokenResolver jwtTokenResolver;
