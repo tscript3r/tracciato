@@ -1,10 +1,9 @@
 package pl.tscript3r.tracciato.user;
 
 import io.jsonwebtoken.security.InvalidKeyException;
-import io.vavr.control.Either;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import pl.tscript3r.tracciato.infrastructure.response.error.FailureResponse;
+import pl.tscript3r.tracciato.infrastructure.response.InternalResponse;
 import pl.tscript3r.tracciato.infrastructure.response.error.GlobalFailureResponse;
 import pl.tscript3r.tracciato.user.api.UserDto;
 
@@ -21,28 +20,28 @@ public class UserFacade {
     private final JWTTokenResolver jwtTokenResolver;
     private final UserResourceAuthorization userResourceAuthorization;
 
-    public Either<FailureResponse, UserDto> register(UserDto userDto) {
+    public InternalResponse<UserDto> register(UserDto userDto) {
         return userRegistration.register(userDto);
     }
 
-    public Either<FailureResponse, UserDto> login(String username, String password) {
+    public InternalResponse<UserDto> login(String username, String password) {
         return userAuthentication.login(username, password);
     }
 
-    public Either<FailureResponse, String> getToken(String username) {
+    public InternalResponse<String> getToken(String username) {
         try {
-            return userAuthentication.findByUsername(username)
-                    .toEither(UserFailureResponse.invalidCredentials())
-                    .flatMap(userDto -> Either.right(jwtTokenResolver.getToken(userDto.getUuid())));
+            return InternalResponse.fromOption(userAuthentication.findByUsername(username),
+                    UserFailureResponse.invalidCredentials())
+                    .flatMap(userDto -> InternalResponse.payload(jwtTokenResolver.getToken(userDto.getUuid())));
         } catch (InvalidKeyException e) {
             log.error(e.getMessage(), e);
-            return Either.left(GlobalFailureResponse.INTERNAL_SERVER_ERROR);
+            return InternalResponse.failure(GlobalFailureResponse.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public Either<FailureResponse, UUID> validateAndGetUuidFromToken(String token) {
-        return jwtTokenResolver.getUuidAndValidateToken(token)
-                .toEither(UserFailureResponse.invalidCredentials());
+    public InternalResponse<UUID> validateAndGetUuidFromToken(String token) {
+        return InternalResponse.fromOption(jwtTokenResolver.getUuidAndValidateToken(token),
+                UserFailureResponse.invalidCredentials());
     }
 
     public Boolean authorize(String token, UUID resourceOwnerUuid) {

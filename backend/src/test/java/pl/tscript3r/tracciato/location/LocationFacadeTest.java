@@ -1,6 +1,5 @@
 package pl.tscript3r.tracciato.location;
 
-import io.vavr.control.Either;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -11,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import pl.tscript3r.tracciato.ReplaceCamelCaseAndUnderscores;
+import pl.tscript3r.tracciato.infrastructure.response.InternalResponse;
 import pl.tscript3r.tracciato.user.UserFacade;
 
 import java.util.UUID;
@@ -41,7 +41,7 @@ class LocationFacadeTest {
         locationInMemoryRepositoryAdapter = new LocationInMemoryRepositoryAdapter();
         locationFacade = LocationSpringConfiguration.getInMemoryLocationFacade(userFacade,
                 locationInMemoryRepositoryAdapter);
-        when(userFacade.validateAndGetUuidFromToken(any())).thenReturn(Either.right(userUuid));
+        when(userFacade.validateAndGetUuidFromToken(any())).thenReturn(InternalResponse.payload(userUuid));
     }
 
     @Test
@@ -75,7 +75,7 @@ class LocationFacadeTest {
     void add_Should_ReturnFailureResponse_When_InvalidTokenGiven() {
         // given
         var locationDto = getValidLocationDto();
-        when(userFacade.validateAndGetUuidFromToken(any())).thenReturn(Either.left(null));
+        when(userFacade.validateAndGetUuidFromToken(any())).thenReturn(InternalResponse.failure(null));
 
         // when
         var results = locationFacade.addLocation("mocked", locationDto);

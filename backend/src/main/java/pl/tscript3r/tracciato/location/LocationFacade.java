@@ -1,8 +1,7 @@
 package pl.tscript3r.tracciato.location;
 
-import io.vavr.control.Either;
 import lombok.AllArgsConstructor;
-import pl.tscript3r.tracciato.infrastructure.response.error.FailureResponse;
+import pl.tscript3r.tracciato.infrastructure.response.InternalResponse;
 import pl.tscript3r.tracciato.location.api.LocationDto;
 import pl.tscript3r.tracciato.user.UserFacade;
 
@@ -16,17 +15,17 @@ public class LocationFacade {
     private final LocationFactory locationFactory;
     private final LocationRepositoryAdapter locationRepositoryAdapter;
 
-    public Either<FailureResponse, LocationEntity> addLocation(String token, LocationDto locationDto) {
+    public InternalResponse<LocationEntity> addLocation(String token, LocationDto locationDto) {
         return userFacade.validateAndGetUuidFromToken(token)
                 .flatMap(uuid -> locationFactory.createEntity(uuid, locationDto));
     }
 
-    public Either<FailureResponse, LocationDto> addLocationAndMap(String token, LocationDto locationDto) {
+    public InternalResponse<LocationDto> addLocationAndMap(String token, LocationDto locationDto) {
         return addLocation(token, locationDto)
                 .map(LocationMapper::map);
     }
 
-    public Either<FailureResponse, Set<LocationDto>> getAllLocationsFromUser(String token) {
+    public InternalResponse<Set<LocationDto>> getAllLocationsFromUser(String token) {
         return userFacade.validateAndGetUuidFromToken(token)
                 .map(this::receiveUsersLocations);
     }
@@ -36,9 +35,9 @@ public class LocationFacade {
         return LocationMapper.map(locationEntities);
     }
 
-    public Either<FailureResponse, LocationEntity> getLocationEntityByUuid(UUID existingLocationUuid) {
-        return locationRepositoryAdapter.findByUuid(existingLocationUuid)
-                .toEither(LocationFailureResponse.uuidNotFound(existingLocationUuid));
+    public InternalResponse<LocationEntity> getLocationEntityByUuid(UUID existingLocationUuid) {
+        return InternalResponse.fromOption(locationRepositoryAdapter.findByUuid(existingLocationUuid),
+                LocationFailureResponse.uuidNotFound(existingLocationUuid));
     }
 
 }

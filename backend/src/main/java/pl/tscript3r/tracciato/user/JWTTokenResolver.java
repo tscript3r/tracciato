@@ -63,7 +63,6 @@ class JWTTokenResolver {
                 return tokenCache.get(removeBearer(token));
             } catch (ExecutionException e) {
                 log.warn(e.getMessage(), e);
-                return Option.none();
             }
         }
         return Option.none();

@@ -1,8 +1,7 @@
 package pl.tscript3r.tracciato.route;
 
-import io.vavr.control.Either;
 import lombok.AllArgsConstructor;
-import pl.tscript3r.tracciato.infrastructure.response.error.FailureResponse;
+import pl.tscript3r.tracciato.infrastructure.response.InternalResponse;
 import pl.tscript3r.tracciato.location.LocationFacade;
 import pl.tscript3r.tracciato.location.api.LocationDto;
 import pl.tscript3r.tracciato.route.api.NewRouteDto;
@@ -22,14 +21,14 @@ public class RouteFacade {
     private final RouteRepositoryAdapter routeRepositoryAdapter;
     private final LocationFacade locationFacade;
 
-    public Either<FailureResponse, RouteDto> create(String token, NewRouteDto newRouteDto) {
+    public InternalResponse<RouteDto> create(String token, NewRouteDto newRouteDto) {
         return userFacade.validateAndGetUuidFromToken(token)
                 .map(newRouteDto::setOwner)
                 .flatMap(routeFactory::create);
     }
 
-    public Either<FailureResponse, RouteDto> addLocation(String token, UUID routeUuid,
-                                                         RouteLocationEntity routeLocationEntity) {
+    public InternalResponse<RouteDto> addLocation(String token, UUID routeUuid,
+                                                  RouteLocationEntity routeLocationEntity) {
         return authorizeAndGetRouteDao(token, routeUuid)
                 .peek(routeDao -> {
                     routeDao.addRouteLocation(routeLocationEntity);
@@ -38,20 +37,20 @@ public class RouteFacade {
                 .map(routeDao -> RouteMapper.map(routeDao.get()));
     }
 
-    private Either<FailureResponse, RouteDao> authorizeAndGetRouteDao(String token, UUID routeUuid) {
-        return routeRepositoryAdapter.findByUuid(routeUuid)
-                .toEither(RouteFailureResponse.uuidNotFound(routeUuid))
+    private InternalResponse<RouteDao> authorizeAndGetRouteDao(String token, UUID routeUuid) {
+        return InternalResponse.fromOption(routeRepositoryAdapter.findByUuid(routeUuid),
+                RouteFailureResponse.uuidNotFound(routeUuid))
                 .filterOrElse(routeEntity -> userFacade.authorize(token, routeEntity.getOwnerUuid()), routeEntity -> UNAUTHORIZED_FAILURE)
                 .map(RouteDao::get);
     }
 
-    public Either<FailureResponse, RouteDto> setStartLocation(String token, UUID routeUuid, LocationDto locationDto) {
+    public InternalResponse<RouteDto> setStartLocation(String token, UUID routeUuid, LocationDto locationDto) {
         return authorizeAndGetRouteDao(token, routeUuid)
                 .flatMap(routeDao -> assignNewStartLocation(token, routeDao, locationDto))
                 .map(routeDao -> RouteMapper.map(routeDao.get()));
     }
 
-    private Either<FailureResponse, RouteDao> assignNewStartLocation(String token, RouteDao routeDao, LocationDto locationDto) {
+    private InternalResponse<RouteDao> assignNewStartLocation(String token, RouteDao routeDao, LocationDto locationDto) {
         return locationFacade.addLocation(token, locationDto)
                 .map(locationEntity -> {
                     routeDao.setStartLocation(locationEntity);
@@ -60,13 +59,13 @@ public class RouteFacade {
                 });
     }
 
-    public Either<FailureResponse, RouteDto> setEndLocation(String token, UUID routeUuid, LocationDto locationDto) {
+    public InternalResponse<RouteDto> setEndLocation(String token, UUID routeUuid, LocationDto locationDto) {
         return authorizeAndGetRouteDao(token, routeUuid)
                 .flatMap(routeDao -> assignNewEndLocation(token, routeDao, locationDto))
                 .map(routeDao -> RouteMapper.map(routeDao.get()));
     }
 
-    private Either<FailureResponse, RouteDao> assignNewEndLocation(String token, RouteDao routeDao, LocationDto locationDto) {
+    private InternalResponse<RouteDao> assignNewEndLocation(String token, RouteDao routeDao, LocationDto locationDto) {
         return locationFacade.addLocation(token, locationDto)
                 .map(locationEntity -> {
                     routeDao.setEndLocation(locationEntity);
@@ -75,13 +74,13 @@ public class RouteFacade {
                 });
     }
 
-    public Either<FailureResponse, RouteDto> setStartLocation(String token, UUID routeUuid, UUID locationUuid) {
+    public InternalResponse<RouteDto> setStartLocation(String token, UUID routeUuid, UUID locationUuid) {
         return authorizeAndGetRouteDao(token, routeUuid)
                 .flatMap(routeDao -> assignExistingStartLocation(routeDao, locationUuid))
                 .map(routeDao -> RouteMapper.map(routeDao.get()));
     }
 
-    private Either<FailureResponse, RouteDao> assignExistingStartLocation(RouteDao routeDao, UUID locationUuid) {
+    private InternalResponse<RouteDao> assignExistingStartLocation(RouteDao routeDao, UUID locationUuid) {
         return locationFacade.getLocationEntityByUuid(locationUuid)
                 .map(locationEntity -> {
                     routeDao.setStartLocation(locationEntity);
@@ -90,13 +89,13 @@ public class RouteFacade {
                 });
     }
 
-    public Either<FailureResponse, RouteDto> setEndLocation(String token, UUID routeUuid, UUID locationUuid) {
+    public InternalResponse<RouteDto> setEndLocation(String token, UUID routeUuid, UUID locationUuid) {
         return authorizeAndGetRouteDao(token, routeUuid)
                 .flatMap(routeDao -> assignExistingEndLocation(routeDao, locationUuid))
                 .map(routeDao -> RouteMapper.map(routeDao.get()));
     }
 
-    private Either<FailureResponse, RouteDao> assignExistingEndLocation(RouteDao routeDao, UUID locationUuid) {
+    private InternalResponse<RouteDao> assignExistingEndLocation(RouteDao routeDao, UUID locationUuid) {
         return locationFacade.getLocationEntityByUuid(locationUuid)
                 .map(locationEntity -> {
                     routeDao.setEndLocation(locationEntity);

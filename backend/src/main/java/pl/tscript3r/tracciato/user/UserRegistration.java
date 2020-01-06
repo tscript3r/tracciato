@@ -1,8 +1,7 @@
 package pl.tscript3r.tracciato.user;
 
-import io.vavr.control.Either;
 import lombok.RequiredArgsConstructor;
-import pl.tscript3r.tracciato.infrastructure.response.error.FailureResponse;
+import pl.tscript3r.tracciato.infrastructure.response.InternalResponse;
 import pl.tscript3r.tracciato.user.api.UserDto;
 
 import java.util.UUID;
@@ -14,7 +13,7 @@ class UserRegistration {
     private final UserValidator userValidator;
     private final PasswordEncrypt passwordEncoder;
 
-    synchronized Either<FailureResponse, UserDto> register(UserDto userDto) {
+    synchronized InternalResponse<UserDto> register(UserDto userDto) {
         return userValidator.validate(userDto)
                 .map(this::createUserEntity)
                 .map(userRepositoryAdapter::save)

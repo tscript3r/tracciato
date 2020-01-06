@@ -1,7 +1,7 @@
 package pl.tscript3r.tracciato.infrastructure.validator;
 
-import io.vavr.control.Either;
 import lombok.RequiredArgsConstructor;
+import pl.tscript3r.tracciato.infrastructure.response.InternalResponse;
 import pl.tscript3r.tracciato.infrastructure.response.error.FailureResponse;
 
 import javax.validation.ConstraintViolation;
@@ -16,14 +16,14 @@ public class DefaultValidator<T> {
 
     private final Validator validator;
 
-    public Either<FailureResponse, T> validate(T object) {
+    public InternalResponse<T> validate(T object) {
         final Set<ConstraintViolation<T>> validationResults =
                 validator.validate(object, Default.class);
         final var additionalValidations = additionalConstraints(object);
         if (validationResults.isEmpty() && additionalValidations.isEmpty())
-            return Either.right(object);
+            return InternalResponse.payload(object);
         else
-            return Either.left(createFailureResponse(map(validationResults, additionalValidations)));
+            return InternalResponse.failure(createFailureResponse(map(validationResults, additionalValidations)));
     }
 
     protected Map<String, String> additionalConstraints(T object) {

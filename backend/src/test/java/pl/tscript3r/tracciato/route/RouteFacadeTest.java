@@ -1,6 +1,5 @@
 package pl.tscript3r.tracciato.route;
 
-import io.vavr.control.Either;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -11,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import pl.tscript3r.tracciato.ReplaceCamelCaseAndUnderscores;
+import pl.tscript3r.tracciato.infrastructure.response.InternalResponse;
 import pl.tscript3r.tracciato.infrastructure.response.error.GlobalFailureResponse;
 import pl.tscript3r.tracciato.location.LocationConst;
 import pl.tscript3r.tracciato.location.LocationFacade;
@@ -58,7 +58,7 @@ public class RouteFacadeTest {
         var inMemoryLocationRepositoryAdapter = new LocationInMemoryRepositoryAdapter();
         locationFacade = LocationSpringConfiguration.getInMemoryLocationFacade(userFacade, inMemoryLocationRepositoryAdapter);
         routeFacade = getRouteFacade(userFacade, routeRepositoryAdapter, locationFacade);
-        when(userFacade.validateAndGetUuidFromToken(any())).thenReturn(Either.right(userUuid));
+        when(userFacade.validateAndGetUuidFromToken(any())).thenReturn(InternalResponse.payload(userUuid));
     }
 
     @Test
@@ -78,7 +78,7 @@ public class RouteFacadeTest {
     void create_Should_RejectNewRoute_When_TokenIsInvalid() {
         // given
         var newRouteDto = RouteConst.getValidNewRouteDto();
-        when(userFacade.validateAndGetUuidFromToken(any())).thenReturn(Either.left(GlobalFailureResponse.INTERNAL_SERVER_ERROR));
+        when(userFacade.validateAndGetUuidFromToken(any())).thenReturn(InternalResponse.failure(GlobalFailureResponse.INTERNAL_SERVER_ERROR));
 
         // when
         var results = routeFacade.create("mocked", newRouteDto);
@@ -150,7 +150,7 @@ public class RouteFacadeTest {
         var existingRoute = routeFacade.create("mocked", RouteConst.getValidNewRouteDto()).get();
         when(userFacade.authorize(any(), any())).thenReturn(true);
         var userUuid = UUID.randomUUID();
-        when(userFacade.validateAndGetUuidFromToken(any())).thenReturn(Either.right(userUuid));
+        when(userFacade.validateAndGetUuidFromToken(any())).thenReturn(InternalResponse.payload(userUuid));
         var addedLocation = locationFacade.addLocation("mocked", LocationConst.getValidLocationDto());
 
         // when
@@ -185,7 +185,7 @@ public class RouteFacadeTest {
         var existingRoute = routeFacade.create("mocked", RouteConst.getValidNewRouteDto()).get();
         when(userFacade.authorize(any(), any())).thenReturn(true);
         var userUuid = UUID.randomUUID();
-        when(userFacade.validateAndGetUuidFromToken(any())).thenReturn(Either.right(userUuid));
+        when(userFacade.validateAndGetUuidFromToken(any())).thenReturn(InternalResponse.payload(userUuid));
         var addedLocation = locationFacade.addLocation("mocked", LocationConst.getValidLocationDto());
 
         // when

@@ -1,6 +1,5 @@
 package pl.tscript3r.tracciato.route.location;
 
-import io.vavr.control.Either;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -11,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import pl.tscript3r.tracciato.ReplaceCamelCaseAndUnderscores;
+import pl.tscript3r.tracciato.infrastructure.response.InternalResponse;
 import pl.tscript3r.tracciato.infrastructure.validator.DefaultValidator;
 import pl.tscript3r.tracciato.location.LocationFacade;
 import pl.tscript3r.tracciato.location.LocationInMemoryRepositoryAdapter;
@@ -55,7 +55,7 @@ class RouteLocationFacadeTest {
         var validator = Validation.buildDefaultValidatorFactory().getValidator();
         var routeLocationValidator = new DefaultValidator<RouteLocationDto>(validator);
         newRouteDto = getValidNewRouteDto();
-        when(userFacade.validateAndGetUuidFromToken(any())).thenReturn(Either.right(UUID.randomUUID()));
+        when(userFacade.validateAndGetUuidFromToken(any())).thenReturn(InternalResponse.payload(UUID.randomUUID()));
         locationFacade = LocationSpringConfiguration.getInMemoryLocationFacade(userFacade, new LocationInMemoryRepositoryAdapter());
         routeFacade = RouteFacadeTest.getRouteFacade(userFacade, locationFacade);
         createdRouteDto = routeFacade.create(any(), getValidNewRouteDto()).get();

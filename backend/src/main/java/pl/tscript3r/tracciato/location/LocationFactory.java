@@ -1,8 +1,7 @@
 package pl.tscript3r.tracciato.location;
 
-import io.vavr.control.Either;
 import lombok.AllArgsConstructor;
-import pl.tscript3r.tracciato.infrastructure.response.error.FailureResponse;
+import pl.tscript3r.tracciato.infrastructure.response.InternalResponse;
 import pl.tscript3r.tracciato.infrastructure.validator.DefaultValidator;
 import pl.tscript3r.tracciato.location.api.LocationDto;
 
@@ -14,7 +13,7 @@ class LocationFactory {
     private final LocationRepositoryAdapter locationRepositoryAdapter;
     private final DefaultValidator<LocationDto> validator;
 
-    Either<FailureResponse, LocationEntity> createEntity(UUID ownerUuid, LocationDto locationDto) {
+    InternalResponse<LocationEntity> createEntity(UUID ownerUuid, LocationDto locationDto) {
         return validator.validate(locationDto)
                 .map(location -> createLocationEntity(ownerUuid, locationDto))
                 .peek(locationRepositoryAdapter::save);
