@@ -21,7 +21,7 @@ public class LocationSpringController {
 
     @PostMapping
     public HttpEntity add(@RequestHeader(TOKEN_HEADER) String token, @RequestBody LocationDto locationDto) {
-        return responseResolver.resolve(locationFacade.addLocation(token, locationDto), HttpStatus.CREATED.value());
+        return responseResolver.resolve(locationFacade.addLocationAndMap(token, locationDto), HttpStatus.CREATED.value());
     }
 
     @GetMapping

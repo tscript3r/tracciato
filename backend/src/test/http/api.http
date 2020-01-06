@@ -13,7 +13,7 @@ POST http://localhost:8080/api/v1/authenticate?username=andrew&password=password
 
 > {% client.global.set("auth_token", response.headers.valueOf("Authorization")); %}
 
-### Public API
+### Private API without token
 GET http://localhost:8080/api/v1/users/secure
 
 ### Private API
@@ -102,5 +102,34 @@ Content-Type: application/json
     }
   ]
 }
+
+### Add route start location with non existing in db location
+POST http://localhost:8080/api/v1/routes/{{route_uuid}}/locations/startLocation
+Authorization: {{auth_token}}
+Content-Type: application/json
+
+{
+  "city": "Wrocław",
+  "street": "Słowiańska",
+  "number": "10"
+}
+
+### Add location to user (for route start location)
+POST http://localhost:8080/api/v1/locations
+Authorization: {{auth_token}}
+Content-Type: application/json
+
+{
+  "city": "Bielany Wrocławskie",
+  "street": "Logistyczna",
+  "number": "12"
+}
+
+> {% client.global.set("end_location_uuid", response.body.payload.uuid); %}
+
+### Add route end location with existing in db location
+PUT http://localhost:8080/api/v1/routes/{{route_uuid}}/locations/endLocation?locationUuid={{end_location_uuid}}
+Authorization: {{auth_token}}
+Content-Type: application/json
 
 ###

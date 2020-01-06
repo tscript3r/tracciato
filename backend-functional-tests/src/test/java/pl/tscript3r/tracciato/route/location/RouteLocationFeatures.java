@@ -7,8 +7,7 @@ import pl.tscript3r.tracciato.AbstractFeatures;
 
 import java.util.UUID;
 
-import static pl.tscript3r.tracciato.infrastructure.EndpointsMappings.ROUTE_LOCATION_MAPPING;
-import static pl.tscript3r.tracciato.infrastructure.EndpointsMappings.ROUTE_UUID_VARIABLE;
+import static pl.tscript3r.tracciato.infrastructure.EndpointsMappings.*;
 
 @Component
 public class RouteLocationFeatures extends AbstractFeatures {
@@ -27,8 +26,24 @@ public class RouteLocationFeatures extends AbstractFeatures {
         return jsonObject.getJSONObject(PAYLOAD);
     }
 
+    public JSONObject setRouteExistingStartLocation(String token, UUID routeUuid, UUID locationUuid, int expectedHttpStatus) throws JSONException {
+        JSONObject jsonObject = new JSONObject(putRequest(token,
+                getRouteStartLocationMapping(routeUuid) + "?" + LOCATION_UUID_VARIABLE + "=" + locationUuid.toString(),
+                null,
+                expectedHttpStatus));
+        return jsonObject.getJSONObject(PAYLOAD);
+    }
+
+    public JSONObject setRouteExistingEndLocation(String token, UUID routeUuid, UUID locationUuid, int expectedHttpStatus) throws JSONException {
+        JSONObject jsonObject = new JSONObject(putRequest(token,
+                getRouteEndLocationMapping(routeUuid) + "?" + LOCATION_UUID_VARIABLE + "=" + locationUuid.toString(),
+                null,
+                expectedHttpStatus));
+        return jsonObject.getJSONObject(PAYLOAD);
+    }
+
     private String getRouteStartLocationMapping(UUID routeUuid) {
-        return getRouteLocationMapping(routeUuid) + "/start";
+        return getRouteLocationMapping(routeUuid) + "/" + ROUTE_START_LOCATION_MAPPING;
     }
 
     public JSONObject setRouteEndLocation(String token, UUID routeUuid, String routeLocationJson, int expectedHttpStatus) throws JSONException {
@@ -37,7 +52,7 @@ public class RouteLocationFeatures extends AbstractFeatures {
     }
 
     private String getRouteEndLocationMapping(UUID routeUuid) {
-        return getRouteLocationMapping(routeUuid) + "/end";
+        return getRouteLocationMapping(routeUuid) + "/" + ROUTE_END_LOCATION_MAPPING;
     }
 
 }

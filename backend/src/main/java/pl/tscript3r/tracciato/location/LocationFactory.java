@@ -14,11 +14,10 @@ class LocationFactory {
     private final LocationRepositoryAdapter locationRepositoryAdapter;
     private final DefaultValidator<LocationDto> validator;
 
-    Either<FailureResponse, LocationDto> create(UUID ownerUuid, LocationDto locationDto) {
+    Either<FailureResponse, LocationEntity> createEntity(UUID ownerUuid, LocationDto locationDto) {
         return validator.validate(locationDto)
                 .map(location -> createLocationEntity(ownerUuid, locationDto))
-                .peek(locationRepositoryAdapter::save)
-                .map(LocationMapper::map);
+                .peek(locationRepositoryAdapter::save);
     }
 
     private LocationEntity createLocationEntity(UUID ownerUuid, LocationDto locationDto) {

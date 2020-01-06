@@ -20,11 +20,29 @@ public abstract class AbstractFeatures implements ApplicationListener<WebServerI
         var requestSpecification = given().port(servicePort);
         if (token != null)
             requestSpecification = requestSpecification.header(new Header(TOKEN_HEADER, token));
+        if (content != null)
+            requestSpecification = requestSpecification.body(content)
+                    .contentType(ContentType.JSON);
         return requestSpecification
-                .body(content)
-                .contentType(ContentType.JSON)
                 .when()
                 .post(uri)
+                .then()
+                .statusCode(expectedHttpStatus)
+                .contentType(ContentType.JSON)
+                .extract()
+                .asString();
+    }
+
+    protected String putRequest(String token, String uri, String content, int expectedHttpStatus) {
+        var requestSpecification = given().port(servicePort);
+        if (token != null)
+            requestSpecification = requestSpecification.header(new Header(TOKEN_HEADER, token));
+        if (content != null)
+            requestSpecification = requestSpecification.body(content)
+                    .contentType(ContentType.JSON);
+        return requestSpecification
+                .when()
+                .put(uri)
                 .then()
                 .statusCode(expectedHttpStatus)
                 .contentType(ContentType.JSON)

@@ -1,5 +1,6 @@
 package pl.tscript3r.tracciato.route;
 
+import pl.tscript3r.tracciato.location.LocationEntity;
 import pl.tscript3r.tracciato.route.location.RouteLocationEntity;
 
 import java.util.UUID;
@@ -25,12 +26,12 @@ public class RouteDao {
         routeLocations.add(routeLocationEntity);
     }
 
-    public void setStartLocation(RouteLocationEntity startLocation) {
+    public void setStartLocation(LocationEntity startLocation) {
         routeEntity.setStartLocation(startLocation);
     }
 
-    public void setEndLocation(RouteLocationEntity startLocation) {
-        routeEntity.setEndLocation(startLocation);
+    public void setEndLocation(LocationEntity endLocation) {
+        routeEntity.setEndLocation(endLocation);
     }
 
     public RouteEntity get() {

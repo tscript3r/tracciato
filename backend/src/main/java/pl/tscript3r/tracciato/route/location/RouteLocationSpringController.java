@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.tscript3r.tracciato.infrastructure.response.ResponseResolver;
+import pl.tscript3r.tracciato.location.api.LocationDto;
+import pl.tscript3r.tracciato.route.RouteFacade;
 import pl.tscript3r.tracciato.route.location.api.RouteLocationDto;
 
 import java.util.UUID;
@@ -20,6 +22,7 @@ public class RouteLocationSpringController {
 
     private final ResponseResolver<ResponseEntity> responseResolver;
     private final RouteLocationFacade routeLocationFacade;
+    private final RouteFacade routeFacade;
 
     @PostMapping
     public HttpEntity add(@RequestHeader(TOKEN_HEADER) String token, @PathVariable(ROUTE_UUID_VARIABLE) UUID routeUuid,
@@ -31,17 +34,31 @@ public class RouteLocationSpringController {
     @PostMapping(ROUTE_START_LOCATION_MAPPING)
     public HttpEntity setStartLocation(@RequestHeader(TOKEN_HEADER) String token,
                                        @PathVariable(ROUTE_UUID_VARIABLE) UUID routeUuid,
-                                       @RequestBody RouteLocationDto routeLocationDto) {
-        return responseResolver.resolve(routeLocationFacade.setStartLocation(token, routeUuid, routeLocationDto),
+                                       @RequestBody LocationDto locationDto) {
+        return responseResolver.resolve(routeFacade.setStartLocation(token, routeUuid, locationDto),
                 HttpStatus.CREATED.value());
+    }
+
+    @PutMapping(ROUTE_START_LOCATION_MAPPING)
+    public HttpEntity setStartLocation(@RequestHeader(TOKEN_HEADER) String token,
+                                       @PathVariable(ROUTE_UUID_VARIABLE) UUID routeUuid,
+                                       @RequestParam(LOCATION_UUID_VARIABLE) UUID locationUuid) {
+        return responseResolver.resolve(routeFacade.setStartLocation(token, routeUuid, locationUuid));
     }
 
     @PostMapping(ROUTE_END_LOCATION_MAPPING)
     public HttpEntity setEndLocation(@RequestHeader(TOKEN_HEADER) String token,
                                      @PathVariable(ROUTE_UUID_VARIABLE) UUID routeUuid,
-                                     @RequestBody RouteLocationDto routeLocationDto) {
-        return responseResolver.resolve(routeLocationFacade.setEndLocation(token, routeUuid, routeLocationDto),
+                                     @RequestBody LocationDto locationDto) {
+        return responseResolver.resolve(routeFacade.setEndLocation(token, routeUuid, locationDto),
                 HttpStatus.CREATED.value());
+    }
+
+    @PutMapping(ROUTE_END_LOCATION_MAPPING)
+    public HttpEntity setEndLocation(@RequestHeader(TOKEN_HEADER) String token,
+                                     @PathVariable(ROUTE_UUID_VARIABLE) UUID routeUuid,
+                                     @RequestParam(LOCATION_UUID_VARIABLE) UUID locationUuid) {
+        return responseResolver.resolve(routeFacade.setEndLocation(token, routeUuid, locationUuid));
     }
 
 }

@@ -16,9 +16,14 @@ public class LocationFacade {
     private final LocationFactory locationFactory;
     private final LocationRepositoryAdapter locationRepositoryAdapter;
 
-    public Either<FailureResponse, LocationDto> addLocation(String token, LocationDto locationDto) {
+    public Either<FailureResponse, LocationEntity> addLocation(String token, LocationDto locationDto) {
         return userFacade.validateAndGetUuidFromToken(token)
-                .flatMap(uuid -> locationFactory.create(uuid, locationDto));
+                .flatMap(uuid -> locationFactory.createEntity(uuid, locationDto));
+    }
+
+    public Either<FailureResponse, LocationDto> addLocationAndMap(String token, LocationDto locationDto) {
+        return addLocation(token, locationDto)
+                .map(LocationMapper::map);
     }
 
     public Either<FailureResponse, Set<LocationDto>> getAllLocationsFromUser(String token) {
@@ -31,7 +36,7 @@ public class LocationFacade {
         return LocationMapper.map(locationEntities);
     }
 
-    public Either<FailureResponse, LocationEntity> getEntityByUuid(UUID existingLocationUuid) {
+    public Either<FailureResponse, LocationEntity> getLocationEntityByUuid(UUID existingLocationUuid) {
         return locationRepositoryAdapter.findByUuid(existingLocationUuid)
                 .toEither(LocationFailureResponse.uuidNotFound(existingLocationUuid));
     }

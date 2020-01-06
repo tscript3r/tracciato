@@ -113,7 +113,7 @@ class LocationFacadeTest {
         var addedLocationUuid = locationFacade.addLocation("mocked", locationDto).get().getUuid();
 
         // when
-        var results = locationFacade.getEntityByUuid(addedLocationUuid);
+        var results = locationFacade.getLocationEntityByUuid(addedLocationUuid);
 
         // then
         assertTrue(results.isRight());
@@ -126,7 +126,7 @@ class LocationFacadeTest {
         locationFacade.addLocation("mocked", locationDto).get().getUuid();
 
         // when
-        var results = locationFacade.getEntityByUuid(UUID.randomUUID());
+        var results = locationFacade.getLocationEntityByUuid(UUID.randomUUID());
 
         // then
         assertTrue(results.isLeft());

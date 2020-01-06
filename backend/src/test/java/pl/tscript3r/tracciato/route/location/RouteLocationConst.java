@@ -8,7 +8,6 @@ import static pl.tscript3r.tracciato.location.LocationConst.getValidLocationDto;
 
 public final class RouteLocationConst {
 
-
     public static final LocationPriority LOCATION_PRIORITY = LocationPriority.MEDIUM;
     public static final String LOCATION_DURATION = "02:00";
 
