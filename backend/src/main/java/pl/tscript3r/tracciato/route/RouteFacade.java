@@ -104,4 +104,9 @@ public class RouteFacade {
                 });
     }
 
+    public InternalResponse<RouteDto> getRoute(String token, UUID routeUuid) {
+        return authorizeAndGetRouteDao(token, routeUuid)
+                .map(routeDao -> RouteMapper.map(routeDao.get()));
+    }
+
 }

@@ -34,6 +34,16 @@ public class RouteFeatures extends AbstractFeatures {
         return routeSpringRepository.findByUuid(uuid) != null;
     }
 
+    public JSONObject getRoute(String token, UUID routeUuid, int expectedHttpStatus) throws JSONException {
+        return new JSONObject(getRequest(token, getRouteMapping(routeUuid), null, expectedHttpStatus));
+    }
+
+    private String getRouteMapping(UUID routeUuid) {
+        if (routeUuid != null)
+            return ROUTE_MAPPING + "/" + routeUuid.toString();
+        return ROUTE_MAPPING;
+    }
+
     @Override
     public void onApplicationEvent(@NotNull WebServerInitializedEvent webServerInitializedEvent) {
         this.servicePort = webServerInitializedEvent.getWebServer().getPort();

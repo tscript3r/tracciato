@@ -71,4 +71,20 @@ public class RouteFeaturesFunctionalTests extends AbstractFunctionalTests {
         assertTrue(routeFeatures.isRouteUuidExisting(uuid));
     }
 
+    @Test
+    void getRoute_Should_Fail_When_TokenIsMissing() throws JSONException {
+        routeFeatures.getRoute(null, UUID.randomUUID(), 403);
+    }
+
+    @Test
+    void getRoute_Should_Fail_When_NonExistingRouteUuidIsPassed() throws JSONException {
+        routeFeatures.getRoute(token, UUID.randomUUID(), 404);
+    }
+
+    @Test
+    void getRoute_Should_SuccessfullyReturnRoute_When_ValidTokenAndExistingRouteUuidIsPassed() throws JSONException {
+        var uuid = UUID.fromString(routeFeatures.addRoute(token, RouteJson.newValid().json(), 201).getString("uuid"));
+        routeFeatures.getRoute(token, uuid, 200);
+    }
+
 }

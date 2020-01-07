@@ -18,6 +18,7 @@ import pl.tscript3r.tracciato.location.LocationInMemoryRepositoryAdapter;
 import pl.tscript3r.tracciato.location.LocationSpringConfiguration;
 import pl.tscript3r.tracciato.route.location.RouteLocationConst;
 import pl.tscript3r.tracciato.user.UserFacade;
+import pl.tscript3r.tracciato.user.UserFailureResponse;
 
 import java.util.UUID;
 
@@ -195,6 +196,57 @@ public class RouteFacadeTest {
         assertTrue(results.isRight());
         var routeEntity = routeRepositoryAdapter.findByUuid(existingRoute.getUuid());
         assertNotNull(routeEntity.get().getEndLocation());
+    }
+
+    @Test
+    void getRoute_Should_Fail_When_InvalidTokenIsGiven() {
+        // given
+        var existingRoute = routeFacade.create("mocked", RouteConst.getValidNewRouteDto()).get();
+        when(userFacade.validateAndGetUuidFromToken(any())).thenReturn(InternalResponse.failure(UserFailureResponse.invalidCredentials()));
+
+        // when
+        var results = routeFacade.getRoute("mocked", existingRoute.getUuid());
+
+        // then
+        assertTrue(results.isLeft());
+    }
+
+    @Test
+    void getRoute_Should_Fail_When_UserRequestsRouteWhichIsOwnedByOtherUser() {
+        // given
+        var existingRoute = routeFacade.create("mocked", RouteConst.getValidNewRouteDto()).get();
+        when(userFacade.authorize(any(), any())).thenReturn(false);
+
+        // when
+        var results = routeFacade.getRoute("mocked", existingRoute.getUuid());
+
+        // then
+        assertTrue(results.isLeft());
+    }
+
+    @Test
+    void getRoute_Should_Fail_When_NotExistingRouteUuidIsGiven() {
+        // given
+        var nonExistingRouteUuid = UUID.randomUUID();
+
+        // when
+        var results = routeFacade.getRoute("mocked", nonExistingRouteUuid);
+
+        // then
+        assertTrue(results.isLeft());
+    }
+
+    @Test
+    void getRoute_Should_SuccessfullyReturnRoute_When_ExistingRouteUuidIsGiven() {
+        // given
+        var existingRoute = routeFacade.create("mocked", RouteConst.getValidNewRouteDto()).get();
+        when(userFacade.authorize(any(), any())).thenReturn(true);
+
+        // when
+        var results = routeFacade.getRoute("mocked", existingRoute.getUuid());
+
+        // then
+        assertTrue(results.isRight());
     }
 
 }
