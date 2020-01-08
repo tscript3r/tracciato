@@ -16,10 +16,10 @@ import static pl.tscript3r.tracciato.infrastructure.EndpointsMappings.USER_MAPPI
 class UserSpringController {
 
     private final UserFacade userFacade;
-    private final ResponseResolver<ResponseEntity> responseResolver;
+    private final ResponseResolver<ResponseEntity<?>> responseResolver;
 
     @PostMapping
-    public HttpEntity registerUser(@RequestBody UserDto userDto) {
+    public HttpEntity<?> registerUser(@RequestBody UserDto userDto) {
         return responseResolver.resolve(userFacade.register(userDto), HttpStatus.CREATED.value());
     }
 

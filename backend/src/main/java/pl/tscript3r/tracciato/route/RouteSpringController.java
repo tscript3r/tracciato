@@ -19,16 +19,16 @@ import static pl.tscript3r.tracciato.infrastructure.spring.security.SecurityCons
 @RequiredArgsConstructor
 public class RouteSpringController {
 
-    private final ResponseResolver<ResponseEntity> responseResolver;
+    private final ResponseResolver<ResponseEntity<?>> responseResolver;
     private final RouteFacade routeFacade;
 
     @PostMapping
-    public HttpEntity createRoute(@RequestHeader(TOKEN_HEADER) String token, @RequestBody NewRouteDto newRouteDto) {
+    public HttpEntity<?> createRoute(@RequestHeader(TOKEN_HEADER) String token, @RequestBody NewRouteDto newRouteDto) {
         return responseResolver.resolve(routeFacade.create(token, newRouteDto), HttpStatus.CREATED.value());
     }
 
     @GetMapping("{" + ROUTE_UUID_VARIABLE + "}")
-    public HttpEntity getRoute(@RequestHeader(TOKEN_HEADER) String token, @PathVariable(ROUTE_UUID_VARIABLE) UUID routeUuid) {
+    public HttpEntity<?> getRoute(@RequestHeader(TOKEN_HEADER) String token, @PathVariable(ROUTE_UUID_VARIABLE) UUID routeUuid) {
         return responseResolver.resolve(routeFacade.getRoute(token, routeUuid));
     }
 

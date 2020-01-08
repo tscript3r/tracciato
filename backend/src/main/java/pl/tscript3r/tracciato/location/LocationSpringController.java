@@ -16,16 +16,16 @@ import static pl.tscript3r.tracciato.infrastructure.spring.security.SecurityCons
 @RequiredArgsConstructor
 public class LocationSpringController {
 
-    private final ResponseResolver<ResponseEntity> responseResolver;
+    private final ResponseResolver<ResponseEntity<?>> responseResolver;
     private final LocationFacade locationFacade;
 
     @PostMapping
-    public HttpEntity add(@RequestHeader(TOKEN_HEADER) String token, @RequestBody LocationDto locationDto) {
+    public HttpEntity<?> add(@RequestHeader(TOKEN_HEADER) String token, @RequestBody LocationDto locationDto) {
         return responseResolver.resolve(locationFacade.addLocationAndMap(token, locationDto), HttpStatus.CREATED.value());
     }
 
     @GetMapping
-    public HttpEntity getAll(@RequestHeader(TOKEN_HEADER) String token) {
+    public HttpEntity<?> getAll(@RequestHeader(TOKEN_HEADER) String token) {
         return responseResolver.resolve(locationFacade.getAllLocationsFromUser(token));
     }
 

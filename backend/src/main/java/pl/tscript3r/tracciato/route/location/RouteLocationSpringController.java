@@ -20,44 +20,44 @@ import static pl.tscript3r.tracciato.infrastructure.spring.security.SecurityCons
 @RequiredArgsConstructor
 public class RouteLocationSpringController {
 
-    private final ResponseResolver<ResponseEntity> responseResolver;
+    private final ResponseResolver<ResponseEntity<?>> responseResolver;
     private final RouteLocationFacade routeLocationFacade;
     private final RouteFacade routeFacade;
 
     @PostMapping
-    public HttpEntity add(@RequestHeader(TOKEN_HEADER) String token, @PathVariable(ROUTE_UUID_VARIABLE) UUID routeUuid,
-                          @RequestBody RouteLocationDto routeLocationDto) {
+    public HttpEntity<?> add(@RequestHeader(TOKEN_HEADER) String token, @PathVariable(ROUTE_UUID_VARIABLE) UUID routeUuid,
+                             @RequestBody RouteLocationDto routeLocationDto) {
         return responseResolver.resolve(routeLocationFacade.add(token, routeUuid, routeLocationDto),
                 HttpStatus.CREATED.value());
     }
 
     @PostMapping(ROUTE_START_LOCATION_MAPPING)
-    public HttpEntity setStartLocation(@RequestHeader(TOKEN_HEADER) String token,
-                                       @PathVariable(ROUTE_UUID_VARIABLE) UUID routeUuid,
-                                       @RequestBody LocationDto locationDto) {
+    public HttpEntity<?> setStartLocation(@RequestHeader(TOKEN_HEADER) String token,
+                                          @PathVariable(ROUTE_UUID_VARIABLE) UUID routeUuid,
+                                          @RequestBody LocationDto locationDto) {
         return responseResolver.resolve(routeFacade.setStartLocation(token, routeUuid, locationDto),
                 HttpStatus.CREATED.value());
     }
 
     @PutMapping(ROUTE_START_LOCATION_MAPPING)
-    public HttpEntity setStartLocation(@RequestHeader(TOKEN_HEADER) String token,
-                                       @PathVariable(ROUTE_UUID_VARIABLE) UUID routeUuid,
-                                       @RequestParam(LOCATION_UUID_VARIABLE) UUID locationUuid) {
+    public HttpEntity<?> setStartLocation(@RequestHeader(TOKEN_HEADER) String token,
+                                          @PathVariable(ROUTE_UUID_VARIABLE) UUID routeUuid,
+                                          @RequestParam(LOCATION_UUID_VARIABLE) UUID locationUuid) {
         return responseResolver.resolve(routeFacade.setStartLocation(token, routeUuid, locationUuid));
     }
 
     @PostMapping(ROUTE_END_LOCATION_MAPPING)
-    public HttpEntity setEndLocation(@RequestHeader(TOKEN_HEADER) String token,
-                                     @PathVariable(ROUTE_UUID_VARIABLE) UUID routeUuid,
-                                     @RequestBody LocationDto locationDto) {
+    public HttpEntity<?> setEndLocation(@RequestHeader(TOKEN_HEADER) String token,
+                                        @PathVariable(ROUTE_UUID_VARIABLE) UUID routeUuid,
+                                        @RequestBody LocationDto locationDto) {
         return responseResolver.resolve(routeFacade.setEndLocation(token, routeUuid, locationDto),
                 HttpStatus.CREATED.value());
     }
 
     @PutMapping(ROUTE_END_LOCATION_MAPPING)
-    public HttpEntity setEndLocation(@RequestHeader(TOKEN_HEADER) String token,
-                                     @PathVariable(ROUTE_UUID_VARIABLE) UUID routeUuid,
-                                     @RequestParam(LOCATION_UUID_VARIABLE) UUID locationUuid) {
+    public HttpEntity<?> setEndLocation(@RequestHeader(TOKEN_HEADER) String token,
+                                        @PathVariable(ROUTE_UUID_VARIABLE) UUID routeUuid,
+                                        @RequestParam(LOCATION_UUID_VARIABLE) UUID locationUuid) {
         return responseResolver.resolve(routeFacade.setEndLocation(token, routeUuid, locationUuid));
     }
 
