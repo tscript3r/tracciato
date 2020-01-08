@@ -13,7 +13,7 @@ class UserRegistration {
     private final UserValidator userValidator;
     private final PasswordEncrypt passwordEncoder;
 
-    synchronized InternalResponse<UserDto> register(UserDto userDto) {
+    InternalResponse<UserDto> register(UserDto userDto) {
         return userValidator.validate(userDto)
                 .map(this::createUserEntity)
                 .map(userRepositoryAdapter::save)

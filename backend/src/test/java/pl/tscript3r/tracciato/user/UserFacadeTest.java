@@ -1,20 +1,28 @@
 package pl.tscript3r.tracciato.user;
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
+import pl.tscript3r.tracciato.ConcurrentStressTest;
 import pl.tscript3r.tracciato.ReplaceCamelCaseAndUnderscores;
+import pl.tscript3r.tracciato.user.api.UserDto;
 
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static pl.tscript3r.tracciato.infrastructure.spring.security.SecurityConstants.TOKEN_PREFIX;
 import static pl.tscript3r.tracciato.user.UserConst.*;
 
+@Slf4j
 @DisplayName("User facade")
 @DisplayNameGeneration(ReplaceCamelCaseAndUnderscores.class)
-public class UserFacadeTest {
+public class UserFacadeTest implements ConcurrentStressTest {
+
+    public static final int THREADS_COUNT = 10;
 
     UserFacade userFacade;
     UserRepositoryAdapter userRepositoryAdapter;
@@ -187,6 +195,61 @@ public class UserFacadeTest {
 
         // then
         assertTrue(results);
+    }
+
+    @Test
+    void register_Should_Create120Users_When_HasMax10SecondsForIt() throws ExecutionException {
+        var results = concurrentStressTest(THREADS_COUNT, 120, 10_000, () -> {
+            var userDto = new UserDto();
+            userDto.setUsername(RandomStringUtils.randomAlphanumeric(10));
+            userDto.setPassword(RandomStringUtils.randomAlphanumeric(10));
+            userDto.setEmail(RandomStringUtils.randomAlphanumeric(10) + "@mail.com");
+            return userFacade.register(userDto);
+        });
+        if (results.getUncompletedCount() > 0)
+            log.warn("Method has not completed required tasks in time ({} unfinished)",
+                    results.getUncompletedCount());
+        log.info(results.toString());
+    }
+
+    @Test
+    void login_Should_Validate150LoginAttempts_When_HasMax10SecondsForIt() throws ExecutionException {
+        var results = concurrentStressTest(THREADS_COUNT, 150, 10_000, () ->
+                userFacade.login(existingJohnUserEntity.getUsername(), JOHNS_PASSWORD));
+        if (results.getUncompletedCount() > 0)
+            log.warn("Method has not completed required tasks in time ({} unfinished)",
+                    results.getUncompletedCount());
+        log.info(results.toString());
+    }
+
+    @Test
+    void getToken_Should_Create1000JWTTokens_When_HasMax10SecondsForIt() throws ExecutionException {
+        var results = concurrentStressTest(THREADS_COUNT, 1000, 10_000, () ->
+                userFacade.getToken(existingJohnUserEntity.getUsername()));
+        if (results.getUncompletedCount() > 0)
+            log.warn("Method has not completed required tasks in time ({} unfinished)",
+                    results.getUncompletedCount());
+        log.info(results.toString());
+    }
+
+    @Test
+    void validateAndGetUuidFromToken_Should_Validate10000JwtTokens_When_HasMax10SecondsForIt() throws ExecutionException {
+        var results = concurrentStressTest(THREADS_COUNT, 10000, 10_000, () ->
+                userFacade.validateAndGetUuidFromToken(userFacade.getToken(existingJohnUserEntity.getUsername()).get()));
+        if (results.getUncompletedCount() > 0)
+            log.warn("Method has not completed required tasks in time ({} unfinished)",
+                    results.getUncompletedCount());
+        log.info(results.toString());
+    }
+
+    @Test
+    void authorize_Should_Validate10000Requests_When_HasMax10SecondsForIt() throws ExecutionException {
+        var results = concurrentStressTest(THREADS_COUNT, 10000, 10_000, () ->
+                userFacade.authorize(userFacade.getToken(existingJohnUserEntity.getUsername()).get(), existingJohnUserEntity.getUuid()));
+        if (results.getUncompletedCount() > 0)
+            log.warn("Method has not completed required tasks in time ({} unfinished)",
+                    results.getUncompletedCount());
+        log.info(results.toString());
     }
 
 }

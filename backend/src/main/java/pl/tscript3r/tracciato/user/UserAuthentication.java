@@ -13,7 +13,7 @@ class UserAuthentication {
     private final UserRepositoryAdapter userRepositoryAdapter;
     private final PasswordEncrypt passwordEncrypt;
 
-    synchronized InternalResponse<UserDto> login(String username, String password) {
+    InternalResponse<UserDto> login(String username, String password) {
         return InternalResponse.fromOption(userRepositoryAdapter.findByUsername(username)
                 .filter(userEntity -> validateCredentials(userEntity, password))
                 .map(UserMapper::map), UserFailureResponse.invalidCredentials());

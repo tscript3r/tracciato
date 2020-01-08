@@ -3,13 +3,13 @@ package pl.tscript3r.tracciato.infrastructure.db;
 import io.vavr.control.Option;
 import pl.tscript3r.tracciato.infrastructure.AbstractEntity;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.Predicate;
 
 public abstract class AbstractInMemoryRepositoryAdapter<T extends AbstractEntity> implements RepositoryAdapter<Long, T> {
 
-    protected final Map<Long, T> db = new HashMap<>();
+    protected final ConcurrentMap<Long, T> db = new ConcurrentHashMap<>();
 
     @Override
     public Option<T> findById(Long id) {
