@@ -23,7 +23,7 @@ public class UserJson extends AbstractJson<UserDto> {
         return new UserJson(UserConst.getValidJohnsUserDto());
     }
 
-    private UserJson(UserDto userDto) {
+    public UserJson(UserDto userDto) {
         super(userDto);
     }
 

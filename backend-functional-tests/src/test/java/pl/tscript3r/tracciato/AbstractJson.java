@@ -17,7 +17,7 @@ import static pl.tscript3r.tracciato.infrastructure.DateTimeFormats.DATE_TIME_FO
 public class AbstractJson<T> {
 
     private final ObjectMapper jsonMapper = new ObjectMapper().configure(MapperFeature.USE_ANNOTATIONS, false);
-    protected final T object;
+    public final T object;
 
     protected AbstractJson(T object) {
         JavaTimeModule javaTimeModule = new JavaTimeModule();

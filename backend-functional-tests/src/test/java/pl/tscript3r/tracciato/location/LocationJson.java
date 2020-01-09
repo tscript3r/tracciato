@@ -15,7 +15,7 @@ public class LocationJson extends AbstractJson<LocationDto> {
         return new LocationJson(locationDto);
     }
 
-    private LocationJson(LocationDto object) {
+    LocationJson(LocationDto object) {
         super(object);
     }
 

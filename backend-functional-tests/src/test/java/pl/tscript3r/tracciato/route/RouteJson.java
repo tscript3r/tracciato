@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 public class RouteJson extends AbstractJson<NewRouteDto> {
 
-    private RouteJson(NewRouteDto newRouteDto) {
+    RouteJson(NewRouteDto newRouteDto) {
         super(newRouteDto);
     }
 

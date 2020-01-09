@@ -1,6 +1,7 @@
 package pl.tscript3r.tracciato;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -55,6 +56,18 @@ public interface ConcurrentStressTest {
         var executionTime = System.currentTimeMillis() - executionTimeBegin;
 
         return new StressTestResult<>(executionTime, completedCount, uncompletedCount, futures);
+    }
+
+    default <T> List<T> unwrapFutures(Collection<Future<T>> futures) {
+        List<T> results = new ArrayList<>();
+        for (Future<T> tFuture : futures) {
+            try {
+                results.add(tFuture.get());
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return results;
     }
 
 }
