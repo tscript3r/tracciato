@@ -114,7 +114,7 @@ Content-Type: application/json
   "number": "10"
 }
 
-### Add location to user (for route start location)
+### Add location to user (for route end location)
 POST http://localhost:8080/api/v1/locations
 Authorization: {{auth_token}}
 Content-Type: application/json
@@ -131,5 +131,16 @@ Content-Type: application/json
 PUT http://localhost:8080/api/v1/routes/{{route_uuid}}/locations/endLocation?locationUuid={{end_location_uuid}}
 Authorization: {{auth_token}}
 Content-Type: application/json
+
+### Add route day work availability
+POST http://localhost:8080/api/v1/routes/{{route_uuid}}/availability
+Authorization: {{auth_token}}
+Content-Type: application/json
+
+{
+  "date": "24.12.2020",
+  "from": "08:00",
+  "to": "16:00"
+}
 
 ###

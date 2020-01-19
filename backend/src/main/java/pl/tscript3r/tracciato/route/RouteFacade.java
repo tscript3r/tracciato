@@ -1,6 +1,7 @@
 package pl.tscript3r.tracciato.route;
 
 import lombok.AllArgsConstructor;
+import pl.tscript3r.tracciato.route.availability.AvailabilityEntity;
 import pl.tscript3r.tracciato.infrastructure.response.InternalResponse;
 import pl.tscript3r.tracciato.location.LocationFacade;
 import pl.tscript3r.tracciato.location.api.LocationDto;
@@ -107,6 +108,16 @@ public class RouteFacade {
     public InternalResponse<RouteDto> getRoute(String token, UUID routeUuid) {
         return authorizeAndGetRouteDao(token, routeUuid)
                 .map(routeDao -> RouteMapper.map(routeDao.get()));
+    }
+
+    public InternalResponse<RouteDto> addAvailability(String token, UUID routeUuid, AvailabilityEntity availabilityEntity) {
+        return authorizeAndGetRouteDao(token, routeUuid)
+                .map(routeDao -> {
+                   routeDao.addAvailability(availabilityEntity);
+                   routeRepositoryAdapter.save(routeDao.get());
+                   return routeDao.get();
+                })
+                .map(RouteMapper::map);
     }
 
 }

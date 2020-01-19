@@ -16,6 +16,7 @@ import pl.tscript3r.tracciato.location.LocationConst;
 import pl.tscript3r.tracciato.location.LocationFacade;
 import pl.tscript3r.tracciato.location.LocationInMemoryRepositoryAdapter;
 import pl.tscript3r.tracciato.location.LocationSpringConfiguration;
+import pl.tscript3r.tracciato.route.availability.AvailabilityConst;
 import pl.tscript3r.tracciato.route.location.RouteLocationConst;
 import pl.tscript3r.tracciato.user.UserFacade;
 import pl.tscript3r.tracciato.user.UserFailureResponse;
@@ -244,6 +245,20 @@ public class RouteFacadeTest {
 
         // when
         var results = routeFacade.getRoute("mocked", existingRoute.getUuid());
+
+        // then
+        assertTrue(results.isRight());
+    }
+
+    @Test
+    void addAvailability_Should_SuccessfullyAddAvailability_When_ExistingRouteUuidIsGiven() {
+        // given
+        var existingRoute = routeFacade.create("mocked", RouteConst.getValidNewRouteDto());
+        var validAvailabilityEntity = AvailabilityConst.getValidAvailabilityEntity();
+        when(userFacade.authorize(any(), any())).thenReturn(true);
+
+        // when
+        var results = routeFacade.addAvailability("mocked", existingRoute.get().getUuid(), validAvailabilityEntity);
 
         // then
         assertTrue(results.isRight());

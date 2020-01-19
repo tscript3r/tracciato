@@ -1,8 +1,8 @@
 package pl.tscript3r.tracciato.route.location;
 
 import org.modelmapper.ModelMapper;
-import pl.tscript3r.tracciato.availability.AvailabilityEntity;
-import pl.tscript3r.tracciato.availability.api.AvailabilityDto;
+import pl.tscript3r.tracciato.route.availability.AvailabilityEntity;
+import pl.tscript3r.tracciato.route.availability.api.AvailabilityDto;
 import pl.tscript3r.tracciato.route.location.api.RouteLocationDto;
 
 import java.time.Duration;

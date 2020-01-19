@@ -1,4 +1,4 @@
-package pl.tscript3r.tracciato.availability;
+package pl.tscript3r.tracciato.route.availability;
 
 import lombok.Getter;
 import lombok.Setter;

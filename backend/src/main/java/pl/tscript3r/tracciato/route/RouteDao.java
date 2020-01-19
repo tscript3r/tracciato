@@ -1,11 +1,12 @@
 package pl.tscript3r.tracciato.route;
 
+import pl.tscript3r.tracciato.route.availability.AvailabilityEntity;
 import pl.tscript3r.tracciato.location.LocationEntity;
 import pl.tscript3r.tracciato.route.location.RouteLocationEntity;
 
 import java.util.UUID;
 
-public class RouteDao {
+class RouteDao {
 
     private final RouteEntity routeEntity;
 
@@ -36,6 +37,11 @@ public class RouteDao {
 
     public RouteEntity get() {
         return routeEntity;
+    }
+
+    public void addAvailability(AvailabilityEntity availabilityEntity) {
+        var routeAvailabilities = routeEntity.getAvailabilities();
+        routeAvailabilities.add(availabilityEntity);
     }
 
 }
