@@ -18,7 +18,7 @@ import static pl.tscript3r.tracciato.infrastructure.spring.security.SecurityCons
 @RestController
 @RequestMapping(ROUTE_LOCATION_MAPPING)
 @RequiredArgsConstructor
-public class RouteLocationSpringController {
+class RouteLocationSpringController {
 
     private final ResponseResolver<ResponseEntity<?>> responseResolver;
     private final RouteLocationFacade routeLocationFacade;

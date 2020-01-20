@@ -28,7 +28,7 @@ import static pl.tscript3r.tracciato.infrastructure.EndpointsMappings.PUBLIC_MAP
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
 @AllArgsConstructor
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final Environment environment;
     private final ObjectFactory<ResponseResolver<ResponseEntity>> responseResolverObjectFactory;

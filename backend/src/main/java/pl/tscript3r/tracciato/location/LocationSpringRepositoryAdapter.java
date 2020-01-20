@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @AllArgsConstructor
-public class LocationSpringRepositoryAdapter implements LocationRepositoryAdapter {
+class LocationSpringRepositoryAdapter implements LocationRepositoryAdapter {
 
     private final LocationSpringRepository locationSpringRepository;
 

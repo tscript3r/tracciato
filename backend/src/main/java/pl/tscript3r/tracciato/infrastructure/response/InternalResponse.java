@@ -10,7 +10,7 @@ import java.util.function.Predicate;
 
 public class InternalResponse<T> implements Either<FailureResponse, T> {
 
-    private Either<FailureResponse, T> either;
+    private final Either<FailureResponse, T> either;
 
     private InternalResponse(Either<FailureResponse, T> either) {
         this.either = either;

@@ -11,7 +11,7 @@ import pl.tscript3r.tracciato.route.location.RouteLocationEntity;
 
 import java.util.UUID;
 
-public final class RouteDao extends Dao<RouteEntity, RouteDto> {
+final class RouteDao extends Dao<RouteEntity, RouteDto> {
 
     private final RouteRepositoryAdapter routeRepositoryAdapter;
 

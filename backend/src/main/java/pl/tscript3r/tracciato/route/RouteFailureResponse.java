@@ -3,7 +3,7 @@ package pl.tscript3r.tracciato.route;
 import pl.tscript3r.tracciato.infrastructure.response.error.AbstractFailureResponse;
 import pl.tscript3r.tracciato.infrastructure.response.error.FailureResponse;
 
-public class RouteFailureResponse extends AbstractFailureResponse {
+class RouteFailureResponse extends AbstractFailureResponse {
 
     private static final String ROUTE_UUID_NOT_FOUND = "Route UUID not found";
 

@@ -10,7 +10,6 @@ import pl.tscript3r.tracciato.infrastructure.spring.util.ResponseEntityToHttpSer
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 
@@ -20,8 +19,7 @@ class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
     private final ResponseResolver<ResponseEntity> responseResolver;
 
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response,
-                         AuthenticationException e) throws IOException {
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) {
         ResponseEntityToHttpServletResponse.convert(
                 responseResolver.resolve(
                         FailureResponseDto.get("Forbidden")

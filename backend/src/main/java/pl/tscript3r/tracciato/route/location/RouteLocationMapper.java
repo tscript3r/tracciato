@@ -14,7 +14,7 @@ import java.util.List;
 
 import static pl.tscript3r.tracciato.infrastructure.DateTimeFormats.TIME_FORMAT;
 
-public final class RouteLocationMapper {
+final class RouteLocationMapper {
 
     private static final ModelMapper modelMapper = new ModelMapper();
 

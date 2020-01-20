@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.UUID;
 
 @RequiredArgsConstructor
-public class RouteSpringRepositoryAdapter implements RouteRepositoryAdapter {
+class RouteSpringRepositoryAdapter implements RouteRepositoryAdapter {
 
     private final RouteSpringRepository routeSpringRepository;
 

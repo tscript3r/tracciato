@@ -11,7 +11,7 @@ import javax.validation.Validator;
 
 @Configuration
 @RequiredArgsConstructor
-public class AvailabilitySpringConfiguration {
+class AvailabilitySpringConfiguration {
 
     private final RouteFacade routeFacade;
 

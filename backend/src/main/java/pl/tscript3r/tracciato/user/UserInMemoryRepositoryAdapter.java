@@ -3,8 +3,7 @@ package pl.tscript3r.tracciato.user;
 import io.vavr.control.Option;
 import pl.tscript3r.tracciato.infrastructure.db.InMemoryRepositoryAdapter;
 
-public class UserInMemoryRepositoryAdapter extends InMemoryRepositoryAdapter<UserEntity> implements
-        UserRepositoryAdapter {
+class UserInMemoryRepositoryAdapter extends InMemoryRepositoryAdapter<UserEntity> implements UserRepositoryAdapter {
 
     @Override
     public Boolean usernameExists(String username) {

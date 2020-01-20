@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public final class LocationDao extends Dao<LocationEntity, LocationDto> {
+final class LocationDao extends Dao<LocationEntity, LocationDto> {
 
     private final LocationRepositoryAdapter locationRepositoryAdapter;
 

@@ -10,7 +10,7 @@ import javax.validation.Validator;
 
 @Configuration
 @RequiredArgsConstructor
-public class UserSpringConfiguration {
+class UserSpringConfiguration {
 
     private final UserSpringRepository userSpringRepository;
 

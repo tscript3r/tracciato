@@ -16,7 +16,7 @@ import static pl.tscript3r.tracciato.infrastructure.spring.security.SecurityCons
 @RestController
 @RequestMapping(ROUTE_AVAILABILITY_MAPPING)
 @RequiredArgsConstructor
-public class AvailabilitySpringController {
+class AvailabilitySpringController {
 
     private final ResponseResolver<ResponseEntity<?>> responseResolver;
     private final AvailabilityFacade availabilityFacade;

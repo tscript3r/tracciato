@@ -13,7 +13,7 @@ import java.util.Collections;
 
 @Component
 @AllArgsConstructor
-public class CustomAuthenticationProvider implements AuthenticationProvider {
+class CustomAuthenticationProvider implements AuthenticationProvider {
 
     private final UserFacade userFacade;
 

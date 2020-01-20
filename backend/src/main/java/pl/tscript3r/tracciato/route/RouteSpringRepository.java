@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;
 
-public interface RouteSpringRepository extends JpaRepository<RouteEntity, Long> {
+interface RouteSpringRepository extends JpaRepository<RouteEntity, Long> {
 
     RouteEntity findByUuid(UUID uuid);
 

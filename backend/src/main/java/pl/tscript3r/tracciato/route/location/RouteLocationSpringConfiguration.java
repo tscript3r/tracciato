@@ -13,7 +13,7 @@ import javax.validation.Validator;
 
 @Configuration
 @RequiredArgsConstructor
-public class RouteLocationSpringConfiguration {
+class RouteLocationSpringConfiguration {
 
     private final RouteFacade routeFacade;
     private final LocationFacade locationFacade;

@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import static pl.tscript3r.tracciato.infrastructure.EndpointsMappings.AUTH_MAPPING;
 
-public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter implements AuthenticationFailureHandler {
+class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter implements AuthenticationFailureHandler {
 
     private final AuthenticationManager authenticationManager;
     private final ResponseResolver<ResponseEntity> responseResolver;

@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.Collections;
 
 @Slf4j
-public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
+class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     private final UserFacade userFacade;
 

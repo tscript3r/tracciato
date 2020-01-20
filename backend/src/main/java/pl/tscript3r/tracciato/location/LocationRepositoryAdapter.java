@@ -5,7 +5,7 @@ import pl.tscript3r.tracciato.infrastructure.db.RepositoryAdapter;
 import java.util.Set;
 import java.util.UUID;
 
-public interface LocationRepositoryAdapter extends RepositoryAdapter<Long, LocationEntity> {
+interface LocationRepositoryAdapter extends RepositoryAdapter<Long, LocationEntity> {
 
     Set<LocationEntity> findAllFromUser(UUID ownerUuid);
 
