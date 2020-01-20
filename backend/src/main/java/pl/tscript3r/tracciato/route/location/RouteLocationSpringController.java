@@ -35,7 +35,7 @@ public class RouteLocationSpringController {
     public HttpEntity<?> setStartLocation(@RequestHeader(TOKEN_HEADER) String token,
                                           @PathVariable(ROUTE_UUID_VARIABLE) UUID routeUuid,
                                           @RequestBody LocationDto locationDto) {
-        return responseResolver.resolve(routeFacade.setStartLocation(token, routeUuid, locationDto),
+        return responseResolver.resolve(routeFacade.setNewStartLocation(token, routeUuid, locationDto),
                 HttpStatus.CREATED.value());
     }
 
@@ -43,14 +43,14 @@ public class RouteLocationSpringController {
     public HttpEntity<?> setStartLocation(@RequestHeader(TOKEN_HEADER) String token,
                                           @PathVariable(ROUTE_UUID_VARIABLE) UUID routeUuid,
                                           @RequestParam(LOCATION_UUID_VARIABLE) UUID locationUuid) {
-        return responseResolver.resolve(routeFacade.setStartLocation(token, routeUuid, locationUuid));
+        return responseResolver.resolve(routeFacade.setExistingStartLocation(token, routeUuid, locationUuid));
     }
 
     @PostMapping(ROUTE_END_LOCATION_MAPPING)
     public HttpEntity<?> setEndLocation(@RequestHeader(TOKEN_HEADER) String token,
                                         @PathVariable(ROUTE_UUID_VARIABLE) UUID routeUuid,
                                         @RequestBody LocationDto locationDto) {
-        return responseResolver.resolve(routeFacade.setEndLocation(token, routeUuid, locationDto),
+        return responseResolver.resolve(routeFacade.setNewEndLocation(token, routeUuid, locationDto),
                 HttpStatus.CREATED.value());
     }
 
@@ -58,7 +58,7 @@ public class RouteLocationSpringController {
     public HttpEntity<?> setEndLocation(@RequestHeader(TOKEN_HEADER) String token,
                                         @PathVariable(ROUTE_UUID_VARIABLE) UUID routeUuid,
                                         @RequestParam(LOCATION_UUID_VARIABLE) UUID locationUuid) {
-        return responseResolver.resolve(routeFacade.setEndLocation(token, routeUuid, locationUuid));
+        return responseResolver.resolve(routeFacade.setExistingEndLocation(token, routeUuid, locationUuid));
     }
 
 }

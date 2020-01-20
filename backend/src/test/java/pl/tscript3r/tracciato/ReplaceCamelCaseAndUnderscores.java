@@ -6,16 +6,15 @@ import java.lang.reflect.Method;
 
 /**
  * Works only for test method names
- *
+ * <p>
  * Test method name pattern:
  * testedMethod_Should_ExpectedBehavior_When_GivenState
- *
+ * <p>
  * Test method name example:
  * isNew_Should_ReturnTrue_When_IdIsNotSet
- *
+ * <p>
  * Output example:
  * isNew: Should return true when id is not set
- *
  */
 public class ReplaceCamelCaseAndUnderscores extends DisplayNameGenerator.Standard {
 
@@ -55,7 +54,7 @@ public class ReplaceCamelCaseAndUnderscores extends DisplayNameGenerator.Standar
     }
 
     private String deleteUntilUnderscore(String input) {
-        if(input.contains(UNDERSCORE))
+        if (input.contains(UNDERSCORE))
             return input.substring(input.indexOf(UNDERSCORE) + 1);
         else
             throw new IllegalArgumentException("Invalid test method name. Refactor to following pattern: " +

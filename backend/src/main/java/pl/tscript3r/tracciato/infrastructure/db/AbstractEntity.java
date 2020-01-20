@@ -1,4 +1,4 @@
-package pl.tscript3r.tracciato.infrastructure;
+package pl.tscript3r.tracciato.infrastructure.db;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,6 +8,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,6 +23,10 @@ public abstract class AbstractEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, nullable = false)
     private Long id;
+
+    @Getter
+    @Setter
+    private UUID uuid;
 
     public Boolean isNew() {
         return id == null;

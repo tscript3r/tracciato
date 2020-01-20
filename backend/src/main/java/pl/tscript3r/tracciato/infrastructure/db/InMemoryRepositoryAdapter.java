@@ -1,19 +1,24 @@
 package pl.tscript3r.tracciato.infrastructure.db;
 
 import io.vavr.control.Option;
-import pl.tscript3r.tracciato.infrastructure.AbstractEntity;
 
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Predicate;
 
-public abstract class AbstractInMemoryRepositoryAdapter<T extends AbstractEntity> implements RepositoryAdapter<Long, T> {
+public class InMemoryRepositoryAdapter<T extends AbstractEntity> implements RepositoryAdapter<Long, T> {
 
     protected final ConcurrentMap<Long, T> db = new ConcurrentHashMap<>();
 
     @Override
     public Option<T> findById(Long id) {
         return Option.of(db.get(id));
+    }
+
+    @Override
+    public Option<T> findByUuid(UUID uuid) {
+        return find(o -> o.getUuid().equals(uuid));
     }
 
     @Override

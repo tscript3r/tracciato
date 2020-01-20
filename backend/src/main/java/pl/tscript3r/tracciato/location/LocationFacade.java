@@ -13,7 +13,7 @@ public class LocationFacade {
 
     private final UserFacade userFacade;
     private final LocationFactory locationFactory;
-    private final LocationRepositoryAdapter locationRepositoryAdapter;
+    private final LocationDao locationDao;
 
     public InternalResponse<LocationEntity> addLocation(String token, LocationDto locationDto) {
         return userFacade.validateAndGetUuidFromToken(token)
@@ -22,7 +22,7 @@ public class LocationFacade {
 
     public InternalResponse<LocationDto> addLocationAndMap(String token, LocationDto locationDto) {
         return addLocation(token, locationDto)
-                .map(LocationMapper::map);
+                .map(locationDao::map);
     }
 
     public InternalResponse<Set<LocationDto>> getAllLocationsFromUser(String token) {
@@ -31,13 +31,11 @@ public class LocationFacade {
     }
 
     private Set<LocationDto> receiveUsersLocations(UUID userUuid) {
-        var locationEntities = locationRepositoryAdapter.findAllFromUser(userUuid);
-        return LocationMapper.map(locationEntities);
+        return locationDao.getAllFromUser(userUuid);
     }
 
     public InternalResponse<LocationEntity> getLocationEntityByUuid(UUID existingLocationUuid) {
-        return InternalResponse.fromOption(locationRepositoryAdapter.findByUuid(existingLocationUuid),
-                LocationFailureResponse.uuidNotFound(existingLocationUuid));
+        return locationDao.getEntity(existingLocationUuid);
     }
 
 }

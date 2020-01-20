@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
-import pl.tscript3r.tracciato.route.availability.api.AvailabilityDto;
 import pl.tscript3r.tracciato.infrastructure.validator.OneNotEmpty;
 import pl.tscript3r.tracciato.location.api.LocationDto;
+import pl.tscript3r.tracciato.route.availability.api.AvailabilityDto;
 import pl.tscript3r.tracciato.route.location.LocationPriority;
 
 import javax.validation.Valid;

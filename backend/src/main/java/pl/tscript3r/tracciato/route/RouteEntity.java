@@ -3,9 +3,9 @@ package pl.tscript3r.tracciato.route;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import pl.tscript3r.tracciato.route.availability.AvailabilityEntity;
-import pl.tscript3r.tracciato.infrastructure.AbstractEntity;
+import pl.tscript3r.tracciato.infrastructure.db.AbstractEntity;
 import pl.tscript3r.tracciato.location.LocationEntity;
+import pl.tscript3r.tracciato.route.availability.AvailabilityEntity;
 import pl.tscript3r.tracciato.route.location.RouteLocationEntity;
 
 import javax.persistence.*;
@@ -17,7 +17,6 @@ import java.util.*;
 @Setter
 public class RouteEntity extends AbstractEntity {
 
-    private UUID uuid;
     private UUID ownerUuid;
     private String name;
     private LocalDateTime startDate;

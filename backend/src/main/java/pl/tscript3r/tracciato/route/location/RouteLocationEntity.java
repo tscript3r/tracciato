@@ -2,9 +2,9 @@ package pl.tscript3r.tracciato.route.location;
 
 import lombok.Getter;
 import lombok.Setter;
-import pl.tscript3r.tracciato.route.availability.AvailabilityEntity;
-import pl.tscript3r.tracciato.infrastructure.AbstractEntity;
+import pl.tscript3r.tracciato.infrastructure.db.AbstractEntity;
 import pl.tscript3r.tracciato.location.LocationEntity;
+import pl.tscript3r.tracciato.route.availability.AvailabilityEntity;
 
 import javax.persistence.*;
 import java.time.Duration;

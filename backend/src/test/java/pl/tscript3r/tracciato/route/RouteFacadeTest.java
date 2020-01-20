@@ -138,7 +138,7 @@ public class RouteFacadeTest {
         when(userFacade.authorize(any(), any())).thenReturn(true);
 
         // when
-        var results = routeFacade.setStartLocation("mocked", existingRoute.getUuid(), locationDto);
+        var results = routeFacade.setNewStartLocation("mocked", existingRoute.getUuid(), locationDto);
 
         // then
         assertTrue(results.isRight());
@@ -156,7 +156,7 @@ public class RouteFacadeTest {
         var addedLocation = locationFacade.addLocation("mocked", LocationConst.getValidLocationDto());
 
         // when
-        var results = routeFacade.setStartLocation("mocked", existingRoute.getUuid(), addedLocation.get().getUuid());
+        var results = routeFacade.setExistingStartLocation("mocked", existingRoute.getUuid(), addedLocation.get().getUuid());
 
         // then
         assertTrue(results.isRight());
@@ -172,7 +172,7 @@ public class RouteFacadeTest {
         when(userFacade.authorize(any(), any())).thenReturn(true);
 
         // when
-        var results = routeFacade.setEndLocation("mocked", existingRoute.getUuid(), locationDto);
+        var results = routeFacade.setNewEndLocation("mocked", existingRoute.getUuid(), locationDto);
 
         // then
         assertTrue(results.isRight());
@@ -191,7 +191,7 @@ public class RouteFacadeTest {
         var addedLocation = locationFacade.addLocation("mocked", LocationConst.getValidLocationDto());
 
         // when
-        var results = routeFacade.setEndLocation("mocked", existingRoute.getUuid(), addedLocation.get().getUuid());
+        var results = routeFacade.setExistingEndLocation("mocked", existingRoute.getUuid(), addedLocation.get().getUuid());
 
         // then
         assertTrue(results.isRight());

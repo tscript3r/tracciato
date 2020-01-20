@@ -1,11 +1,9 @@
 package pl.tscript3r.tracciato.user;
 
 import io.vavr.control.Option;
-import pl.tscript3r.tracciato.infrastructure.db.AbstractInMemoryRepositoryAdapter;
+import pl.tscript3r.tracciato.infrastructure.db.InMemoryRepositoryAdapter;
 
-import java.util.UUID;
-
-public class UserInMemoryRepositoryAdapter extends AbstractInMemoryRepositoryAdapter<UserEntity> implements
+public class UserInMemoryRepositoryAdapter extends InMemoryRepositoryAdapter<UserEntity> implements
         UserRepositoryAdapter {
 
     @Override
@@ -34,11 +32,6 @@ public class UserInMemoryRepositoryAdapter extends AbstractInMemoryRepositoryAda
     @Override
     public Option<UserEntity> findByUsername(String username) {
         return find(userEntity -> userEntity.getUsername().equalsIgnoreCase(username));
-    }
-
-    @Override
-    public Option<UserEntity> findByUuid(UUID uuid) {
-        return find(userEntity -> userEntity.getUuid().equals(uuid));
     }
 
 }

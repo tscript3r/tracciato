@@ -72,6 +72,7 @@ public class UserFacadeTest implements ConcurrentStressTest {
     void register_Should_EncodeUsersPassword_When_SuccessfullyRegistered() {
         // given
         var userDto = UserConst.getValidEdyUserDto();
+        var originPassword = EDY_PASSWORD;
 
         // when
         var result = userFacade.register(userDto);
@@ -80,7 +81,7 @@ public class UserFacadeTest implements ConcurrentStressTest {
         var savedUserDto = result.get();
         assertNotNull(savedUserDto.getPassword());
         assertNotEquals("", savedUserDto.getPassword());
-        assertNotEquals(userDto.getPassword(), savedUserDto.getPassword());
+        assertNotEquals(originPassword, savedUserDto.getPassword());
     }
 
     @Test

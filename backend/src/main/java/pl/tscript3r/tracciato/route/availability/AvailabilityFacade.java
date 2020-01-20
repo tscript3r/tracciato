@@ -1,11 +1,11 @@
 package pl.tscript3r.tracciato.route.availability;
 
 import lombok.RequiredArgsConstructor;
-import pl.tscript3r.tracciato.route.availability.api.AvailabilityDto;
 import pl.tscript3r.tracciato.infrastructure.response.InternalResponse;
 import pl.tscript3r.tracciato.infrastructure.validator.DefaultValidator;
 import pl.tscript3r.tracciato.route.RouteFacade;
 import pl.tscript3r.tracciato.route.api.RouteDto;
+import pl.tscript3r.tracciato.route.availability.api.AvailabilityDto;
 
 import java.util.UUID;
 

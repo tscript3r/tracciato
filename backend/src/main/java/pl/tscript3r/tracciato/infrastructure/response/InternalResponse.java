@@ -24,7 +24,7 @@ public class InternalResponse<T> implements Either<FailureResponse, T> {
         return new InternalResponse<>(Either.left(failureResponse));
     }
 
-    public static <T> InternalResponse<T> fromOption(Option<T> option, FailureResponse failureResponse) {
+    public static <T> InternalResponse<T> ofOption(Option<T> option, FailureResponse failureResponse) {
         return new InternalResponse<>(option.toEither(failureResponse));
     }
 
@@ -43,6 +43,10 @@ public class InternalResponse<T> implements Either<FailureResponse, T> {
 
     public InternalResponse<T> filterOrElse(Predicate<? super T> predicate, Function<? super T, ? extends FailureResponse> zero) {
         return new InternalResponse<>(either.filterOrElse(predicate, zero));
+    }
+
+    public InternalResponse<T> filterInternal(Predicate<? super T> predicate, FailureResponse failureResponse) {
+        return isLeft() || predicate.test(get()) ? this : InternalResponse.failure(failureResponse);
     }
 
     @Override

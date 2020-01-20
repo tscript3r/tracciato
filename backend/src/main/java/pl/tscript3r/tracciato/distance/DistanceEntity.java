@@ -2,7 +2,7 @@ package pl.tscript3r.tracciato.distance;
 
 import lombok.Getter;
 import lombok.Setter;
-import pl.tscript3r.tracciato.infrastructure.AbstractEntity;
+import pl.tscript3r.tracciato.infrastructure.db.AbstractEntity;
 import pl.tscript3r.tracciato.location.LocationEntity;
 
 import javax.persistence.Entity;

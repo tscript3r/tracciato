@@ -19,6 +19,7 @@ public class UserFacade {
     private final UserAuthentication userAuthentication;
     private final JWTTokenResolver jwtTokenResolver;
     private final UserResourceAuthorization userResourceAuthorization;
+    private final UserDao userDao;
 
     public InternalResponse<UserDto> register(UserDto userDto) {
         return userRegistration.register(userDto);
@@ -30,8 +31,7 @@ public class UserFacade {
 
     public InternalResponse<String> getToken(String username) {
         try {
-            return InternalResponse.fromOption(userAuthentication.findByUsername(username),
-                    UserFailureResponse.invalidCredentials())
+            return userDao.getByUsername(username, UserFailureResponse.invalidCredentials())
                     .flatMap(userDto -> InternalResponse.payload(jwtTokenResolver.getToken(userDto.getUuid())));
         } catch (InvalidKeyException e) {
             log.error(e.getMessage(), e);
@@ -40,7 +40,7 @@ public class UserFacade {
     }
 
     public InternalResponse<UUID> validateAndGetUuidFromToken(String token) {
-        return InternalResponse.fromOption(jwtTokenResolver.getUuidAndValidateToken(token),
+        return InternalResponse.ofOption(jwtTokenResolver.getUuidAndValidateToken(token),
                 UserFailureResponse.invalidCredentials());
     }
 

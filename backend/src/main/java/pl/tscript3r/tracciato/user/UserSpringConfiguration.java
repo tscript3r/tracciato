@@ -1,6 +1,7 @@
 package pl.tscript3r.tracciato.user;
 
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -26,11 +27,12 @@ public class UserSpringConfiguration {
         Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
         PasswordEncrypt passwordEncoder = new BCryptPasswordEncrypt();
         UserValidator userValidator = new UserValidator(validator, userRepositoryAdapter);
-        UserRegistration userRegistration = new UserRegistration(userRepositoryAdapter, userValidator, passwordEncoder);
-        UserAuthentication userAuthentication = new UserAuthentication(userRepositoryAdapter, passwordEncoder);
+        UserDao userDao = new UserDao(new ModelMapper(), userRepositoryAdapter, UserFailureResponse.idNotFound());
+        UserRegistration userRegistration = new UserRegistration(userValidator, passwordEncoder, userDao);
+        UserAuthentication userAuthentication = new UserAuthentication(passwordEncoder, userDao);
         JWTTokenResolver jwtTokenResolver = new JWTTokenResolver();
         UserResourceAuthorization userResourceAuthorization = new UserResourceAuthorization();
-        return new UserFacade(userRegistration, userAuthentication, jwtTokenResolver, userResourceAuthorization);
+        return new UserFacade(userRegistration, userAuthentication, jwtTokenResolver, userResourceAuthorization, userDao);
     }
 
 }

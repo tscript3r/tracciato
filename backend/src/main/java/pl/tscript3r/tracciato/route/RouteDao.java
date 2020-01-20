@@ -1,47 +1,43 @@
 package pl.tscript3r.tracciato.route;
 
-import pl.tscript3r.tracciato.route.availability.AvailabilityEntity;
+import org.modelmapper.ModelMapper;
+import pl.tscript3r.tracciato.infrastructure.db.Dao;
+import pl.tscript3r.tracciato.infrastructure.response.InternalResponse;
+import pl.tscript3r.tracciato.infrastructure.response.error.FailureResponse;
 import pl.tscript3r.tracciato.location.LocationEntity;
+import pl.tscript3r.tracciato.route.api.RouteDto;
+import pl.tscript3r.tracciato.route.availability.AvailabilityEntity;
 import pl.tscript3r.tracciato.route.location.RouteLocationEntity;
 
 import java.util.UUID;
 
-class RouteDao {
+public final class RouteDao extends Dao<RouteEntity, RouteDto> {
 
-    private final RouteEntity routeEntity;
+    private final RouteRepositoryAdapter routeRepositoryAdapter;
 
-    public static RouteDao get(RouteEntity routeEntity) {
-        return new RouteDao(routeEntity);
+    public RouteDao(ModelMapper modelMapper, RouteRepositoryAdapter repositoryAdapter, FailureResponse notFoundFailureResponse) {
+        super(modelMapper, repositoryAdapter, notFoundFailureResponse);
+        this.routeRepositoryAdapter = repositoryAdapter;
     }
 
-    private RouteDao(RouteEntity routeEntity) {
-        this.routeEntity = routeEntity;
+    public InternalResponse<RouteDto> addRouteLocation(UUID routeUuid, RouteLocationEntity routeLocationEntity) {
+        return update(routeUuid, entity -> entity.getLocations().add(routeLocationEntity));
     }
 
-    public UUID getOwnerUuid() {
-        return routeEntity.getOwnerUuid();
+    public InternalResponse<RouteEntity> getEntity(UUID routeUuid) {
+        return InternalResponse.ofOption(routeRepositoryAdapter.findByUuid(routeUuid), notFoundFailureResponse);
     }
 
-    public void addRouteLocation(RouteLocationEntity routeLocationEntity) {
-        var routeLocations = routeEntity.getLocations();
-        routeLocations.add(routeLocationEntity);
+    public InternalResponse<RouteDto> setStartLocation(UUID routeUuid, LocationEntity locationEntity) {
+        return update(routeUuid, entity -> entity.setStartLocation(locationEntity));
     }
 
-    public void setStartLocation(LocationEntity startLocation) {
-        routeEntity.setStartLocation(startLocation);
+    public InternalResponse<RouteDto> setEndLocation(UUID routeUuid, LocationEntity locationEntity) {
+        return update(routeUuid, entity -> entity.setEndLocation(locationEntity));
     }
 
-    public void setEndLocation(LocationEntity endLocation) {
-        routeEntity.setEndLocation(endLocation);
-    }
-
-    public RouteEntity get() {
-        return routeEntity;
-    }
-
-    public void addAvailability(AvailabilityEntity availabilityEntity) {
-        var routeAvailabilities = routeEntity.getAvailabilities();
-        routeAvailabilities.add(availabilityEntity);
+    public InternalResponse<RouteDto> addAvailability(UUID routeUuid, AvailabilityEntity availabilityEntity) {
+        return update(routeUuid, entity -> entity.getAvailabilities().add(availabilityEntity));
     }
 
 }

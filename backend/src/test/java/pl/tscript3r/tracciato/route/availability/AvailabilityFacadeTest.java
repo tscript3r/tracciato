@@ -8,8 +8,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.tscript3r.tracciato.ReplaceCamelCaseAndUnderscores;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @DisplayName("Availability facade")
 @DisplayNameGeneration(ReplaceCamelCaseAndUnderscores.class)
 @ExtendWith(MockitoExtension.class)

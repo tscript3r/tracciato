@@ -2,7 +2,7 @@ package pl.tscript3r.tracciato.location;
 
 import lombok.Getter;
 import lombok.Setter;
-import pl.tscript3r.tracciato.infrastructure.AbstractEntity;
+import pl.tscript3r.tracciato.infrastructure.db.AbstractEntity;
 
 import javax.persistence.Entity;
 import java.util.UUID;
@@ -12,7 +12,6 @@ import java.util.UUID;
 @Setter
 public class LocationEntity extends AbstractEntity {
 
-    private UUID uuid;
     private UUID ownerUuid;
     private String name;
     private Long latitude;

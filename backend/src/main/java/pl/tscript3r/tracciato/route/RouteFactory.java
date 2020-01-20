@@ -1,6 +1,7 @@
 package pl.tscript3r.tracciato.route;
 
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import pl.tscript3r.tracciato.infrastructure.response.InternalResponse;
 import pl.tscript3r.tracciato.infrastructure.validator.DefaultValidator;
 import pl.tscript3r.tracciato.route.api.NewRouteDto;
@@ -12,17 +13,17 @@ import java.util.UUID;
 class RouteFactory {
 
     private final DefaultValidator<NewRouteDto> validator;
-    private final RouteRepositoryAdapter routeRepositoryAdapter;
+    private final ModelMapper modelMapper;
+    private final RouteDao routeDao;
 
-    synchronized InternalResponse<RouteDto> create(NewRouteDto newRouteDto) {
+    InternalResponse<RouteDto> create(NewRouteDto newRouteDto) {
         return validator.validate(newRouteDto)
                 .map(this::createRouteEntity)
-                .map(routeRepositoryAdapter::save)
-                .map(RouteMapper::map);
+                .flatMap(routeDao::save);
     }
 
-    private RouteEntity createRouteEntity(NewRouteDto newRouteDto) {
-        var routeEntity = RouteMapper.map(newRouteDto);
+    private RouteDto createRouteEntity(NewRouteDto newRouteDto) {
+        var routeEntity = modelMapper.map(newRouteDto, RouteDto.class);
         routeEntity.setUuid(UUID.randomUUID());
         return routeEntity;
     }

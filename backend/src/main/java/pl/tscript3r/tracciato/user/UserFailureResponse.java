@@ -6,12 +6,11 @@ import pl.tscript3r.tracciato.infrastructure.response.error.FailureResponse;
 public class UserFailureResponse extends AbstractFailureResponse {
 
     private static final String USERNAME_NOT_FOUND_REASON = "Username not found";
-    private static final String USER_ID_NOT_FOUND_REASON = "User id not found";
+    private static final String USER_ID_NOT_FOUND_REASON = "User uuid not found";
     private static final String INVALID_CREDENTIALS_REASON = "Invalid credentials";
 
-    static FailureResponse idNotFound(long id) {
-        return new UserFailureResponse(USER_ID_NOT_FOUND_REASON, 404)
-                .addField("id", id);
+    static FailureResponse idNotFound() {
+        return new UserFailureResponse(USER_ID_NOT_FOUND_REASON, 404);
     }
 
     static FailureResponse usernameNotFound(String username) {

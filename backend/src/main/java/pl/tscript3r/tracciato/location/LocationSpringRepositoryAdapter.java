@@ -3,7 +3,7 @@ package pl.tscript3r.tracciato.location;
 import io.vavr.control.Option;
 import lombok.AllArgsConstructor;
 
-import java.util.Collection;
+import java.util.Set;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -12,7 +12,7 @@ public class LocationSpringRepositoryAdapter implements LocationRepositoryAdapte
     private final LocationSpringRepository locationSpringRepository;
 
     @Override
-    public Collection<LocationEntity> findAllFromUser(UUID ownerUuid) {
+    public Set<LocationEntity> findAllFromUser(UUID ownerUuid) {
         return locationSpringRepository.findAllByOwnerUuid(ownerUuid);
     }
 

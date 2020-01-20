@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.tscript3r.tracciato.route.availability.api.AvailabilityDto;
 import pl.tscript3r.tracciato.infrastructure.response.ResponseResolver;
+import pl.tscript3r.tracciato.route.availability.api.AvailabilityDto;
 
 import java.util.UUID;
 
