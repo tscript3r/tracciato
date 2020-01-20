@@ -4,14 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 import pl.tscript3r.tracciato.ReplaceCamelCaseAndUnderscores;
-import pl.tscript3r.tracciato.infrastructure.response.InternalResponse;
-import pl.tscript3r.tracciato.infrastructure.response.error.GlobalFailureResponse;
 import pl.tscript3r.tracciato.location.LocationConst;
 import pl.tscript3r.tracciato.location.LocationFacade;
 import pl.tscript3r.tracciato.location.LocationInMemoryRepositoryAdapter;
@@ -19,21 +12,18 @@ import pl.tscript3r.tracciato.location.LocationSpringConfiguration;
 import pl.tscript3r.tracciato.route.availability.AvailabilityConst;
 import pl.tscript3r.tracciato.route.location.RouteLocationConst;
 import pl.tscript3r.tracciato.user.UserFacade;
-import pl.tscript3r.tracciato.user.UserFailureResponse;
 
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static pl.tscript3r.tracciato.infrastructure.spring.security.SecurityConstants.TOKEN_PREFIX;
+import static pl.tscript3r.tracciato.user.UserConst.*;
+import static pl.tscript3r.tracciato.user.UserFacadeTest.getUserFacadeWithRegisteredJohn;
 
 @DisplayName("Route facade")
 @DisplayNameGeneration(ReplaceCamelCaseAndUnderscores.class)
-@ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class RouteFacadeTest {
 
-    @Mock
     UserFacade userFacade;
 
     RouteFacade routeFacade;
@@ -42,7 +32,7 @@ public class RouteFacadeTest {
 
     RouteRepositoryAdapter routeRepositoryAdapter;
 
-    final UUID userUuid = UUID.randomUUID();
+    String token;
 
     public static RouteFacade getRouteFacade(UserFacade userFacade, RouteRepositoryAdapter routeRepositoryAdapter,
                                              LocationFacade locationFacade) {
@@ -56,11 +46,12 @@ public class RouteFacadeTest {
 
     @BeforeEach
     void setUp() {
+        userFacade = getUserFacadeWithRegisteredJohn();
+        token = TOKEN_PREFIX + userFacade.getToken(JOHNS_USERNAME).get();
         routeRepositoryAdapter = new RouteInMemoryRepositoryAdapter();
         var inMemoryLocationRepositoryAdapter = new LocationInMemoryRepositoryAdapter();
         locationFacade = LocationSpringConfiguration.getInMemoryLocationFacade(userFacade, inMemoryLocationRepositoryAdapter);
         routeFacade = getRouteFacade(userFacade, routeRepositoryAdapter, locationFacade);
-        when(userFacade.validateAndGetUuidFromToken(any())).thenReturn(InternalResponse.payload(userUuid));
     }
 
     @Test
@@ -69,7 +60,7 @@ public class RouteFacadeTest {
         var newRouteDto = RouteConst.getValidNewRouteDto();
 
         // when
-        var results = routeFacade.create("mocked", newRouteDto);
+        var results = routeFacade.create(token, newRouteDto);
 
         // then
         assertTrue(results.isRight());
@@ -80,10 +71,9 @@ public class RouteFacadeTest {
     void create_Should_RejectNewRoute_When_TokenIsInvalid() {
         // given
         var newRouteDto = RouteConst.getValidNewRouteDto();
-        when(userFacade.validateAndGetUuidFromToken(any())).thenReturn(InternalResponse.failure(GlobalFailureResponse.INTERNAL_SERVER_ERROR));
 
         // when
-        var results = routeFacade.create("mocked", newRouteDto);
+        var results = routeFacade.create("invalid", newRouteDto);
 
         // then
         assertTrue(results.isLeft());
@@ -96,7 +86,7 @@ public class RouteFacadeTest {
         newRouteDto.setStartDate(null);
 
         // when
-        var results = routeFacade.create("mocked", newRouteDto);
+        var results = routeFacade.create(token, newRouteDto);
 
         // then
         assertTrue(results.isLeft());
@@ -106,11 +96,10 @@ public class RouteFacadeTest {
     void addLocation_Should_SaveNewRouteLocation_When_GivenLocationIsValid() {
         // given
         var routeLocationEntity = RouteLocationConst.getValidRouteLocationEntity();
-        var existingRoute = routeFacade.create("mocked", RouteConst.getValidNewRouteDto()).get();
-        when(userFacade.authorize(any(), any())).thenReturn(true);
+        var existingRoute = routeFacade.create(token, RouteConst.getValidNewRouteDto()).get();
 
         // when
-        var results = routeFacade.addLocation("mocked", existingRoute.getUuid(), routeLocationEntity);
+        var results = routeFacade.addLocation(token, existingRoute.getUuid(), routeLocationEntity);
 
         // then
         assertTrue(results.isRight());
@@ -124,7 +113,7 @@ public class RouteFacadeTest {
         var nonExistingUuid = UUID.randomUUID();
 
         // when
-        var results = routeFacade.addLocation("mocked", nonExistingUuid, RouteLocationConst.getValidRouteLocationEntity());
+        var results = routeFacade.addLocation(token, nonExistingUuid, RouteLocationConst.getValidRouteLocationEntity());
 
         // then
         assertTrue(results.isLeft());
@@ -134,11 +123,11 @@ public class RouteFacadeTest {
     void setStartLocation_Should_SuccessfullySetNewStartLocation_When_ExistingRouteUuidGiven() {
         // given
         var locationDto = LocationConst.getValidLocationDto();
-        var existingRoute = routeFacade.create("mocked", RouteConst.getValidNewRouteDto()).get();
-        when(userFacade.authorize(any(), any())).thenReturn(true);
+        var tmp = routeFacade.create(token, RouteConst.getValidNewRouteDto());
+        var existingRoute = tmp.get();
 
         // when
-        var results = routeFacade.setNewStartLocation("mocked", existingRoute.getUuid(), locationDto);
+        var results = routeFacade.setNewStartLocation(token, existingRoute.getUuid(), locationDto);
 
         // then
         assertTrue(results.isRight());
@@ -149,14 +138,11 @@ public class RouteFacadeTest {
     @Test
     void setStartLocation_Should_SuccessfullySetExistingStartLocation_When_ExistingRouteUuidAndLocationUuidGiven() {
         // given
-        var existingRoute = routeFacade.create("mocked", RouteConst.getValidNewRouteDto()).get();
-        when(userFacade.authorize(any(), any())).thenReturn(true);
-        var userUuid = UUID.randomUUID();
-        when(userFacade.validateAndGetUuidFromToken(any())).thenReturn(InternalResponse.payload(userUuid));
-        var addedLocation = locationFacade.addLocation("mocked", LocationConst.getValidLocationDto());
+        var existingRoute = routeFacade.create(token, RouteConst.getValidNewRouteDto()).get();
+        var addedLocation = locationFacade.addLocation(token, LocationConst.getValidLocationDto());
 
         // when
-        var results = routeFacade.setExistingStartLocation("mocked", existingRoute.getUuid(), addedLocation.get().getUuid());
+        var results = routeFacade.setExistingStartLocation(token, existingRoute.getUuid(), addedLocation.get().getUuid());
 
         // then
         assertTrue(results.isRight());
@@ -168,11 +154,10 @@ public class RouteFacadeTest {
     void setEndLocation_Should_SuccessfullySetNewEndLocation_When_ExistingRouteUuidGiven() {
         // given
         var locationDto = LocationConst.getValidLocationDto();
-        var existingRoute = routeFacade.create("mocked", RouteConst.getValidNewRouteDto()).get();
-        when(userFacade.authorize(any(), any())).thenReturn(true);
+        var existingRoute = routeFacade.create(token, RouteConst.getValidNewRouteDto()).get();
 
         // when
-        var results = routeFacade.setNewEndLocation("mocked", existingRoute.getUuid(), locationDto);
+        var results = routeFacade.setNewEndLocation(token, existingRoute.getUuid(), locationDto);
 
         // then
         assertTrue(results.isRight());
@@ -184,14 +169,11 @@ public class RouteFacadeTest {
     @Test
     void setEndLocation_Should_SuccessfullySetExistingEndLocation_When_ExistingRouteUuidAndLocationUuidGiven() {
         // given
-        var existingRoute = routeFacade.create("mocked", RouteConst.getValidNewRouteDto()).get();
-        when(userFacade.authorize(any(), any())).thenReturn(true);
-        var userUuid = UUID.randomUUID();
-        when(userFacade.validateAndGetUuidFromToken(any())).thenReturn(InternalResponse.payload(userUuid));
-        var addedLocation = locationFacade.addLocation("mocked", LocationConst.getValidLocationDto());
+        var existingRoute = routeFacade.create(token, RouteConst.getValidNewRouteDto()).get();
+        var addedLocation = locationFacade.addLocation(token, LocationConst.getValidLocationDto());
 
         // when
-        var results = routeFacade.setExistingEndLocation("mocked", existingRoute.getUuid(), addedLocation.get().getUuid());
+        var results = routeFacade.setExistingEndLocation(token, existingRoute.getUuid(), addedLocation.get().getUuid());
 
         // then
         assertTrue(results.isRight());
@@ -202,11 +184,10 @@ public class RouteFacadeTest {
     @Test
     void getRoute_Should_Fail_When_InvalidTokenIsGiven() {
         // given
-        var existingRoute = routeFacade.create("mocked", RouteConst.getValidNewRouteDto()).get();
-        when(userFacade.validateAndGetUuidFromToken(any())).thenReturn(InternalResponse.failure(UserFailureResponse.invalidCredentials()));
+        var existingRoute = routeFacade.create(token, RouteConst.getValidNewRouteDto()).get();
 
         // when
-        var results = routeFacade.getRoute("mocked", existingRoute.getUuid());
+        var results = routeFacade.getRoute("invalid", existingRoute.getUuid());
 
         // then
         assertTrue(results.isLeft());
@@ -215,11 +196,12 @@ public class RouteFacadeTest {
     @Test
     void getRoute_Should_Fail_When_UserRequestsRouteWhichIsOwnedByOtherUser() {
         // given
-        var existingRoute = routeFacade.create("mocked", RouteConst.getValidNewRouteDto()).get();
-        when(userFacade.authorize(any(), any())).thenReturn(false);
+        var existingRoute = routeFacade.create(token, RouteConst.getValidNewRouteDto()).get();
+        userFacade.register(getValidEdyUserDto());
+        var otherUsersToken = userFacade.getToken(EDY_USERNAME).get();
 
         // when
-        var results = routeFacade.getRoute("mocked", existingRoute.getUuid());
+        var results = routeFacade.getRoute(TOKEN_PREFIX + otherUsersToken, existingRoute.getUuid());
 
         // then
         assertTrue(results.isLeft());
@@ -231,7 +213,7 @@ public class RouteFacadeTest {
         var nonExistingRouteUuid = UUID.randomUUID();
 
         // when
-        var results = routeFacade.getRoute("mocked", nonExistingRouteUuid);
+        var results = routeFacade.getRoute(token, nonExistingRouteUuid);
 
         // then
         assertTrue(results.isLeft());
@@ -240,11 +222,10 @@ public class RouteFacadeTest {
     @Test
     void getRoute_Should_SuccessfullyReturnRoute_When_ExistingRouteUuidIsGiven() {
         // given
-        var existingRoute = routeFacade.create("mocked", RouteConst.getValidNewRouteDto()).get();
-        when(userFacade.authorize(any(), any())).thenReturn(true);
+        var existingRoute = routeFacade.create(token, RouteConst.getValidNewRouteDto()).get();
 
         // when
-        var results = routeFacade.getRoute("mocked", existingRoute.getUuid());
+        var results = routeFacade.getRoute(token, existingRoute.getUuid());
 
         // then
         assertTrue(results.isRight());
@@ -253,12 +234,11 @@ public class RouteFacadeTest {
     @Test
     void addAvailability_Should_SuccessfullyAddAvailability_When_ExistingRouteUuidIsGiven() {
         // given
-        var existingRoute = routeFacade.create("mocked", RouteConst.getValidNewRouteDto());
+        var existingRoute = routeFacade.create(token, RouteConst.getValidNewRouteDto());
         var validAvailabilityEntity = AvailabilityConst.getValidAvailabilityEntity();
-        when(userFacade.authorize(any(), any())).thenReturn(true);
 
         // when
-        var results = routeFacade.addAvailability("mocked", existingRoute.get().getUuid(), validAvailabilityEntity);
+        var results = routeFacade.addAvailability(token, existingRoute.get().getUuid(), validAvailabilityEntity);
 
         // then
         assertTrue(results.isRight());

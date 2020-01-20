@@ -4,13 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 import pl.tscript3r.tracciato.ReplaceCamelCaseAndUnderscores;
-import pl.tscript3r.tracciato.infrastructure.response.InternalResponse;
 import pl.tscript3r.tracciato.infrastructure.validator.DefaultValidator;
 import pl.tscript3r.tracciato.location.LocationFacade;
 import pl.tscript3r.tracciato.location.LocationInMemoryRepositoryAdapter;
@@ -26,20 +20,20 @@ import javax.validation.Validation;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static pl.tscript3r.tracciato.infrastructure.spring.security.SecurityConstants.TOKEN_PREFIX;
 import static pl.tscript3r.tracciato.location.LocationConst.getValidLocationDto;
 import static pl.tscript3r.tracciato.route.RouteConst.getValidNewRouteDto;
 import static pl.tscript3r.tracciato.route.location.RouteLocationConst.getValidRouteLocationDtoWithNewLocation;
+import static pl.tscript3r.tracciato.user.UserConst.JOHNS_USERNAME;
+import static pl.tscript3r.tracciato.user.UserFacadeTest.getUserFacadeWithRegisteredJohn;
 
 @DisplayName("Route location facade")
 @DisplayNameGeneration(ReplaceCamelCaseAndUnderscores.class)
-@ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 class RouteLocationFacadeTest {
 
-    @Mock
     UserFacade userFacade;
+
+    String token;
 
     LocationFacade locationFacade;
 
@@ -48,19 +42,21 @@ class RouteLocationFacadeTest {
     RouteLocationFacade routeLocationFacade;
 
     NewRouteDto newRouteDto;
+
     RouteDto createdRouteDto;
+
 
     @BeforeEach
     void setUp() {
+        userFacade = getUserFacadeWithRegisteredJohn();
+        token = TOKEN_PREFIX + userFacade.getToken(JOHNS_USERNAME).get();
         var validator = Validation.buildDefaultValidatorFactory().getValidator();
         var routeLocationValidator = new DefaultValidator<RouteLocationDto>(validator);
         newRouteDto = getValidNewRouteDto();
-        when(userFacade.validateAndGetUuidFromToken(any())).thenReturn(InternalResponse.payload(UUID.randomUUID()));
         locationFacade = LocationSpringConfiguration.getInMemoryLocationFacade(userFacade, new LocationInMemoryRepositoryAdapter());
         routeFacade = RouteFacadeTest.getRouteFacade(userFacade, locationFacade);
-        createdRouteDto = routeFacade.create(any(), getValidNewRouteDto()).get();
+        createdRouteDto = routeFacade.create(token, getValidNewRouteDto()).get();
         routeLocationFacade = new RouteLocationFacade(routeFacade, locationFacade, routeLocationValidator);
-        when(userFacade.authorize(any(), any())).thenReturn(true);
     }
 
     @Test
@@ -69,7 +65,7 @@ class RouteLocationFacadeTest {
         var validRouteLocationDto = getValidRouteLocationDtoWithNewLocation();
 
         // when
-        var results = routeLocationFacade.add("mocked", createdRouteDto.getUuid(), validRouteLocationDto);
+        var results = routeLocationFacade.add(token, createdRouteDto.getUuid(), validRouteLocationDto);
 
         // then
         assertTrue(results.isRight());
@@ -81,11 +77,11 @@ class RouteLocationFacadeTest {
         var validRouteLocationDto = getValidRouteLocationDtoWithNewLocation();
         validRouteLocationDto.setLocation(null);
         var validLocationDto = getValidLocationDto();
-        var existingLocationUuid = locationFacade.addLocation("mocked", validLocationDto).get().getUuid();
+        var existingLocationUuid = locationFacade.addLocation(token, validLocationDto).get().getUuid();
         validRouteLocationDto.setExistingLocationUuid(existingLocationUuid);
 
         // when
-        var results = routeLocationFacade.add("mocked", createdRouteDto.getUuid(), validRouteLocationDto);
+        var results = routeLocationFacade.add(token, createdRouteDto.getUuid(), validRouteLocationDto);
 
         // then
         assertTrue(results.isRight());
@@ -95,10 +91,9 @@ class RouteLocationFacadeTest {
     void add_Should_ReturnFailureResponse_When_AuthorizationFails() {
         // given
         var validRouteLocationDto = getValidRouteLocationDtoWithNewLocation();
-        when(userFacade.authorize(any(), any())).thenReturn(false);
 
         // when
-        var results = routeLocationFacade.add("mocked", createdRouteDto.getUuid(), validRouteLocationDto);
+        var results = routeLocationFacade.add("invalidToken", createdRouteDto.getUuid(), validRouteLocationDto);
 
         // then
         assertTrue(results.isLeft());
@@ -110,7 +105,7 @@ class RouteLocationFacadeTest {
         var invalidRouteLocationDto = RouteLocationConst.getValidRouteLocationWithLocationUuid(null);
 
         // when
-        var results = routeLocationFacade.add("mocked", newRouteDto.getUuid(), invalidRouteLocationDto);
+        var results = routeLocationFacade.add(token, newRouteDto.getUuid(), invalidRouteLocationDto);
 
         // then
         assertTrue(results.isLeft());
@@ -123,7 +118,7 @@ class RouteLocationFacadeTest {
         var validRouteLocationDto = RouteLocationConst.getValidRouteLocationWithLocationUuid(nonExistingLocationUuid);
 
         // when
-        var results = routeLocationFacade.add("mocked", newRouteDto.getUuid(), validRouteLocationDto);
+        var results = routeLocationFacade.add(token, newRouteDto.getUuid(), validRouteLocationDto);
 
         // then
         assertTrue(results.isLeft());
@@ -136,7 +131,7 @@ class RouteLocationFacadeTest {
         invalidRouteLocationDto.setLocation(null);
 
         // when
-        var result = routeLocationFacade.add("mocked", newRouteDto.getUuid(), invalidRouteLocationDto);
+        var result = routeLocationFacade.add(token, newRouteDto.getUuid(), invalidRouteLocationDto);
 
         // then
         assertTrue(result.isLeft());

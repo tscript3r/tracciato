@@ -35,6 +35,13 @@ public class UserFacadeTest implements ConcurrentStressTest {
         return UserSpringConfiguration.getInMemoryUserFacade(userInMemoryRepositoryAdapter);
     }
 
+    public static UserFacade getUserFacadeWithRegisteredJohn() {
+        var userFacade = UserFacadeTest.getUserFacade(new UserInMemoryRepositoryAdapter());
+        var userDto = UserConst.getValidJohnsUserDto();
+        userFacade.register(userDto);
+        return userFacade;
+    }
+
     @BeforeEach
     void setUp() {
         userRepositoryAdapter = new UserInMemoryRepositoryAdapter();
@@ -168,10 +175,10 @@ public class UserFacadeTest implements ConcurrentStressTest {
         var invalidToken = "Bearer INVALID";
 
         // when
-        var results = userFacade.authorize(invalidToken, JOHNS_UUID);
+        var results = userFacade.authorize(invalidToken, JOHNS_UUID, invalidToken);
 
         // then
-        assertTrue(results);
+        assertTrue(results.isLeft());
     }
 
     @Test
@@ -180,10 +187,10 @@ public class UserFacadeTest implements ConcurrentStressTest {
         var validToken = userFacade.getToken(JOHNS_USERNAME);
 
         // when
-        var results = userFacade.authorize(validToken.get(), UUID.randomUUID());
+        var results = userFacade.authorize(validToken.get(), UUID.randomUUID(), validToken.get());
 
         // then
-        assertTrue(results);
+        assertTrue(results.isLeft());
     }
 
     @Test
@@ -192,10 +199,10 @@ public class UserFacadeTest implements ConcurrentStressTest {
         var validToken = userFacade.getToken(JOHNS_USERNAME);
 
         // when
-        var results = userFacade.authorize("Bearer " + validToken.get(), existingJohnUserEntity.getUuid());
+        var results = userFacade.authorize("Bearer " + validToken.get(), existingJohnUserEntity.getUuid(), validToken.get());
 
         // then
-        assertTrue(results);
+        assertTrue(results.isRight());
     }
 
     @Test
@@ -246,7 +253,9 @@ public class UserFacadeTest implements ConcurrentStressTest {
     @Test
     void authorize_Should_Validate10000Requests_When_HasMax10SecondsForIt() throws ExecutionException {
         var results = concurrentStressTest(THREADS_COUNT, 10000, 10_000, () ->
-                userFacade.authorize(userFacade.getToken(existingJohnUserEntity.getUsername()).get(), existingJohnUserEntity.getUuid()));
+                userFacade.authorize(TOKEN_PREFIX + userFacade.getToken(existingJohnUserEntity.getUsername()).get(),
+                        existingJohnUserEntity.getUuid(),
+                        existingJohnUserEntity.getUsername()).get());
         if (results.getUncompletedCount() > 0)
             log.warn("Method has not completed required tasks in time ({} unfinished)",
                     results.getUncompletedCount());

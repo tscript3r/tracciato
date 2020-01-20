@@ -6,7 +6,7 @@ import pl.tscript3r.tracciato.infrastructure.response.InternalResponse;
 import pl.tscript3r.tracciato.infrastructure.response.error.FailureResponse;
 import pl.tscript3r.tracciato.user.api.UserDto;
 
-public final class UserDao extends Dao<UserEntity, UserDto> {
+final class UserDao extends Dao<UserEntity, UserDto> {
 
     private final UserRepositoryAdapter userRepositoryAdapter;
 

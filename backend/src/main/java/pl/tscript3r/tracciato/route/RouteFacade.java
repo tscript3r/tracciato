@@ -12,8 +12,6 @@ import pl.tscript3r.tracciato.user.UserFacade;
 
 import java.util.UUID;
 
-import static pl.tscript3r.tracciato.infrastructure.response.error.GlobalFailureResponse.UNAUTHORIZED_FAILURE;
-
 @AllArgsConstructor
 public class RouteFacade {
 
@@ -36,45 +34,40 @@ public class RouteFacade {
 
     private InternalResponse<RouteEntity> authorizeAndGetRouteEntity(String token, UUID routeUuid) {
         return routeDao.getEntity(routeUuid)
-                .filterInternal(dto -> userFacade.authorize(token, dto.getOwnerUuid()), UNAUTHORIZED_FAILURE);
+                .flatMap(entity -> userFacade.authorize(token, entity.getOwnerUuid(), entity));
     }
 
     public InternalResponse<RouteDto> setNewStartLocation(String token, UUID routeUuid, LocationDto locationDto) {
-        return routeDao.getEntity(routeUuid)
-                .filterInternal(entity -> userFacade.authorize(token, entity.getOwnerUuid()), UNAUTHORIZED_FAILURE)
+        return authorizeAndGetRouteEntity(token, routeUuid)
                 .flatMap(routeEntity -> locationFacade.addLocation(token, locationDto))
                 .flatMap(locationEntity -> routeDao.setStartLocation(routeUuid, locationEntity));
     }
 
     public InternalResponse<RouteDto> setExistingStartLocation(String token, UUID routeUuid, UUID locationUuid) {
-        return routeDao.getEntity(routeUuid)
-                .filterInternal(entity -> userFacade.authorize(token, entity.getOwnerUuid()), UNAUTHORIZED_FAILURE)
+        return authorizeAndGetRouteEntity(token, routeUuid)
                 .flatMap(routeEntity -> locationFacade.getLocationEntityByUuid(locationUuid))
                 .flatMap(locationEntity -> routeDao.setStartLocation(routeUuid, locationEntity));
     }
 
     public InternalResponse<RouteDto> setNewEndLocation(String token, UUID routeUuid, LocationDto locationDto) {
-        return routeDao.getEntity(routeUuid)
-                .filterInternal(entity -> userFacade.authorize(token, entity.getOwnerUuid()), UNAUTHORIZED_FAILURE)
+        return authorizeAndGetRouteEntity(token, routeUuid)
                 .flatMap(routeEntity -> locationFacade.addLocation(token, locationDto))
                 .flatMap(locationEntity -> routeDao.setEndLocation(routeUuid, locationEntity));
     }
 
     public InternalResponse<RouteDto> setExistingEndLocation(String token, UUID routeUuid, UUID locationUuid) {
-        return routeDao.getEntity(routeUuid)
-                .filterInternal(entity -> userFacade.authorize(token, entity.getOwnerUuid()), UNAUTHORIZED_FAILURE)
+        return authorizeAndGetRouteEntity(token, routeUuid)
                 .flatMap(routeEntity -> locationFacade.getLocationEntityByUuid(locationUuid))
                 .flatMap(locationEntity -> routeDao.setEndLocation(routeUuid, locationEntity));
     }
 
     public InternalResponse<RouteDto> getRoute(String token, UUID routeUuid) {
         return routeDao.get(routeUuid)
-                .filterInternal(entity -> userFacade.authorize(token, entity.getOwnerUuid()), UNAUTHORIZED_FAILURE);
+                .flatMap(dto -> userFacade.authorize(token, dto.getOwnerUuid(), dto));
     }
 
     public InternalResponse<RouteDto> addAvailability(String token, UUID routeUuid, AvailabilityEntity availabilityEntity) {
-        return routeDao.getEntity(routeUuid)
-                .filterInternal(entity -> userFacade.authorize(token, entity.getOwnerUuid()), UNAUTHORIZED_FAILURE)
+        return authorizeAndGetRouteEntity(token, routeUuid)
                 .flatMap(entity -> routeDao.addAvailability(routeUuid, availabilityEntity));
     }
 

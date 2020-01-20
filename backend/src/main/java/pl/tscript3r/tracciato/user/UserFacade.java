@@ -9,6 +9,8 @@ import pl.tscript3r.tracciato.user.api.UserDto;
 
 import java.util.UUID;
 
+import static pl.tscript3r.tracciato.infrastructure.response.error.GlobalFailureResponse.UNAUTHORIZED_FAILURE;
+
 @Slf4j
 @RequiredArgsConstructor
 public class UserFacade {
@@ -44,10 +46,10 @@ public class UserFacade {
                 UserFailureResponse.invalidCredentials());
     }
 
-    public Boolean authorize(String token, UUID resourceOwnerUuid) {
+    public <T> InternalResponse<T> authorize(String token, UUID resourceOwnerUuid, T returnResource) {
         return validateAndGetUuidFromToken(token)
-                .filter(uuid -> userResourceAuthorization.authorize(uuid, resourceOwnerUuid))
-                .isDefined();
+                .filterInternal(uuid -> userResourceAuthorization.authorize(uuid, resourceOwnerUuid), UNAUTHORIZED_FAILURE)
+                .map(uuid -> returnResource);
     }
 
 }
