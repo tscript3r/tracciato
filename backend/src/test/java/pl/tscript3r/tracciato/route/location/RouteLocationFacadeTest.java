@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
-import pl.tscript3r.tracciato.ReplaceCamelCaseAndUnderscores;
 import pl.tscript3r.tracciato.infrastructure.validator.DefaultValidator;
 import pl.tscript3r.tracciato.location.LocationFacade;
 import pl.tscript3r.tracciato.location.LocationInMemoryRepositoryAdapter;
@@ -15,6 +14,7 @@ import pl.tscript3r.tracciato.route.api.NewRouteDto;
 import pl.tscript3r.tracciato.route.api.RouteDto;
 import pl.tscript3r.tracciato.route.location.api.RouteLocationDto;
 import pl.tscript3r.tracciato.user.UserFacade;
+import pl.tscript3r.tracciato.utils.ReplaceCamelCaseAndUnderscores;
 
 import javax.validation.Validation;
 import java.util.UUID;

@@ -10,6 +10,7 @@ import pl.tscript3r.tracciato.route.RouteJson;
 import pl.tscript3r.tracciato.route.location.RouteLocationFeatures;
 import pl.tscript3r.tracciato.route.location.RouteLocationJson;
 import pl.tscript3r.tracciato.user.UserJson;
+import pl.tscript3r.tracciato.utils.ReplaceCamelCaseAndUnderscores;
 
 import java.util.UUID;
 

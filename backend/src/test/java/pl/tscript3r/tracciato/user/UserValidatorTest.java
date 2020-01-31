@@ -8,9 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pl.tscript3r.tracciato.ReplaceCamelCaseAndUnderscores;
 import pl.tscript3r.tracciato.infrastructure.response.error.FailureResponse;
 import pl.tscript3r.tracciato.user.api.UserDto;
+import pl.tscript3r.tracciato.utils.ReplaceCamelCaseAndUnderscores;
 
 import javax.validation.Validation;
 import java.util.Map;

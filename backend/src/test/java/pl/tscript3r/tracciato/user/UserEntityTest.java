@@ -3,7 +3,7 @@ package pl.tscript3r.tracciato.user;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
-import pl.tscript3r.tracciato.ReplaceCamelCaseAndUnderscores;
+import pl.tscript3r.tracciato.utils.ReplaceCamelCaseAndUnderscores;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static pl.tscript3r.tracciato.user.UserConst.getEdyUserEntity;

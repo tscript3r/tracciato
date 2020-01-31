@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import pl.tscript3r.tracciato.location.LocationFeatures;
 import pl.tscript3r.tracciato.location.LocationJson;
 import pl.tscript3r.tracciato.user.UserJson;
+import pl.tscript3r.tracciato.utils.ConcurrentStressTest;
 
 import java.util.ArrayList;
 import java.util.List;

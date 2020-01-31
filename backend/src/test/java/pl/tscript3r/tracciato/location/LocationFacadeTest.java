@@ -9,9 +9,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import pl.tscript3r.tracciato.ReplaceCamelCaseAndUnderscores;
 import pl.tscript3r.tracciato.infrastructure.response.InternalResponse;
 import pl.tscript3r.tracciato.user.UserFacade;
+import pl.tscript3r.tracciato.utils.ReplaceCamelCaseAndUnderscores;
 
 import java.util.UUID;
 

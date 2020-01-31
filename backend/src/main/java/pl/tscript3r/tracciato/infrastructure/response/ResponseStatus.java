@@ -5,11 +5,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public enum ResponseStatus {
 
     @JsonProperty("success")
-    SUCCESS(100, 299),
+    SUCCESS(100, 206),
     @JsonProperty("fail")
-    FAIL(400, 499),
+    FAIL(400, 451),
     @JsonProperty("error")
-    ERROR(500, 599);
+    ERROR(500, 511);
 
     private final int httpStatusFromRange;
     private final int httpStatusToRange;

@@ -1,24 +1,21 @@
-package pl.tscript3r.tracciato.route.availability;
+package pl.tscript3r.tracciato.route.arrange;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import pl.tscript3r.tracciato.utils.ReplaceCamelCaseAndUnderscores;
 
-@DisplayName("Availability facade")
+@DisplayName("Route arrange facade")
 @DisplayNameGeneration(ReplaceCamelCaseAndUnderscores.class)
-@ExtendWith(MockitoExtension.class)
-class AvailabilityFacadeTest {
+class RouteArrangeFacadeTest {
 
     @BeforeEach
     void setUp() {
     }
 
     @Test
-    void addAvailability() {
+    void validate() {
     }
 
 }

@@ -13,7 +13,9 @@ public final class EndpointsMappings {
     public static final String ROUTE_MAPPING = BASE_V1_MAPPING + "/routes";
     public static final String ROUTE_LOCATION_MAPPING = ROUTE_MAPPING + "/{" + ROUTE_UUID_VARIABLE + "}/locations";
     public static final String ROUTE_AVAILABILITY_MAPPING = ROUTE_MAPPING + "/{" + ROUTE_UUID_VARIABLE + "}/availability";
+    public static final String ROUTE_ARRANGEMENT_MAPPING = ROUTE_MAPPING + "/{" + ROUTE_UUID_VARIABLE + "}/arrange";
 
+    public static final String ROUTE_ARRANGEMENT_VALIDATION_MAPPING = "validate";
     public static final String ROUTE_START_LOCATION_MAPPING = "startLocation";
     public static final String ROUTE_END_LOCATION_MAPPING = "endLocation";
 

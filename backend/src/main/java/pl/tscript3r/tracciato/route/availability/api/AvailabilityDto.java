@@ -2,6 +2,7 @@ package pl.tscript3r.tracciato.route.availability.api;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 import pl.tscript3r.tracciato.infrastructure.validator.TimeBeforeAfter;
@@ -10,6 +11,7 @@ import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.UUID;
 
 import static pl.tscript3r.tracciato.infrastructure.DateTimeFormats.DATE_FORMAT;
 import static pl.tscript3r.tracciato.infrastructure.DateTimeFormats.TIME_FORMAT;
@@ -17,8 +19,11 @@ import static pl.tscript3r.tracciato.infrastructure.DateTimeFormats.TIME_FORMAT;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @TimeBeforeAfter(beforeField = "from", afterField = "to", switchEnableValue = true, switchField = "excluded",
-        message = "Not excluded day needs to have from and to time set")
+        message = "Not excluded day needs to have time range set")
 public class AvailabilityDto {
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private UUID uuid;
 
     @NotNull
     @Future

@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import pl.tscript3r.tracciato.user.UserJson;
+import pl.tscript3r.tracciato.utils.ConcurrentStressTest;
 
 import java.util.ArrayList;
 import java.util.Map;

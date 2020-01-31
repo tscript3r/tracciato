@@ -1,4 +1,4 @@
-package pl.tscript3r.tracciato;
+package pl.tscript3r.tracciato.utils;
 
 import org.junit.jupiter.api.DisplayNameGenerator;
 

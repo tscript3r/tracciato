@@ -7,9 +7,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 import pl.tscript3r.tracciato.AbstractFeatures;
-import pl.tscript3r.tracciato.ConcurrentStressTest;
-import pl.tscript3r.tracciato.StressTestResult;
 import pl.tscript3r.tracciato.location.api.LocationDto;
+import pl.tscript3r.tracciato.utils.ConcurrentStressTest;
+import pl.tscript3r.tracciato.utils.StressTestResult;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;

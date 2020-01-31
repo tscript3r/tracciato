@@ -1,4 +1,4 @@
-package pl.tscript3r.tracciato;
+package pl.tscript3r.tracciato.utils;
 
 import java.util.ArrayList;
 import java.util.Collection;

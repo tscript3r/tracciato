@@ -1,4 +1,4 @@
-package pl.tscript3r.tracciato;
+package pl.tscript3r.tracciato.utils;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,8 +11,8 @@ import java.util.concurrent.Future;
 @ToString(exclude = {"futuresList"})
 @AllArgsConstructor
 public class StressTestResult<T> {
-    final long executionTime;
-    final long completedCount;
-    final long uncompletedCount;
-    final List<Future<T>> futuresList;
+    public final long executionTime;
+    public final long completedCount;
+    public final long uncompletedCount;
+    public final List<Future<T>> futuresList;
 }

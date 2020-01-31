@@ -3,7 +3,9 @@ package pl.tscript3r.tracciato.infrastructure.response.error;
 public enum GlobalFailureResponse implements FailureResponse {
 
     INTERNAL_SERVER_ERROR(500, "Internal server error"),
-    UNAUTHORIZED_FAILURE(401, "Unauthorized");
+    UNAUTHORIZED_FAILURE(401, "Unauthorized"),
+    NOT_IMPLEMENTED_ERROR(501, "Not implemented yet");
+
 
     private final int httpStatusCode;
     private final String reason;

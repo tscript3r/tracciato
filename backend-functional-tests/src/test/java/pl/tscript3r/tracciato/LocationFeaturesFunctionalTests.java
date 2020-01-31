@@ -9,6 +9,7 @@ import pl.tscript3r.tracciato.location.LocationJson;
 import pl.tscript3r.tracciato.location.LocationSpringRepository;
 import pl.tscript3r.tracciato.user.UserFacade;
 import pl.tscript3r.tracciato.user.UserJson;
+import pl.tscript3r.tracciato.utils.ReplaceCamelCaseAndUnderscores;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static pl.tscript3r.tracciato.user.UserJson.EXISTING_PASSWORD;

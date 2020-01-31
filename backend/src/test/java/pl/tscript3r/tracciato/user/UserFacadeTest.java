@@ -6,9 +6,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
-import pl.tscript3r.tracciato.ConcurrentStressTest;
-import pl.tscript3r.tracciato.ReplaceCamelCaseAndUnderscores;
 import pl.tscript3r.tracciato.user.api.UserDto;
+import pl.tscript3r.tracciato.utils.ConcurrentStressTest;
+import pl.tscript3r.tracciato.utils.ReplaceCamelCaseAndUnderscores;
 
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.*;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import pl.tscript3r.tracciato.route.RouteJson;
 import pl.tscript3r.tracciato.user.UserJson;
+import pl.tscript3r.tracciato.utils.ReplaceCamelCaseAndUnderscores;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import pl.tscript3r.tracciato.user.UserJson;
+import pl.tscript3r.tracciato.utils.ReplaceCamelCaseAndUnderscores;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static pl.tscript3r.tracciato.user.UserJson.*;

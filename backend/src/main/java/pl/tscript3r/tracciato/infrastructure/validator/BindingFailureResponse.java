@@ -5,14 +5,14 @@ import pl.tscript3r.tracciato.infrastructure.response.error.FailureResponse;
 import java.util.HashMap;
 import java.util.Map;
 
-class BindingFailureResponse implements FailureResponse {
+public class BindingFailureResponse implements FailureResponse {
 
     private static final String REASON = "Validation";
     private static final int HTTP_STATUS = 400;
 
     private final Map<String, Object> additionalFields = new HashMap<>();
 
-    static BindingFailureResponse get(Map<String, String> bindingFails) {
+    public static BindingFailureResponse get(Map<String, String> bindingFails) {
         return new BindingFailureResponse(bindingFails);
     }
 
