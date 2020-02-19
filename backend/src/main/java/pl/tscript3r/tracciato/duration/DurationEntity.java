@@ -1,4 +1,4 @@
-package pl.tscript3r.tracciato.distance;
+package pl.tscript3r.tracciato.duration;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +12,7 @@ import java.time.Instant;
 @Entity
 @Getter
 @Setter
-public class DistanceEntity extends AbstractEntity {
+public class DurationEntity extends AbstractEntity {
 
     @OneToOne
     private LocationEntity from;

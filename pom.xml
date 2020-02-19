@@ -34,7 +34,7 @@
     </properties>
 
     <modules>
-        <module>frontend</module>
+<!--        <module>frontend</module>-->
         <module>backend</module>
         <module>backend-functional-tests</module>
     </modules>
