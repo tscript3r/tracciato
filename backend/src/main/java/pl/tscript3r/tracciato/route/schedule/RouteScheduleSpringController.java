@@ -1,4 +1,4 @@
-package pl.tscript3r.tracciato.route.arrange;
+package pl.tscript3r.tracciato.route.schedule;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
@@ -12,17 +12,17 @@ import static pl.tscript3r.tracciato.infrastructure.EndpointsMappings.*;
 import static pl.tscript3r.tracciato.infrastructure.spring.security.SecurityConstants.TOKEN_HEADER;
 
 @RestController
-@RequestMapping(ROUTE_ARRANGEMENT_MAPPING)
+@RequestMapping(ROUTE_SCHEDULE_MAPPING)
 @RequiredArgsConstructor
-class RouteArrangeSpringController {
+class RouteScheduleSpringController {
 
     private final ResponseResolver<ResponseEntity<?>> responseResolver;
-    private final RouteArrangeFacade routeArrangeFacade;
+    private final RouteScheduleFacade routeScheduleFacade;
 
-    @GetMapping(ROUTE_ARRANGEMENT_VALIDATION_MAPPING)
+    @GetMapping(ROUTE_SCHEDULE_VALIDATION_MAPPING)
     public HttpEntity<?> validate(@RequestHeader(TOKEN_HEADER) String token,
                                   @PathVariable(ROUTE_UUID_VARIABLE) UUID routeUuid) {
-        return responseResolver.resolve(routeArrangeFacade.validate(token, routeUuid));
+        return responseResolver.resolve(routeScheduleFacade.validate(token, routeUuid));
     }
 
 }

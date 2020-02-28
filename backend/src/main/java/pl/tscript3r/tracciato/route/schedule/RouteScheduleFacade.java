@@ -1,21 +1,21 @@
-package pl.tscript3r.tracciato.route.arrange;
+package pl.tscript3r.tracciato.route.schedule;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import pl.tscript3r.tracciato.infrastructure.response.InternalResponse;
 import pl.tscript3r.tracciato.route.RouteFacade;
 import pl.tscript3r.tracciato.route.api.RouteDto;
-import pl.tscript3r.tracciato.route.arrange.validator.BeforeArrangeValidator;
+import pl.tscript3r.tracciato.route.schedule.validator.BeforeScheduleValidator;
 
 import java.util.UUID;
 
-@RequiredArgsConstructor
-public class RouteArrangeFacade {
+@AllArgsConstructor
+public class RouteScheduleFacade {
 
     private final RouteFacade routeFacade;
 
     public InternalResponse<RouteDto> validate(String token, UUID routeUuid) {
         return routeFacade.getRoute(token, routeUuid)
-                .flatMap(BeforeArrangeValidator::validate);
+                .flatMap(BeforeScheduleValidator::validate);
     }
 
 }

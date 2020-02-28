@@ -24,4 +24,6 @@ public class RouteDto {
     private LocationDto endLocation;
     private Set<RouteLocationDto> locations = new HashSet<>();
 
+    // TODO overtime duration field, default from & to locations availability
+
 }
