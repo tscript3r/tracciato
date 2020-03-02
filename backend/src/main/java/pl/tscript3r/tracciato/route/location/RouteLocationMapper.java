@@ -6,13 +6,9 @@ import pl.tscript3r.tracciato.route.availability.api.AvailabilityDto;
 import pl.tscript3r.tracciato.route.location.api.RouteLocationDto;
 
 import java.time.Duration;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import static pl.tscript3r.tracciato.infrastructure.DateTimeFormats.TIME_FORMAT;
 
 final class RouteLocationMapper {
 
@@ -32,8 +28,7 @@ final class RouteLocationMapper {
     }
 
     private static Duration stringToDuration(String duration) {
-        LocalTime lt = LocalTime.parse(duration, DateTimeFormatter.ofPattern(TIME_FORMAT));
-        return Duration.between(LocalTime.MIN, lt);
+        return Duration.parse(duration);
     }
 
     public static RouteLocationDto map(RouteLocationEntity routeLocationEntity) {
