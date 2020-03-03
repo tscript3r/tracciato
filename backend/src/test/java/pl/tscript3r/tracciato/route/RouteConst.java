@@ -18,8 +18,7 @@ public final class RouteConst {
 
     private static final Calendar CALENDAR = Calendar.getInstance();
 
-    public static final LocalDateTime START_DATE = LocalDateTime.now().plusDays(1).minusHours(8);
-
+    public static final LocalDateTime START_DATE = LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.of(8, 0));
     public static final String ROUTE_NAME = "CW52";
     public static final int START_DATE_YEAR = START_DATE.getYear();
     public static final int START_DATE_MONTH = START_DATE.getDayOfMonth();
@@ -43,6 +42,7 @@ public final class RouteConst {
         newRouteDto.setMaxEndDate(MAX_END_DATE);
         newRouteDto.setName(ROUTE_NAME);
         newRouteDto.setTraffic(TRAFFIC_PREDICTION);
+
         return newRouteDto;
     }
 
@@ -67,7 +67,9 @@ public final class RouteConst {
         List<AvailabilityDto> results = new ArrayList<>();
         results.add(getAvailability(START_DATE.toLocalDate()));
         results.add(getAvailability(START_DATE.plusDays(1).toLocalDate()));
-        results.add(getAvailability(START_DATE.plusDays(2).toLocalDate()));
+        var excludedAvailability = getAvailability(START_DATE.plusDays(2).toLocalDate());
+        excludedAvailability.setExcluded(true);
+        results.add(excludedAvailability);
         results.add(getAvailability(START_DATE.plusDays(3).toLocalDate()));
         results.add(getAvailability(START_DATE.plusDays(4).toLocalDate()));
         results.add(getAvailability(START_DATE.plusDays(5).toLocalDate()));

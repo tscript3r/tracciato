@@ -1,10 +1,13 @@
 package pl.tscript3r.tracciato.route.schedule.scheduler.time.timeline.events;
 
+import lombok.Getter;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class DurationTimelineEvent extends TimelineEvent {
 
+    @Getter
     final Duration duration;
 
     public DurationTimelineEvent(RouteEvent routeEvent, LocalDateTime beginning, Duration duration) {

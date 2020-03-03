@@ -44,7 +44,7 @@ public final class RouteLocationConst {
     public static RouteLocationDto getBerlinRouteLocationDto(UUID ownerUuid) {
         var results = getRouteLocationDto(ownerUuid, LocationConst.getBerlinLocationDto());
         var availability = new AvailabilityDto();
-        availability.setDate(START_DATE.toLocalDate().plusDays(1));
+        availability.setDate(START_DATE.toLocalDate().plusDays(3));
         availability.setFrom(LocalTime.of(8, 0));
         availability.setTo(LocalTime.of(16, 0));
         results.getAvailability().add(availability);
@@ -65,7 +65,13 @@ public final class RouteLocationConst {
     }
 
     public static RouteLocationDto getEssenRouteLocationDto(UUID ownerUuid) {
-        return getRouteLocationDto(ownerUuid, LocationConst.getEssenLocationDto());
+        var results = getRouteLocationDto(ownerUuid, LocationConst.getEssenLocationDto());
+        var availability = new AvailabilityDto();
+        availability.setDate(START_DATE.toLocalDate().plusDays(4));
+        availability.setFrom(LocalTime.of(8, 0));
+        availability.setTo(LocalTime.of(16, 0));
+        results.getAvailability().add(availability);
+        return results;
     }
 
     public static RouteLocationDto getStuttgartRouteLocationDto(UUID ownerUuid) {

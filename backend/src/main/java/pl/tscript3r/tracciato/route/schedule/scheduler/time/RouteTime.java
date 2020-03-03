@@ -6,6 +6,7 @@ import pl.tscript3r.tracciato.route.api.RouteDto;
 import pl.tscript3r.tracciato.route.availability.api.AvailabilityDto;
 import pl.tscript3r.tracciato.route.location.api.RouteLocationDto;
 import pl.tscript3r.tracciato.route.schedule.scheduler.time.timeline.RouteTimeline;
+import pl.tscript3r.tracciato.route.schedule.scheduler.time.timeline.events.RouteEvent;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -21,6 +22,7 @@ public class RouteTime {
     @Getter
     private final RouteTimeline routeTimeline;
 
+    @Getter
     private LocalDateTime futureNow;
 
     public RouteTime(RouteDto routeDto) {
@@ -62,7 +64,7 @@ public class RouteTime {
 
     private LocalTime currentDayMaxEndTime() {
         // TODO refactor after adding RouteDto field default availability / work hours
-        return getAvailability(futureNow.toLocalDate()).getTo();
+        return getAvailability(futureNow.toLocalDate()).getTo().plus(Duration.ofHours(1));
     }
 
     private AvailabilityDto getAvailability(LocalDate day) {
@@ -85,19 +87,56 @@ public class RouteTime {
     }
 
     private void setNewDay(Duration plus, boolean travelInterrupted) {
-        if (travelInterrupted)
-            routeTimeline.addEvent(TRAVEL_TIME_OVER, futureNow);
-        routeTimeline.addEvent(DAY_OVER, futureNow);
-        futureNow = LocalDateTime.of(futureNow.toLocalDate().plusDays(1),
-                getAvailability(futureNow.toLocalDate()).getFrom());
+        addNewDay2Timeline(travelInterrupted);
+        futureNow = getNextAvailableDate();
         routeTimeline.addEvent(DAY_START, futureNow);
         if (travelInterrupted)
             routeTimeline.addEvent(TRAVEL_CONTINUE, futureNow);
         futureNow = futureNow.plus(plus);
+        checkMaxRouteEndingIsPassed();
+    }
+
+    private void checkMaxRouteEndingIsPassed() {
+        if (futureNow.isAfter(routeDto.getMaxEndDate()))
+            routeTimeline.addEvent(ROUTE_MAX_ENDING_PASSED, futureNow);
+    }
+
+    private void addNewDay2Timeline(boolean travelInterrupted) {
+        var travelUntilTime = getAvailability(futureNow.toLocalDate()).getTo();
+        var travelUntilDate = futureNow.toLocalDate();
+        var travelUntil = LocalDateTime.of(travelUntilDate, travelUntilTime);
+        if (travelInterrupted)
+            routeTimeline.addEvent(TRAVEL_TIME_OVER, travelUntil);
+        routeTimeline.addEvent(DAY_OVER, travelUntil);
+    }
+
+    private LocalDateTime getNextAvailableDate() {
+        var subsequentDate = futureNow.toLocalDate().plusDays(1);
+        while (true) {
+            if (!getAvailability(subsequentDate).getExcluded())
+                break;
+            else {
+                routeTimeline.addEvent(DAY_EXCLUDED, subsequentDate.atStartOfDay());
+                subsequentDate = subsequentDate.plusDays(1);
+            }
+        }
+        return LocalDateTime.of(subsequentDate, getAvailability(subsequentDate).getFrom());
     }
 
     public void finish() {
         routeTimeline.addEvent(FINISH, futureNow);
     }
+
+    public void addEvent(RouteEvent event, LocationDto locationDto) {
+        routeTimeline.addLocationEvent(event, futureNow, Duration.ZERO, locationDto);
+    }
+
+    /*
+        TODO: Additional fields needed:
+        - default availability
+        - travel until the location time sensitivity (example: when only 30min overtime left to reach the location then
+          it should be allowed)
+        - route location travel until location reached (hotel etc)?
+     */
 
 }

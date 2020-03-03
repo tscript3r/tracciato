@@ -13,7 +13,7 @@ import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class RouteScheduler implements Callable<InternalResponse<ScheduledRoute>> {
+class RouteScheduler implements Callable<InternalResponse<ScheduledRoute>> {
 
     private final RouteDto routeDto;
     private final DurationProvider durationProvider;
@@ -31,7 +31,6 @@ public class RouteScheduler implements Callable<InternalResponse<ScheduledRoute>
                 .stream()
                 .collect(Collectors.toList());
         var processedRoute = new ProcessedRoute(routeDto, durations, combinations);
-        processedRoute.createSolutions();
         return processedRoute.toScheduledRoute();
     }
 

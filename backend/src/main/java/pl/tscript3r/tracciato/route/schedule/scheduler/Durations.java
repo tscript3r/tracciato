@@ -16,7 +16,7 @@ import java.util.concurrent.Future;
 
 @ToString
 @Slf4j
-public class Durations {
+class Durations {
 
     private final Set<Tuple3<LocationDto, LocationDto, Future<DurationDto>>> durations = new HashSet<>();
     private final DurationProvider durationProvider;
