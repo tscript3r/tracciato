@@ -7,6 +7,8 @@ import pl.tscript3r.tracciato.duration.provider.DurationProvider;
 import pl.tscript3r.tracciato.route.RouteFacade;
 import pl.tscript3r.tracciato.route.schedule.scheduler.RouteSchedulerFacade;
 
+import java.util.concurrent.Executors;
+
 @Configuration
 @RequiredArgsConstructor
 class RouteScheduleSpringConfiguration {
@@ -16,7 +18,7 @@ class RouteScheduleSpringConfiguration {
 
     @Bean
     public RouteScheduleFacade getRouteArrangeFacade() {
-        var scheduler = new RouteSchedulerFacade(durationProvider);
+        var scheduler = new RouteSchedulerFacade(durationProvider, Executors.newFixedThreadPool(10));
         return new RouteScheduleFacade(routeFacade, scheduler);
     }
 

@@ -1,10 +1,12 @@
 package pl.tscript3r.tracciato.route.schedule.scheduler.time.timeline.events;
 
+import lombok.Getter;
 import pl.tscript3r.tracciato.location.api.LocationDto;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 
+@Getter
 public class TravelLocationTimelineEvent extends DurationLocationTimelineEvent {
 
     private final LocationDto destination;

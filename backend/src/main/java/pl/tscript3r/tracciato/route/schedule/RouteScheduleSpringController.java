@@ -5,7 +5,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.tscript3r.tracciato.infrastructure.response.ResponseResolver;
-import pl.tscript3r.tracciato.infrastructure.response.error.GlobalFailureResponse;
 
 import java.util.UUID;
 
@@ -26,10 +25,11 @@ class RouteScheduleSpringController {
         return responseResolver.resolve(routeScheduleFacade.validate(token, routeUuid));
     }
 
-    @PostMapping(value = ROUTE_SCHEDULE_MAPPING)
+    @PostMapping
     public HttpEntity<?> schedule(@RequestHeader(TOKEN_HEADER) String token,
-                                  @PathVariable(ROUTE_UUID_VARIABLE) UUID routeUuid) {
-        return responseResolver.resolve(GlobalFailureResponse.NOT_IMPLEMENTED_ERROR);
+                                  @PathVariable(ROUTE_UUID_VARIABLE) UUID routeUuid,
+                                  @RequestParam(required = false, defaultValue = "true", name = "wait") Boolean await) {
+        return responseResolver.resolve(routeScheduleFacade.schedule(token, routeUuid, await));
     }
 
 }

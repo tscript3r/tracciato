@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import pl.tscript3r.tracciato.infrastructure.response.InternalResponse;
 import pl.tscript3r.tracciato.route.api.RouteDto;
 import pl.tscript3r.tracciato.route.location.api.RouteLocationDto;
 
@@ -24,13 +23,13 @@ class RoutePermutationGroup {
     private final List<List<RouteLocationDto>> permutationsGroup;
     private final List<RoutePermutation> simulations = new ArrayList<>();
 
-    public void runSimulations() {
-        permutationsGroup.forEach(c -> simulations.add(RoutePermutation.simulate(routeDto, c, durations)));
+    public RouteScheduleResults getResults() {
+        executeSimulations();
+        return new RouteScheduleResults(findMostAccurateRoute(), findMostOptimalRoute());
     }
 
-    public InternalResponse<RouteScheduleResults> getResults() {
-        runSimulations();
-        return InternalResponse.payload(new RouteScheduleResults(findMostAccurateRoute(), findMostOptimalRoute()));
+    private void executeSimulations() {
+        permutationsGroup.forEach(c -> simulations.add(RoutePermutation.simulate(routeDto, c, durations)));
     }
 
     private Optional<RoutePermutation> findMostAccurateRoute() {

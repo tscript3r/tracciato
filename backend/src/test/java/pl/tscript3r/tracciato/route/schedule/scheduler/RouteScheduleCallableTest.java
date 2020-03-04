@@ -14,16 +14,15 @@ import pl.tscript3r.tracciato.route.api.RouteDto;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static pl.tscript3r.tracciato.infrastructure.EnvironmentConst.GOOGLE_API_KEY;
 
 @Slf4j
 @DisplayName("Route scheduler")
-class RouteSchedulerTest {
+class RouteScheduleCallableTest {
 
     RouteDto validRoute;
     DurationProvider durationProvider;
-    RouteScheduler routeScheduler;
+    RouteScheduleCallable routeScheduleCallable;
 
     @BeforeEach
     void setUp() {
@@ -35,20 +34,16 @@ class RouteSchedulerTest {
                         .apiKey(apiKey)
                         .build()
         );
-        routeScheduler = new RouteScheduler(validRoute, durationProvider);
+        routeScheduleCallable = new RouteScheduleCallable(validRoute, durationProvider);
     }
 
     @Test
     void call() {
-        var results = routeScheduler.call();
-        assertTrue(results.isRight());
-        var routeSolution = results.get();
+        var results = routeScheduleCallable.call();
         log.debug("\r\n\r\nMost accurate route");
-        routeSolution.getMostAccurateRoute()
-                .ifPresent(this::logOut);
+        logOut(results.getMostAccurateRoute());
         log.debug("\r\n\r\nMost optimal route");
-        routeSolution.getMostOptimalRoute()
-                .ifPresent(this::logOut);
+        logOut(results.getMostOptimalRoute());
     }
 
     private void logOut(RoutePermutation routePermutation) {

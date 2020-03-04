@@ -26,9 +26,9 @@ Authorization: {{auth_token}}
 Content-Type: application/json
 
 {
-  "city": "Berlin",
-  "street": "Warschauerstrasse",
-  "number": "12"
+  "city": "Legnica",
+  "street": "Muzealna",
+  "number": "10"
 }
 
 > {% client.global.set("location_uuid", response.body.payload.uuid); %}
@@ -62,17 +62,13 @@ Content-Type: application/json
 
 {
   "priority": "optional",
-  "onsideDuration": "01:30",
+  "onsideDuration": "PT02H",
   "existingLocationUuid": "{{location_uuid}}",
   "availability": [
     {
-      "date": "20.12.2020",
-      "excluded": true
-    },
-    {
-      "date": "19.12.2020",
-      "from": "12:00",
-      "to": "14:00"
+      "date": "23.12.2020",
+      "from": "08:00",
+      "to": "16:00"
     }
   ]
 }
@@ -84,21 +80,39 @@ Content-Type: application/json
 
 {
   "priority": "optional",
-  "onsideDuration": "01:30",
+  "onsideDuration": "PT01H",
   "location": {
-    "city": "Warszawa",
-    "street": "Marszałkowska",
+    "city": "Piła",
+    "street": "Wodna",
     "number": "5"
   },
   "availability": [
     {
-      "date": "20.12.2020",
-      "excluded": true
-    },
+      "date": "23.12.2020",
+      "from": "08:00",
+      "to": "16:00"
+    }
+  ]
+}
+
+### Add route location with non existing in db location
+POST http://localhost:8080/api/v1/routes/{{route_uuid}}/locations
+Authorization: {{auth_token}}
+Content-Type: application/json
+
+{
+  "priority": "optional",
+  "onsideDuration": "PT01H",
+  "location": {
+    "city": "Inowrocław",
+    "street": "Toruńska",
+    "number": "5"
+  },
+  "availability": [
     {
-      "date": "19.12.2020",
-      "from": "12:00",
-      "to": "14:00"
+      "date": "24.12.2020",
+      "from": "08:00",
+      "to": "18:00"
     }
   ]
 }
@@ -144,12 +158,12 @@ Content-Type: application/json
 }
 
 ### Prepared route validation
-GET http://localhost:8080/api/v1/routes/{{route_uuid}}/arrange/validate
+GET http://localhost:8080/api/v1/routes/{{route_uuid}}/schedule/validate
 Authorization: {{auth_token}}
 Content-Type: application/json
 
 ### Prepared route scheduling
-PUT http://localhost:8080/api/v1/routes/{{route_uuid}}/schedule
+POST http://localhost:8080/api/v1/routes/{{route_uuid}}/schedule?wait=true
 Authorization: {{auth_token}}
 Content-Type: application/json
 

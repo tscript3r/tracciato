@@ -3,7 +3,6 @@ package pl.tscript3r.tracciato.route.schedule.scheduler;
 import lombok.extern.slf4j.Slf4j;
 import org.paukov.combinatorics3.Generator;
 import pl.tscript3r.tracciato.duration.provider.DurationProvider;
-import pl.tscript3r.tracciato.infrastructure.response.InternalResponse;
 import pl.tscript3r.tracciato.location.api.LocationDto;
 import pl.tscript3r.tracciato.route.api.RouteDto;
 import pl.tscript3r.tracciato.route.location.api.RouteLocationDto;
@@ -13,18 +12,18 @@ import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 @Slf4j
-class RouteScheduler implements Callable<InternalResponse<RouteScheduleResults>> {
+class RouteScheduleCallable implements Callable<RouteScheduleResults> {
 
     private final RouteDto routeDto;
     private final DurationProvider durationProvider;
 
-    public RouteScheduler(RouteDto routeDto, DurationProvider durationProvider) {
+    public RouteScheduleCallable(RouteDto routeDto, DurationProvider durationProvider) {
         this.routeDto = routeDto;
         this.durationProvider = durationProvider;
     }
 
     @Override
-    public InternalResponse<RouteScheduleResults> call() {
+    public RouteScheduleResults call() {
         var durations = getDurations();
         var permutationsGroup = Generator.permutation(routeDto.getLocations())
                 .simple()
