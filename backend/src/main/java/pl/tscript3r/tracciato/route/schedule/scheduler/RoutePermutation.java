@@ -15,90 +15,78 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static pl.tscript3r.tracciato.route.schedule.scheduler.time.timeline.events.RouteEvent.ONSITE_APPOINTMENTS_MATCHED;
-import static pl.tscript3r.tracciato.route.schedule.scheduler.time.timeline.events.RouteEvent.ONSITE_APPOINTMENTS_MISMATCHED;
-
 @Slf4j
 @ToString
-class CombinationRoute {
+class RoutePermutation {
 
     @Getter
     private final RouteDto routeDto;
-
     @Getter
     private final List<RouteLocationDto> orderedRoute;
-    private final Durations durations;
-
+    @Getter
+    private final RouteTime routeTime;
+    @Getter
+    private long travelledMeters = 0;
     @Getter
     private final List<RouteLocationDto> missedAppointments = new ArrayList<>();
 
-    @Getter
-    private final RouteTime routeTime;
+    private final Durations durations;
 
-    @Getter
-    private long travelledMeters = 0;
+    static RoutePermutation simulate(RouteDto routeDto,
+                                     List<RouteLocationDto> orderedRoute,
+                                     Durations durations) {
+        assert orderedRoute.size() > 0;
+        var routePermutation = new RoutePermutation(routeDto, Collections.unmodifiableList(orderedRoute), durations);
+        routePermutation.createResults();
+        return routePermutation;
+    }
 
-    private CombinationRoute(RouteDto routeDto, List<RouteLocationDto> orderedRoute, Durations durations) {
+    private RoutePermutation(RouteDto routeDto, List<RouteLocationDto> orderedRoute, Durations durations) {
         this.routeDto = routeDto;
         this.orderedRoute = orderedRoute;
         this.durations = durations;
         this.routeTime = new RouteTime(routeDto);
     }
 
-    static CombinationRoute estimate(RouteDto routeDto,
-                                     List<RouteLocationDto> orderedRoute,
-                                     Durations durations) {
-        assert orderedRoute.size() > 0;
-        var routeSolution = new CombinationRoute(routeDto, Collections.unmodifiableList(orderedRoute), durations);
-        routeSolution.createResults();
-        return routeSolution;
-    }
-
     private void createResults() {
         startLocationToFirstOrderedLocation();
-        all2AllLocations();
+        iterateLocationsList();
         lastOrderedLocationToEndLocation();
     }
 
     private void startLocationToFirstOrderedLocation() {
         var startLocation = routeDto.getStartLocation();
         var firstOrderedLocation = orderedRoute.get(0);
-        addTravelEvent(startLocation, firstOrderedLocation.getLocation());
-        addOnsiteEvent(firstOrderedLocation);
-        checkForAppointmentWindows(firstOrderedLocation);
+        simulate(startLocation, firstOrderedLocation);
     }
 
-    private void addTravelEvent(LocationDto from, LocationDto to) {
+    private void simulate(LocationDto from, RouteLocationDto destination) {
+        travel(from, destination.getLocation());
+        onsite(destination);
+        locationAppointmentsCheck(destination);
+    }
+
+    private void travel(LocationDto from, LocationDto to) {
         var duration = durations.getDuration(from, to);
         travelledMeters += duration.getMeters();
-        routeTime.travel(to, duration.getDuration());
+        routeTime.travel(from, to, duration.getDuration());
     }
 
-    private void addOnsiteEvent(RouteLocationDto routeLocationDto) {
+    private void onsite(RouteLocationDto routeLocationDto) {
         routeTime.onsite(routeLocationDto);
     }
 
-    private void all2AllLocations() {
-        for (int i = 0; i < orderedRoute.size() - 1; i++) {
-            var orderedFrom = orderedRoute.get(i);
-            var orderedTo = orderedRoute.get(i + 1);
-            addTravelEvent(orderedFrom.getLocation(), orderedTo.getLocation());
-            addOnsiteEvent(orderedTo);
-            checkForAppointmentWindows(orderedTo);
-        }
-    }
-
-    private void checkForAppointmentWindows(RouteLocationDto location) {
-        var availabilities = location.getAvailability();
-        if (!availabilities.isEmpty()) {
-            var matchedAppointmentsCount = availabilities.stream()
+    private void locationAppointmentsCheck(RouteLocationDto location) {
+        var locationAvailabilities = location.getAvailability();
+        if (!locationAvailabilities.isEmpty()) {
+            var matchedAppointmentsCount = locationAvailabilities.stream()
                     .filter(a -> isAppointmentMatch(location, a))
                     .count();
             if (matchedAppointmentsCount > 0)
-                routeTime.addEvent(ONSITE_APPOINTMENTS_MATCHED, location.getLocation());
+                routeTime.appointmentMatched(location.getLocation());
             else {
                 missedAppointments.add(location);
-                routeTime.addEvent(ONSITE_APPOINTMENTS_MISMATCHED, location.getLocation());
+                routeTime.appointmentMismatched(location.getLocation());
             }
         }
     }
@@ -113,11 +101,19 @@ class CombinationRoute {
                 currentTimePlusOnsiteDuration.isBefore(availability.getTo());
     }
 
+    private void iterateLocationsList() {
+        for (int i = 0; i < orderedRoute.size() - 1; i++) {
+            var orderedFrom = orderedRoute.get(i);
+            var orderedTo = orderedRoute.get(i + 1);
+            simulate(orderedFrom.getLocation(), orderedTo);
+        }
+    }
+
     private void lastOrderedLocationToEndLocation() {
         var endLocation = routeDto.getEndLocation();
         var lastOrderedLocation = orderedRoute.get(orderedRoute.size() - 1).getLocation();
-        addTravelEvent(lastOrderedLocation, endLocation);
-        routeTime.finish();
+        travel(lastOrderedLocation, endLocation);
+        routeTime.finish(endLocation);
     }
 
     public LocalDateTime getEndingDate() {

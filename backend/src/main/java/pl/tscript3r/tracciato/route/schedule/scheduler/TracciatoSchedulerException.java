@@ -1,6 +1,6 @@
 package pl.tscript3r.tracciato.route.schedule.scheduler;
 
-public class TracciatoSchedulerException extends RuntimeException {
+class TracciatoSchedulerException extends RuntimeException {
 
     public TracciatoSchedulerException(String message) {
         super(message);

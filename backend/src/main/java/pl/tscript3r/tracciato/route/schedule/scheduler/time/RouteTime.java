@@ -6,18 +6,13 @@ import pl.tscript3r.tracciato.route.api.RouteDto;
 import pl.tscript3r.tracciato.route.availability.api.AvailabilityDto;
 import pl.tscript3r.tracciato.route.location.api.RouteLocationDto;
 import pl.tscript3r.tracciato.route.schedule.scheduler.time.timeline.RouteTimeline;
-import pl.tscript3r.tracciato.route.schedule.scheduler.time.timeline.events.RouteEvent;
 
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-import static pl.tscript3r.tracciato.route.schedule.scheduler.time.timeline.events.RouteEvent.*;
-
 public class RouteTime {
-
-    private final RouteDto routeDto;
 
     @Getter
     private final RouteTimeline routeTimeline;
@@ -25,33 +20,35 @@ public class RouteTime {
     @Getter
     private LocalDateTime futureNow;
 
+    private final RouteDto routeDto;
+
     public RouteTime(RouteDto routeDto) {
         this.routeDto = routeDto;
         futureNow = routeDto.getStartDate();
         routeTimeline = new RouteTimeline();
-        routeTimeline.addEvent(BEGINNING, futureNow);
+        routeTimeline.beginning(futureNow);
     }
 
-    public void travel(LocationDto destination, Duration travelDuration) {
-        routeTimeline.addLocationEvent(TRAVEL_START, futureNow, travelDuration, destination);
-        incrementFutureNow(travelDuration);
-        routeTimeline.addLocationEvent(TRAVEL_ARRIVAL, futureNow, travelDuration, destination);
+    public void travel(LocationDto from, LocationDto destination, Duration travelDuration) {
+        routeTimeline.travelStart(futureNow, from, destination, travelDuration);
+        addDuration(travelDuration, destination);
+        routeTimeline.travelArrival(futureNow, destination);
     }
 
     public void onsite(RouteLocationDto routeLocationDto) {
         var onsiteDuration = Duration.parse(routeLocationDto.getOnsideDuration());
-        if (willTravelerDoOvertime(onsiteDuration)) {
-            setNewDay(onsiteDuration, false);
-        } else {
+        if (willTravelerDoOvertime(onsiteDuration))
+            setNextDay(onsiteDuration, routeLocationDto.getLocation(), false);
+        else {
             futureNow = futureNow.plus(onsiteDuration);
-            routeTimeline.addLocationEvent(ONSITE, futureNow, onsiteDuration, routeLocationDto.getLocation());
+            routeTimeline.onsite(futureNow, onsiteDuration, routeLocationDto.getLocation());
         }
     }
 
-    private void incrementFutureNow(Duration duration) {
+    private void addDuration(Duration duration, LocationDto destination) {
         if (willTravelerDoOvertime(duration)) {
             duration = subtractTodaysTimeLeft(duration);
-            setNewDay(duration, true);
+            setNextDay(duration, destination, true);
         } else
             futureNow = futureNow.plus(duration);
     }
@@ -86,28 +83,28 @@ public class RouteTime {
         return travelTime.minus(todayLeftTravelTime);
     }
 
-    private void setNewDay(Duration plus, boolean travelInterrupted) {
-        addNewDay2Timeline(travelInterrupted);
+    private void setNextDay(Duration durationLeft, LocationDto destination, boolean travelInterrupted) {
+        addNextDay2Timeline(travelInterrupted, destination, durationLeft);
         futureNow = getNextAvailableDate();
-        routeTimeline.addEvent(DAY_START, futureNow);
+        routeTimeline.dayStart(futureNow);
         if (travelInterrupted)
-            routeTimeline.addEvent(TRAVEL_CONTINUE, futureNow);
-        futureNow = futureNow.plus(plus);
+            routeTimeline.travelContinue(futureNow, durationLeft, destination);
+        futureNow = futureNow.plus(durationLeft);
         checkMaxRouteEndingIsPassed();
     }
 
     private void checkMaxRouteEndingIsPassed() {
         if (futureNow.isAfter(routeDto.getMaxEndDate()))
-            routeTimeline.addEvent(ROUTE_MAX_ENDING_PASSED, futureNow);
+            routeTimeline.routeMaxEndingPassed(futureNow);
     }
 
-    private void addNewDay2Timeline(boolean travelInterrupted) {
+    private void addNextDay2Timeline(boolean travelInterrupted, LocationDto destination, Duration durationLeft) {
         var travelUntilTime = getAvailability(futureNow.toLocalDate()).getTo();
         var travelUntilDate = futureNow.toLocalDate();
         var travelUntil = LocalDateTime.of(travelUntilDate, travelUntilTime);
         if (travelInterrupted)
-            routeTimeline.addEvent(TRAVEL_TIME_OVER, travelUntil);
-        routeTimeline.addEvent(DAY_OVER, travelUntil);
+            routeTimeline.travelTimeOver(futureNow, destination, durationLeft);
+        routeTimeline.dayOver(travelUntil);
     }
 
     private LocalDateTime getNextAvailableDate() {
@@ -116,19 +113,23 @@ public class RouteTime {
             if (!getAvailability(subsequentDate).getExcluded())
                 break;
             else {
-                routeTimeline.addEvent(DAY_EXCLUDED, subsequentDate.atStartOfDay());
+                routeTimeline.dayExcluded(subsequentDate);
                 subsequentDate = subsequentDate.plusDays(1);
             }
         }
         return LocalDateTime.of(subsequentDate, getAvailability(subsequentDate).getFrom());
     }
 
-    public void finish() {
-        routeTimeline.addEvent(FINISH, futureNow);
+    public void finish(LocationDto destination) {
+        routeTimeline.finish(futureNow, destination);
     }
 
-    public void addEvent(RouteEvent event, LocationDto locationDto) {
-        routeTimeline.addLocationEvent(event, futureNow, Duration.ZERO, locationDto);
+    public void appointmentMismatched(LocationDto location) {
+        routeTimeline.appointmentMismatched(futureNow, location);
+    }
+
+    public void appointmentMatched(LocationDto location) {
+        routeTimeline.appointmentMatched(futureNow, location);
     }
 
     /*

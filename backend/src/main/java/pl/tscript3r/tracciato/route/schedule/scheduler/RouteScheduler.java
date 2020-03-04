@@ -13,7 +13,7 @@ import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 @Slf4j
-class RouteScheduler implements Callable<InternalResponse<ScheduledRoute>> {
+class RouteScheduler implements Callable<InternalResponse<RouteScheduleResults>> {
 
     private final RouteDto routeDto;
     private final DurationProvider durationProvider;
@@ -24,14 +24,14 @@ class RouteScheduler implements Callable<InternalResponse<ScheduledRoute>> {
     }
 
     @Override
-    public InternalResponse<ScheduledRoute> call() {
+    public InternalResponse<RouteScheduleResults> call() {
         var durations = getDurations();
-        var combinations = Generator.permutation(routeDto.getLocations())
+        var permutationsGroup = Generator.permutation(routeDto.getLocations())
                 .simple()
                 .stream()
                 .collect(Collectors.toList());
-        var processedRoute = new ProcessedRoute(routeDto, durations, combinations);
-        return processedRoute.toScheduledRoute();
+        var processedRoute = new RoutePermutationGroup(routeDto, durations, permutationsGroup);
+        return processedRoute.getResults();
     }
 
     private Durations getDurations() {

@@ -6,12 +6,12 @@ import lombok.ToString;
 
 import java.time.LocalDateTime;
 
-@ToString
 @Getter
+@ToString
 @RequiredArgsConstructor
 public class TimelineEvent {
 
-    final LocalDateTime beginning;
-    final RouteEvent routeEvent;
+    protected final RouteEvent routeEvent;
+    protected final LocalDateTime beginning;
 
 }

@@ -7,9 +7,9 @@ import java.util.Optional;
 
 @Getter
 @AllArgsConstructor
-public class ScheduledRoute {
+public class RouteScheduleResults {
 
-    private final Optional<CombinationRoute> mostAccurateRoute;
-    private final Optional<CombinationRoute> mostOptimalRoute;
+    private final Optional<RoutePermutation> mostAccurateRoute;
+    private final Optional<RoutePermutation> mostOptimalRoute;
 
 }
