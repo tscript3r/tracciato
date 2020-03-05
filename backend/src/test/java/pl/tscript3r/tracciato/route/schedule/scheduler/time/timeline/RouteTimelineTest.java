@@ -39,11 +39,7 @@ class RouteTimelineTest {
     }
 
     TimelineEvent getEvent(RouteEvent routeEvent) {
-        return routeTimeline.getEvents()
-                .stream()
-                .filter(timelineEvent -> timelineEvent.getRouteEvent().equals(routeEvent))
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
+        return RouteTimelineConst.getEvent(routeTimeline, routeEvent);
     }
 
     void assertTimelineEvent(RouteEvent routeEvent, TimelineEvent timelineEvent) {
@@ -152,8 +148,8 @@ class RouteTimelineTest {
         assertTravelLocationTimelineEvent(RouteEvent.TRAVEL_START, fromLocation, destination, duration, event);
     }
 
-    private void assertTravelLocationTimelineEvent(RouteEvent routeEvent, LocationDto fromLocation,
-                                                   LocationDto destination, Duration duration, TimelineEvent event) {
+    void assertTravelLocationTimelineEvent(RouteEvent routeEvent, LocationDto fromLocation,
+                                           LocationDto destination, Duration duration, TimelineEvent event) {
         assertDurationLocationTimelineEvent(routeEvent, fromLocation, duration, event);
         assertEquals(destination, ((TravelLocationTimelineEvent) event).getDestination());
     }

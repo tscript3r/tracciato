@@ -31,13 +31,13 @@ public class RouteTime {
 
     public void travel(LocationDto from, LocationDto destination, Duration travelDuration) {
         routeTimeline.travelStart(futureNow, from, destination, travelDuration);
-        addDuration(travelDuration, destination);
+        addDuration(travelDuration, Duration.ofHours(1), destination);
         routeTimeline.travelArrival(futureNow, destination);
     }
 
     public void onsite(RouteLocationDto routeLocationDto) {
         var onsiteDuration = Duration.parse(routeLocationDto.getOnsideDuration());
-        if (willTravelerDoOvertime(onsiteDuration))
+        if (willTravelerDoOvertime(onsiteDuration, Duration.ZERO))
             setNextDay(onsiteDuration, routeLocationDto.getLocation(), false);
         else {
             futureNow = futureNow.plus(onsiteDuration);
@@ -45,23 +45,23 @@ public class RouteTime {
         }
     }
 
-    private void addDuration(Duration duration, LocationDto destination) {
-        if (willTravelerDoOvertime(duration)) {
+    private void addDuration(Duration duration, Duration acceptedOvertime, LocationDto destination) {
+        if (willTravelerDoOvertime(duration, acceptedOvertime)) {
             duration = subtractTodaysTimeLeft(duration);
             setNextDay(duration, destination, true);
         } else
             futureNow = futureNow.plus(duration);
     }
 
-    private boolean willTravelerDoOvertime(Duration duration) {
+    private boolean willTravelerDoOvertime(Duration duration, Duration acceptedOvertime) {
         var incrementedFutureNow = futureNow.plus(duration);
         return futureNow.getDayOfYear() != incrementedFutureNow.getDayOfYear() ||
-                incrementedFutureNow.toLocalTime().isAfter(currentDayMaxEndTime());
+                incrementedFutureNow.toLocalTime().isAfter(currentDayMaxEndTime(acceptedOvertime));
     }
 
-    private LocalTime currentDayMaxEndTime() {
+    private LocalTime currentDayMaxEndTime(Duration acceptedOvertime) {
         // TODO refactor after adding RouteDto field default availability / work hours
-        return getAvailability(futureNow.toLocalDate()).getTo().plus(Duration.ofHours(1));
+        return getAvailability(futureNow.toLocalDate()).getTo().plus(acceptedOvertime);
     }
 
     private AvailabilityDto getAvailability(LocalDate day) {
