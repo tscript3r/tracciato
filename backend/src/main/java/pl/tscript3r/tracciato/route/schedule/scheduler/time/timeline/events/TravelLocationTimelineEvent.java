@@ -12,8 +12,8 @@ public class TravelLocationTimelineEvent extends DurationLocationTimelineEvent {
     private final LocationDto destination;
 
     public TravelLocationTimelineEvent(RouteEvent routeEvent, LocalDateTime beginning,
-                                       Duration duration, LocationDto locationDto, LocationDto destination) {
-        super(routeEvent, beginning, locationDto, duration);
+                                       Duration duration, LocationDto fromLocation, LocationDto destination) {
+        super(routeEvent, beginning, fromLocation, duration);
         this.destination = destination;
     }
 

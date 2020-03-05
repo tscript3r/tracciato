@@ -16,10 +16,10 @@ import java.util.List;
 
 import static pl.tscript3r.tracciato.route.schedule.scheduler.time.timeline.events.RouteEvent.*;
 
+@Getter
 @ToString
 public class RouteTimeline {
 
-    @Getter
     private final List<TimelineEvent> events = new ArrayList<>();
 
     public void beginning(LocalDateTime date) {

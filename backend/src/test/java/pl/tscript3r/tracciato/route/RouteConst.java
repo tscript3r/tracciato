@@ -18,7 +18,7 @@ public final class RouteConst {
 
     private static final Calendar CALENDAR = Calendar.getInstance();
 
-    public static final LocalDateTime START_DATE = LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.of(8, 0));
+    public static final LocalDateTime START_DATE = LocalDateTime.of(LocalDateTime.now().toLocalDate().plusDays(1), LocalTime.of(8, 0));
     public static final String ROUTE_NAME = "CW52";
     public static final int START_DATE_YEAR = START_DATE.getYear();
     public static final int START_DATE_MONTH = START_DATE.getDayOfMonth();
