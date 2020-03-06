@@ -10,7 +10,7 @@ import pl.tscript3r.tracciato.utils.ReplaceCamelCaseAndUnderscores;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("LocationDto2StringLocation")
+@DisplayName("LocationDto to string mapper")
 @DisplayNameGeneration(ReplaceCamelCaseAndUnderscores.class)
 class LocationDto2StringLocationTest {
 

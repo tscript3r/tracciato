@@ -2,6 +2,9 @@ package pl.tscript3r.tracciato.location;
 
 import pl.tscript3r.tracciato.location.api.LocationDto;
 
+import java.util.Arrays;
+import java.util.List;
+
 public final class LocationConst {
 
     public static final String LOCATION_CITY = "Berlin";
@@ -121,6 +124,10 @@ public final class LocationConst {
         results.setZip("05-075");
         results.setCountry("Poland");
         return results;
+    }
+
+    public static List<LocationDto> getLocationsList() {
+        return Arrays.asList(getBerlinLocationDto(), getBremaLocationDto(), getBrunszwikLocationDto());
     }
 
 }

@@ -54,10 +54,6 @@ class Durations {
         durations.add(tuple);
     }
 
-    public void await() {
-        durations.forEach(tuple -> unwrap(tuple._3));
-    }
-
     private DurationDto unwrap(Future<DurationDto> durationDtoFuture) {
         try {
             return durationDtoFuture.get();
