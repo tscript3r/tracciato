@@ -1,6 +1,7 @@
 package pl.tscript3r.tracciato.route.schedule.scheduler;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.DisposableBean;
 import pl.tscript3r.tracciato.duration.provider.DurationProvider;
 import pl.tscript3r.tracciato.route.api.RouteDto;
 import pl.tscript3r.tracciato.route.schedule.scheduler.api.ScheduleRequestDto;
@@ -12,7 +13,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 @Slf4j
-public class RouteSchedulerFacade {
+public class RouteSchedulerFacade implements DisposableBean {
 
     private final Map<UUID, Future<RouteScheduleResults>> scheduleRequests = new LinkedHashMap<>();
     private final DurationProvider durationProvider;
@@ -42,6 +43,11 @@ public class RouteSchedulerFacade {
 
     public Future<RouteScheduleResults> getRequestFuture(UUID requestUuid) {
         return scheduleRequests.get(requestUuid);
+    }
+
+    @Override
+    public void destroy() {
+        executorService.shutdown();
     }
 
 }
