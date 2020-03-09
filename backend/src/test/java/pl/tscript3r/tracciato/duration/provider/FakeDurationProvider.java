@@ -3,7 +3,6 @@ package pl.tscript3r.tracciato.duration.provider;
 import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -14,6 +13,8 @@ public class FakeDurationProvider implements DurationProvider {
     public final ExecutorService executorService = Executors.newSingleThreadExecutor();
     public final Map<String, Callable<DurationDto>> customCallableMap = new LinkedHashMap<>();
     public int travelDurationCallsCount = 0;
+    public final long meters = 100L;
+    public Duration duration = Duration.ofHours(5);
 
     @Override
     public Future<DurationDto> getQuickestTravelDuration(String from, String destination) {
@@ -21,12 +22,12 @@ public class FakeDurationProvider implements DurationProvider {
         var key = concatenate(from, destination);
         if (customCallableMap.containsKey(key))
             return executorService.submit(customCallableMap.get(key));
-        return executorService.submit(this::getRandomDuration);
+        return executorService.submit(this::getNextDuration);
     }
 
-    public DurationDto getRandomDuration() {
-        Random random = new Random();
-        return new DurationDto(Duration.ofHours(random.nextInt()), random.nextLong());
+    public DurationDto getNextDuration() {
+        duration = duration.plusHours(1);
+        return new DurationDto(duration, meters);
     }
 
     public String concatenate(String from, String destination) {

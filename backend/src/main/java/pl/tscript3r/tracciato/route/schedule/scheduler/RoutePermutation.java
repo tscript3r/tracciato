@@ -35,7 +35,7 @@ class RoutePermutation {
     static RoutePermutation simulate(RouteDto routeDto,
                                      List<RouteLocationDto> orderedRoute,
                                      Durations durations) {
-        assert orderedRoute.size() > 0;
+        assert orderedRoute.size() > 1;
         var routePermutation = new RoutePermutation(routeDto, Collections.unmodifiableList(orderedRoute), durations);
         routePermutation.createResults();
         return routePermutation;

@@ -56,14 +56,14 @@ public final class RouteConst {
         routeDto.setCreationTimestamp(LocalDateTime.now());
         routeDto.setOwnerUuid(ownerUuid);
         routeDto.setUuid(routeUuid);
-        routeDto.setLocations(RouteLocationConst.getValidLocationsLists(ownerUuid));
+        routeDto.setLocations(RouteLocationConst.getValidLocationsSet(ownerUuid));
         routeDto.setStartLocation(LocationConst.getStartLocationDto());
         routeDto.setEndLocation(LocationConst.getEndLocationDto());
         routeDto.setAvailabilities(getAvailabilities());
         return routeDto;
     }
 
-    private static List<AvailabilityDto> getAvailabilities() {
+    public static List<AvailabilityDto> getAvailabilities() {
         List<AvailabilityDto> results = new ArrayList<>();
         results.add(getAvailability(START_DATE.toLocalDate()));
         results.add(getAvailability(START_DATE.plusDays(1).toLocalDate()));
@@ -76,7 +76,7 @@ public final class RouteConst {
         return results;
     }
 
-    private static AvailabilityDto getAvailability(LocalDate day) {
+    public static AvailabilityDto getAvailability(LocalDate day) {
         var results = new AvailabilityDto();
         results.setDate(day);
         results.setFrom(LocalTime.of(8, 0));

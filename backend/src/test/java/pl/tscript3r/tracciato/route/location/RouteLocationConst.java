@@ -1,14 +1,12 @@
 package pl.tscript3r.tracciato.route.location;
 
-import org.mockito.internal.util.collections.Sets;
 import pl.tscript3r.tracciato.location.LocationConst;
 import pl.tscript3r.tracciato.location.api.LocationDto;
 import pl.tscript3r.tracciato.route.availability.api.AvailabilityDto;
 import pl.tscript3r.tracciato.route.location.api.RouteLocationDto;
 
 import java.time.LocalTime;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import static pl.tscript3r.tracciato.location.LocationConst.getValidLocationDto;
 import static pl.tscript3r.tracciato.route.RouteConst.START_DATE;
@@ -98,11 +96,15 @@ public final class RouteLocationConst {
         return getRouteLocationDto(ownerUuid, LocationConst.getWarsawLocationDto());
     }
 
-    public static Set<RouteLocationDto> getValidLocationsLists(UUID ownerUuid) {
-        return Sets.newSet(getBerlinRouteLocationDto(ownerUuid), getHamburgRouteLocationDto(ownerUuid),
+    public static List<RouteLocationDto> getValidLocationsList(UUID ownerUuid) {
+        return Arrays.asList(getBerlinRouteLocationDto(ownerUuid), getHamburgRouteLocationDto(ownerUuid),
                 getEssenRouteLocationDto(ownerUuid), getStuttgartRouteLocationDto(ownerUuid),
                 getLuneburgRouteLocationDto(ownerUuid), getGetyngaRouteLocationDto(ownerUuid),
                 getBremaRouteLocationDto(ownerUuid), getBrunszwikRouteLocationDto(ownerUuid));
+    }
+
+    public static Set<RouteLocationDto> getValidLocationsSet(UUID ownerUuid) {
+        return new HashSet<>(getValidLocationsList(ownerUuid));
     }
 
 }
