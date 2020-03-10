@@ -10,9 +10,13 @@ import pl.tscript3r.tracciato.duration.provider.FakeDurationProvider;
 import pl.tscript3r.tracciato.duration.provider.LocationDto2StringLocation;
 import pl.tscript3r.tracciato.location.LocationConst;
 import pl.tscript3r.tracciato.location.api.LocationDto;
+import pl.tscript3r.tracciato.route.api.RouteDto;
+import pl.tscript3r.tracciato.route.location.api.RouteLocationDto;
 import pl.tscript3r.tracciato.utils.ReplaceCamelCaseAndUnderscores;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,6 +30,17 @@ class DurationsTest {
     FakeDurationProvider durationProvider;
 
     List<LocationDto> locations;
+
+    static List<LocationDto> getAllLocations(RouteDto routeDto) {
+        var results = new ArrayList<LocationDto>();
+        results.add(routeDto.getStartLocation());
+        results.add(routeDto.getEndLocation());
+        results.addAll(routeDto.getLocations()
+                .stream()
+                .map(RouteLocationDto::getLocation)
+                .collect(Collectors.toSet()));
+        return results;
+    }
 
     @BeforeEach
     void setUp() {

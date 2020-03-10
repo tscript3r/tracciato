@@ -2,7 +2,6 @@ package pl.tscript3r.tracciato.route.schedule.scheduler;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import pl.tscript3r.tracciato.route.api.RouteDto;
 import pl.tscript3r.tracciato.route.location.api.RouteLocationDto;
@@ -13,11 +12,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-@Getter
-@ToString
 @RequiredArgsConstructor
-class RoutePermutationGroup {
+class RoutePermutationsGroup {
 
+    @Getter
     private final RouteDto routeDto;
     private final Durations durations;
     private final List<List<RouteLocationDto>> permutationsGroup;

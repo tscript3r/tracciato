@@ -5,7 +5,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
 import pl.tscript3r.tracciato.duration.provider.FakeDurationProvider;
-import pl.tscript3r.tracciato.location.api.LocationDto;
 import pl.tscript3r.tracciato.route.RouteConst;
 import pl.tscript3r.tracciato.route.api.RouteDto;
 import pl.tscript3r.tracciato.route.location.RouteLocationConst;
@@ -13,10 +12,10 @@ import pl.tscript3r.tracciato.route.location.api.RouteLocationDto;
 import pl.tscript3r.tracciato.utils.ReplaceCamelCaseAndUnderscores;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static pl.tscript3r.tracciato.route.location.RouteLocationConst.*;
+import static pl.tscript3r.tracciato.route.schedule.scheduler.DurationsTest.getAllLocations;
 
 @DisplayName("Route permutation")
 @DisplayNameGeneration(ReplaceCamelCaseAndUnderscores.class)
@@ -56,17 +55,6 @@ class RoutePermutationTest {
         var result = getStuttgartRouteLocationDto(ownerUuid);
         result.getAvailability().add(RouteConst.getAvailability(routeDto.getStartDate().toLocalDate()));
         return result;
-    }
-
-    List<LocationDto> getAllLocations(RouteDto routeDto) {
-        var results = new ArrayList<LocationDto>();
-        results.add(routeDto.getStartLocation());
-        results.add(routeDto.getEndLocation());
-        results.addAll(routeDto.getLocations()
-                .stream()
-                .map(RouteLocationDto::getLocation)
-                .collect(Collectors.toSet()));
-        return results;
     }
 
     @Test
