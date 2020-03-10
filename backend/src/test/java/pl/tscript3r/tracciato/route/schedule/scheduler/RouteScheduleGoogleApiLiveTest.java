@@ -17,11 +17,12 @@ import java.util.concurrent.Executors;
 import static pl.tscript3r.tracciato.infrastructure.EnvironmentConst.GOOGLE_API_KEY;
 
 @Slf4j
-@DisplayName("Route scheduler")
-class RouteScheduleCallableTest {
+@DisplayName("Route schedule live test (with Google API key)")
+class RouteScheduleGoogleApiLiveTest {
 
     RouteDto validRoute;
     DurationProvider durationProvider;
+    RoutePermutationsFactory routePermutationsFactory;
     RouteScheduleCallable routeScheduleCallable;
 
     @BeforeEach
@@ -34,7 +35,8 @@ class RouteScheduleCallableTest {
                         .apiKey(apiKey)
                         .build()
         );
-        routeScheduleCallable = new RouteScheduleCallable(validRoute, durationProvider);
+        routePermutationsFactory = new RoutePermutationsFactory(durationProvider);
+        routeScheduleCallable = new RouteScheduleCallable(routePermutationsFactory.get(validRoute));
     }
 
     @Test
