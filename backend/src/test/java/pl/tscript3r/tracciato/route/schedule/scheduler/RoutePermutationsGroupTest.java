@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("Route permutation group")
+@DisplayName("Route permutations group")
 @DisplayNameGeneration(ReplaceCamelCaseAndUnderscores.class)
 class RoutePermutationsGroupTest {
 
@@ -38,13 +38,13 @@ class RoutePermutationsGroupTest {
 
     @Test
     void getResults_Should_RequestDurationsXTimes_When_Called() {
-        routePermutationsGroup.getResults();
+        routePermutationsGroup.executeAndGetSimulationsResults();
         assertTrue(fakeDurationProvider.travelDurationCallsCount > 0);
     }
 
     @Test
     void getResults_Should_ReturnPopulatedRouteScheduleResults_When_Called() {
-        var results = routePermutationsGroup.getResults();
+        var results = routePermutationsGroup.executeAndGetSimulationsResults();
         assertNotNull(results);
         assertNotNull(results.getMostAccurateRoute());
         assertNotNull(results.getMostOptimalRoute());
@@ -52,14 +52,14 @@ class RoutePermutationsGroupTest {
 
     @Test
     void getResults_Should_ReturnMostAccurateRouteWithLessMissedAppointmentsThanMostOptimalRoute_When_Called() {
-        var results = routePermutationsGroup.getResults();
+        var results = routePermutationsGroup.executeAndGetSimulationsResults();
         assertTrue(results.getMostAccurateRoute().getMissedAppointmentsCount() <
                 results.getMostOptimalRoute().getMissedAppointmentsCount());
     }
 
     @Test
     void getResults_Should_ReturnMostOptimalRouteWithEndingBeforeMostAccurateRoute_When_Called() {
-        var results = routePermutationsGroup.getResults();
+        var results = routePermutationsGroup.executeAndGetSimulationsResults();
         assertTrue(results.getMostOptimalRoute()
                 .getEndingDate()
                 .isBefore(results.getMostAccurateRoute().getEndingDate()));

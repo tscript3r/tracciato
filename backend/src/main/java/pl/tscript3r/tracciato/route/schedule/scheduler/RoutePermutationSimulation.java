@@ -17,7 +17,7 @@ import java.util.List;
 
 @Slf4j
 @ToString
-class RoutePermutation {
+class RoutePermutationSimulation {
 
     @Getter
     private final RouteDto routeDto;
@@ -32,20 +32,20 @@ class RoutePermutation {
 
     private final Durations durations;
 
-    public static RoutePermutation simulate(RouteDto routeDto,
-                                            List<RouteLocationDto> orderedRoute,
-                                            Durations durations) {
-        assert orderedRoute.size() > 1;
-        var routePermutation = new RoutePermutation(routeDto, Collections.unmodifiableList(orderedRoute), durations);
-        routePermutation.createResults();
-        return routePermutation;
-    }
-
-    private RoutePermutation(RouteDto routeDto, List<RouteLocationDto> orderedRoute, Durations durations) {
+    private RoutePermutationSimulation(RouteDto routeDto, List<RouteLocationDto> orderedRoute, Durations durations) {
         this.routeDto = routeDto;
         this.orderedRoute = orderedRoute;
         this.durations = durations;
         this.routeTime = new RouteTime(routeDto);
+    }
+
+    public static RoutePermutationSimulation simulate(RouteDto routeDto,
+                                                      List<RouteLocationDto> orderedRoute,
+                                                      Durations durations) {
+        assert orderedRoute.size() > 1;
+        var routePermutation = new RoutePermutationSimulation(routeDto, Collections.unmodifiableList(orderedRoute), durations);
+        routePermutation.createResults();
+        return routePermutation;
     }
 
     private void createResults() {

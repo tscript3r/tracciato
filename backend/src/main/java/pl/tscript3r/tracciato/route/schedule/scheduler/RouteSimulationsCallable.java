@@ -5,13 +5,13 @@ import lombok.AllArgsConstructor;
 import java.util.concurrent.Callable;
 
 @AllArgsConstructor
-class RouteScheduleCallable implements Callable<RouteScheduleResults> {
+class RouteSimulationsCallable implements Callable<RouteSimulationsResults> {
 
     private final RoutePermutationsGroup routePermutationsGroup;
 
     @Override
-    public RouteScheduleResults call() {
-        return routePermutationsGroup.getResults();
+    public RouteSimulationsResults call() {
+        return routePermutationsGroup.executeAndGetSimulationsResults();
     }
 
 }

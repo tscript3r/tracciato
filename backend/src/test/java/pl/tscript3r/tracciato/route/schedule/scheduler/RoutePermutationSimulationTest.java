@@ -19,9 +19,9 @@ import static pl.tscript3r.tracciato.route.schedule.scheduler.DurationsTest.getA
 
 @DisplayName("Route permutation")
 @DisplayNameGeneration(ReplaceCamelCaseAndUnderscores.class)
-class RoutePermutationTest {
+class RoutePermutationSimulationTest {
 
-    RoutePermutation routePermutation;
+    RoutePermutationSimulation routePermutationSimulation;
     RouteDto routeDto;
     Durations durations;
     List<RouteLocationDto> orderedRoute;
@@ -33,7 +33,7 @@ class RoutePermutationTest {
         routeDto.setLocations(getRouteLocationsSet(ownerUuid));
         durations = Durations.get(new FakeDurationProvider(), getAllLocations(routeDto));
         orderedRoute = new ArrayList<>(routeDto.getLocations());
-        routePermutation = RoutePermutation.simulate(routeDto, new ArrayList<>(routeDto.getLocations()), durations);
+        routePermutationSimulation = RoutePermutationSimulation.simulate(routeDto, new ArrayList<>(routeDto.getLocations()), durations);
     }
 
     Set<RouteLocationDto> getRouteLocationsSet(UUID ownerUuid) {
@@ -59,48 +59,48 @@ class RoutePermutationTest {
 
     @Test
     void simulate_Should_ThrowAssertionError_When_LocationsListIsEmpty() {
-        assertThrows(AssertionError.class, () -> RoutePermutation.simulate(routeDto, Collections.emptyList(), durations));
+        assertThrows(AssertionError.class, () -> RoutePermutationSimulation.simulate(routeDto, Collections.emptyList(), durations));
     }
 
     @Test
     void simulate_Should_ThrowAssertionError_When_LocationListSizeIsLowerThanTwo() {
-        assertThrows(AssertionError.class, () -> RoutePermutation.simulate(routeDto,
+        assertThrows(AssertionError.class, () -> RoutePermutationSimulation.simulate(routeDto,
                 Collections.singletonList(RouteLocationConst.getBerlinRouteLocationDto(UUID.randomUUID())), durations));
     }
 
     @Test
     void getOrder_Should_ReturnSameOrderedLocationsListAsGiven_When_Called() {
-        assertEquals(orderedRoute, routePermutation.getOrderedRoute());
+        assertEquals(orderedRoute, routePermutationSimulation.getOrderedRoute());
     }
 
     @Test
     void getTravelledMeters_Should_ReturnLocationsCountPlusOneX100_When_Called() {
-        assertEquals((orderedRoute.size() + 1) * 100, routePermutation.getTravelledMeters());
+        assertEquals((orderedRoute.size() + 1) * 100, routePermutationSimulation.getTravelledMeters());
     }
 
     @Test
     void getEndingDate_Should_ReturnStartDatePlus4DaysAndPlus7Hours_When_Called() {
-        assertEquals(routeDto.getStartDate().plusDays(4).plusHours(7), routePermutation.getEndingDate());
+        assertEquals(routeDto.getStartDate().plusDays(4).plusHours(7), routePermutationSimulation.getEndingDate());
     }
 
     @Test
     void getRouteDto_Should_ReturnSameRouteDtoAsGivenOnCreation_When_Called() {
-        assertEquals(routeDto, routePermutation.getRouteDto());
+        assertEquals(routeDto, routePermutationSimulation.getRouteDto());
     }
 
     @Test
     void getMissedAppointmentsCount_Should_Return1BecauseGetyngaHasNotReachableAppointmentDate_When_Called() {
-        assertEquals(1, routePermutation.getMissedAppointmentsCount());
+        assertEquals(1, routePermutationSimulation.getMissedAppointmentsCount());
     }
 
     @Test
     void missedAppointmentsList_Should_ContainGetyngaLocation_When_ItsAppointmentsDidNotFitToCurrentRouteOrder() {
-        assertTrue(routePermutation.getMissedAppointments().contains(getGetyngaWithMissedAppointmentWindow(ownerUuid)));
+        assertTrue(routePermutationSimulation.getMissedAppointments().contains(getGetyngaWithMissedAppointmentWindow(ownerUuid)));
     }
 
     @Test
     void missedAppointmentsList_Should_NotContainStuttgartLocation_When_StuttgartsAppointmentFitsToCurrentRouteOrder() {
-        assertFalse(routePermutation.getMissedAppointments().contains(getStuttgartRouteLocationWithAppointmentWindow(ownerUuid)));
+        assertFalse(routePermutationSimulation.getMissedAppointments().contains(getStuttgartRouteLocationWithAppointmentWindow(ownerUuid)));
     }
 
 }

@@ -5,8 +5,8 @@ import pl.tscript3r.tracciato.infrastructure.response.InternalResponse;
 import pl.tscript3r.tracciato.infrastructure.response.error.GlobalFailureResponse;
 import pl.tscript3r.tracciato.route.RouteFacade;
 import pl.tscript3r.tracciato.route.api.RouteDto;
-import pl.tscript3r.tracciato.route.schedule.scheduler.RouteScheduleResults;
 import pl.tscript3r.tracciato.route.schedule.scheduler.RouteSchedulerFacade;
+import pl.tscript3r.tracciato.route.schedule.scheduler.RouteSimulationsResults;
 import pl.tscript3r.tracciato.route.schedule.scheduler.api.ScheduleRequestDto;
 import pl.tscript3r.tracciato.route.schedule.validator.BeforeScheduleValidator;
 
@@ -30,13 +30,13 @@ public class RouteScheduleFacade {
                 .flatMap(routeDto -> await ? schedule(routeDto) : scheduleAsync(routeDto));
     }
 
-    private InternalResponse<RouteScheduleResults> schedule(RouteDto routeDto) {
+    private InternalResponse<RouteSimulationsResults> schedule(RouteDto routeDto) {
         return InternalResponse.payload(scheduler.schedule(routeDto))
                 .map(scheduleRequestDto -> scheduler.getRequestFuture(scheduleRequestDto.getRequestUuid()))
                 .flatMap(this::unwrap);
     }
 
-    private InternalResponse<RouteScheduleResults> unwrap(Future<RouteScheduleResults> routeScheduleResultsFuture) {
+    private InternalResponse<RouteSimulationsResults> unwrap(Future<RouteSimulationsResults> routeScheduleResultsFuture) {
         try {
             return InternalResponse.payload(routeScheduleResultsFuture.get());
         } catch (InterruptedException | ExecutionException e) {

@@ -16,7 +16,7 @@ import java.util.concurrent.Future;
 @RequiredArgsConstructor
 public class RouteSchedulerFacade implements DisposableBean {
 
-    private final Map<UUID, Future<RouteScheduleResults>> scheduleRequests = new LinkedHashMap<>();
+    private final Map<UUID, Future<RouteSimulationsResults>> scheduleRequests = new LinkedHashMap<>();
     private final RoutePermutationsFactory routePermutationsFactory;
     private final ExecutorService executorService;
 
@@ -31,13 +31,13 @@ public class RouteSchedulerFacade implements DisposableBean {
     private void submit(UUID uuid, RouteDto routeDto) {
         if ((!scheduleRequests.containsKey(uuid)) ||
                 (scheduleRequests.containsKey(uuid) && scheduleRequests.get(uuid).isDone())) {
-            var future = executorService.submit(new RouteScheduleCallable(routePermutationsFactory.get(routeDto)));
+            var future = executorService.submit(new RouteSimulationsCallable(routePermutationsFactory.get(routeDto)));
             scheduleRequests.put(uuid, future);
         } else
             log.warn("Schedule request for route uuid={} rejected (route is already processed)", routeDto.getUuid());
     }
 
-    public Future<RouteScheduleResults> getRequestFuture(UUID requestUuid) {
+    public Future<RouteSimulationsResults> getRequestFuture(UUID requestUuid) {
         return scheduleRequests.get(requestUuid);
     }
 

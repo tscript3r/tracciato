@@ -19,26 +19,28 @@ class RoutePermutationsGroup {
     private final RouteDto routeDto;
     private final Durations durations;
     private final List<List<RouteLocationDto>> permutationsGroup;
-    private final List<RoutePermutation> simulations = new ArrayList<>();
+    private final List<RoutePermutationSimulation> simulations = new ArrayList<>();
 
-    public RouteScheduleResults getResults() {
+    public RouteSimulationsResults executeAndGetSimulationsResults() {
         executeSimulations();
-        return new RouteScheduleResults(findMostAccurateRoute(), findMostOptimalRoute());
+        return new RouteSimulationsResults(findMostAccurateRoute(), findMostOptimalRoute());
     }
 
     private void executeSimulations() {
-        permutationsGroup.forEach(c -> simulations.add(RoutePermutation.simulate(routeDto, c, durations)));
+        permutationsGroup.forEach(permutation ->
+                simulations.add(RoutePermutationSimulation.simulate(routeDto, permutation, durations))
+        );
     }
 
-    private Optional<RoutePermutation> findMostAccurateRoute() {
+    private Optional<RoutePermutationSimulation> findMostAccurateRoute() {
         return simulations.stream()
-                .min(Comparator.comparing(RoutePermutation::getMissedAppointmentsCount)
-                        .thenComparing(RoutePermutation::getEndingDate));
+                .min(Comparator.comparing(RoutePermutationSimulation::getMissedAppointmentsCount)
+                        .thenComparing(RoutePermutationSimulation::getEndingDate));
     }
 
-    private Optional<RoutePermutation> findMostOptimalRoute() {
+    private Optional<RoutePermutationSimulation> findMostOptimalRoute() {
         return simulations.stream()
-                .min(Comparator.comparing(RoutePermutation::getEndingDate));
+                .min(Comparator.comparing(RoutePermutationSimulation::getEndingDate));
     }
 
 }

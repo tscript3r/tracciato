@@ -23,7 +23,7 @@ class RouteScheduleGoogleApiLiveTest {
     RouteDto validRoute;
     DurationProvider durationProvider;
     RoutePermutationsFactory routePermutationsFactory;
-    RouteScheduleCallable routeScheduleCallable;
+    RouteSimulationsCallable routeSimulationsCallable;
 
     @BeforeEach
     void setUp() {
@@ -36,47 +36,47 @@ class RouteScheduleGoogleApiLiveTest {
                         .build()
         );
         routePermutationsFactory = new RoutePermutationsFactory(durationProvider);
-        routeScheduleCallable = new RouteScheduleCallable(routePermutationsFactory.get(validRoute));
+        routeSimulationsCallable = new RouteSimulationsCallable(routePermutationsFactory.get(validRoute));
     }
 
     @Test
     void call() {
-        var results = routeScheduleCallable.call();
+        var results = routeSimulationsCallable.call();
         log.debug("\r\n\r\nMost accurate route");
         logOut(results.getMostAccurateRoute());
         log.debug("\r\n\r\nMost optimal route");
         logOut(results.getMostOptimalRoute());
     }
 
-    private void logOut(RoutePermutation routePermutation) {
-        logOrder(routePermutation);
-        logMissedAppointments(routePermutation);
-        logTimeline(routePermutation);
+    private void logOut(RoutePermutationSimulation routePermutationSimulation) {
+        logOrder(routePermutationSimulation);
+        logMissedAppointments(routePermutationSimulation);
+        logTimeline(routePermutationSimulation);
     }
 
-    private void logOrder(RoutePermutation routePermutation) {
-        log.debug("\r\nTotal distance: {}km", routePermutation.getTravelledMeters() / 1000);
+    private void logOrder(RoutePermutationSimulation routePermutationSimulation) {
+        log.debug("\r\nTotal distance: {}km", routePermutationSimulation.getTravelledMeters() / 1000);
         log.debug("\r\nOrder:");
-        log.debug("- {}", routePermutation.getRouteDto().getStartLocation().getCity());
-        routePermutation.getOrderedRoute()
+        log.debug("- {}", routePermutationSimulation.getRouteDto().getStartLocation().getCity());
+        routePermutationSimulation.getOrderedRoute()
                 .forEach(routeLocationDto -> log.debug("- {}", routeLocationDto.getLocation().getCity()));
-        log.debug("- {}", routePermutation.getRouteDto().getEndLocation().getCity());
+        log.debug("- {}", routePermutationSimulation.getRouteDto().getEndLocation().getCity());
     }
 
-    private void logMissedAppointments(RoutePermutation routePermutation) {
-        if (routePermutation.getMissedAppointmentsCount() == 0)
+    private void logMissedAppointments(RoutePermutationSimulation routePermutationSimulation) {
+        if (routePermutationSimulation.getMissedAppointmentsCount() == 0)
             log.debug("\r\nNo appointments missed.");
         else {
             log.debug("\r\nMissed appointments:");
-            routePermutation.getMissedAppointments().forEach(routeLocationDto -> {
+            routePermutationSimulation.getMissedAppointments().forEach(routeLocationDto -> {
                 log.debug("- {}: {}", routeLocationDto.getLocation().getCity(), routeLocationDto.getAvailability().toString());
             });
         }
     }
 
-    private void logTimeline(RoutePermutation routePermutation) {
+    private void logTimeline(RoutePermutationSimulation routePermutationSimulation) {
         log.debug("\r\nTimeline:");
-        routePermutation.getRouteTime().getRouteTimeline().getEvents().forEach(timelineEvent -> {
+        routePermutationSimulation.getRouteTime().getRouteTimeline().getEvents().forEach(timelineEvent -> {
             log.debug(timelineEvent.toString());
         });
     }
