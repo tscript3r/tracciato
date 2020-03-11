@@ -35,15 +35,15 @@ import static org.springframework.http.HttpStatus.*;
 @AllArgsConstructor
 public final class ControllerExceptionHandler {
 
-    private final ResponseResolver<ResponseEntity> responseResolver;
+    private final ResponseResolver<ResponseEntity<?>> responseResolver;
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public final ResponseEntity handleMessageNotReadableException() {
+    public final ResponseEntity<?> handleMessageNotReadableException() {
         return responseResolver.resolve(FailureResponseDto.get("Body not readable / empty"), BAD_REQUEST.value());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public final ResponseEntity handleBindingFail(MethodArgumentNotValidException e) {
+    public final ResponseEntity<?> handleBindingFail(MethodArgumentNotValidException e) {
         BindingResult bindingResult = e.getBindingResult();
         Map<String, String> results = new HashMap<>();
         bindingResult.getAllErrors().forEach(objectError ->
@@ -53,12 +53,12 @@ public final class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public final ResponseEntity handleMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+    public final ResponseEntity<?> handleMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
         return responseResolver.resolve(e.getMessage(), METHOD_NOT_ALLOWED.value());
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
-    public final ResponseEntity handleNotFoundError(HttpServletRequest request) {
+    public final ResponseEntity<?> handleNotFoundError(HttpServletRequest request) {
         return responseResolver.resolve(FailureResponseDto.get("Resource not found")
                         .add("method", request.getMethod())
                         .add("uri", request.getRequestURI()),
@@ -66,7 +66,7 @@ public final class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public final ResponseEntity handleUnknownException(Exception exception, WebRequest webRequest) {
+    public final ResponseEntity<?> handleUnknownException(Exception exception, WebRequest webRequest) {
         log.error("Request: {} User: {} Params: {}",
                 webRequest.toString(),
                 webRequest.getParameterMap()
@@ -80,7 +80,7 @@ public final class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(NotImplementedException.class)
-    public final ResponseEntity handleNotImplementedException() {
+    public final ResponseEntity<?> handleNotImplementedException() {
         return responseResolver.resolve(FailureResponseDto.get("Not implemented yet"), NOT_IMPLEMENTED.value());
     }
 
