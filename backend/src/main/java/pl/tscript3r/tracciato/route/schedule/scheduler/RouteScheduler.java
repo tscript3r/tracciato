@@ -14,7 +14,7 @@ import java.util.concurrent.Future;
 
 @Slf4j
 @RequiredArgsConstructor
-public class RouteSchedulerFacade implements DisposableBean {
+public class RouteScheduler implements DisposableBean {
 
     private final Map<UUID, Future<RouteSimulationsResults>> scheduleRequests = new LinkedHashMap<>();
     private final RoutePermutationsFactory routePermutationsFactory;

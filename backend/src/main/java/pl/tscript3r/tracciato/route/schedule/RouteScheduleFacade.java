@@ -5,7 +5,7 @@ import pl.tscript3r.tracciato.infrastructure.response.InternalResponse;
 import pl.tscript3r.tracciato.infrastructure.response.error.GlobalFailureResponse;
 import pl.tscript3r.tracciato.route.RouteFacade;
 import pl.tscript3r.tracciato.route.api.RouteDto;
-import pl.tscript3r.tracciato.route.schedule.scheduler.RouteSchedulerFacade;
+import pl.tscript3r.tracciato.route.schedule.scheduler.RouteScheduler;
 import pl.tscript3r.tracciato.route.schedule.scheduler.RouteSimulationsResults;
 import pl.tscript3r.tracciato.route.schedule.scheduler.api.ScheduleRequestDto;
 import pl.tscript3r.tracciato.route.schedule.validator.BeforeScheduleValidator;
@@ -18,7 +18,7 @@ import java.util.concurrent.Future;
 public class RouteScheduleFacade {
 
     private final RouteFacade routeFacade;
-    private final RouteSchedulerFacade scheduler;
+    private final RouteScheduler scheduler;
 
     public InternalResponse<RouteDto> validate(String token, UUID routeUuid) {
         return routeFacade.getRoute(token, routeUuid)

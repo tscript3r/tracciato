@@ -17,17 +17,28 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Route scheduler")
 @DisplayNameGeneration(ReplaceCamelCaseAndUnderscores.class)
-class RouteSchedulerFacadeTest {
+public class RouteSchedulerTest {
 
     RoutePermutationsFactory routePermutationsFactory;
-    RouteSchedulerFacade routeSchedulerFacade;
+    RouteScheduler routeScheduler;
     ExecutorService executorService;
+
+    public static RouteScheduler getRouteScheduler(RoutePermutationsFactory routePermutationsFactory,
+                                                   ExecutorService executorService) {
+        return new RouteScheduler(routePermutationsFactory, executorService);
+    }
+
+    public static RouteScheduler getFakeRouteScheduler() {
+        var routePermutationsFactory = new RoutePermutationsFactory(new FakeDurationProvider());
+        var executorService = Executors.newSingleThreadExecutor();
+        return getRouteScheduler(routePermutationsFactory, executorService);
+    }
 
     @BeforeEach
     void setUp() {
         routePermutationsFactory = new RoutePermutationsFactory(new FakeDurationProvider());
         executorService = Executors.newSingleThreadExecutor();
-        routeSchedulerFacade = new RouteSchedulerFacade(routePermutationsFactory, executorService);
+        routeScheduler = getRouteScheduler(routePermutationsFactory, executorService);
     }
 
     @Test
@@ -36,7 +47,7 @@ class RouteSchedulerFacadeTest {
         var routeDto = RouteConst.getValidRouteDto(UUID.randomUUID(), UUID.randomUUID());
 
         // when
-        var results = routeSchedulerFacade.schedule(routeDto);
+        var results = routeScheduler.schedule(routeDto);
 
         // then
         assertEquals(routeDto.getUuid(), results.getRequestUuid());
@@ -48,12 +59,12 @@ class RouteSchedulerFacadeTest {
         var routeDto = RouteConst.getValidRouteDto(UUID.randomUUID(), UUID.randomUUID());
 
         // when
-        var firstCallRequest = routeSchedulerFacade.schedule(routeDto);
-        var secondCallRequest = routeSchedulerFacade.schedule(routeDto);
+        var firstCallRequest = routeScheduler.schedule(routeDto);
+        var secondCallRequest = routeScheduler.schedule(routeDto);
 
         // then
-        assertEquals(routeSchedulerFacade.getRequestFuture(firstCallRequest.getRequestUuid()),
-                routeSchedulerFacade.getRequestFuture(secondCallRequest.getRequestUuid()));
+        assertEquals(routeScheduler.getRequestFuture(firstCallRequest.getRequestUuid()),
+                routeScheduler.getRequestFuture(secondCallRequest.getRequestUuid()));
     }
 
     @Test
@@ -62,25 +73,25 @@ class RouteSchedulerFacadeTest {
         var routeDto = RouteConst.getValidRouteDto(UUID.randomUUID(), UUID.randomUUID());
 
         // when
-        var firstCallRequest = routeSchedulerFacade.schedule(routeDto);
-        var firstCallFuture = routeSchedulerFacade.getRequestFuture(firstCallRequest.getRequestUuid());
+        var firstCallRequest = routeScheduler.schedule(routeDto);
+        var firstCallFuture = routeScheduler.getRequestFuture(firstCallRequest.getRequestUuid());
         firstCallFuture.get();
 
-        var secondCallRequest = routeSchedulerFacade.schedule(routeDto);
+        var secondCallRequest = routeScheduler.schedule(routeDto);
 
         // then
-        assertNotEquals(firstCallFuture, routeSchedulerFacade.getRequestFuture(secondCallRequest.getRequestUuid()));
+        assertNotEquals(firstCallFuture, routeScheduler.getRequestFuture(secondCallRequest.getRequestUuid()));
     }
 
     @Test
     void getRequestFuture_Should_ReturnFutureOfRouteSimulationResults_When_ExistingRequestUuidIsGiven() {
         // given
         var routeDto = RouteConst.getValidRouteDto(UUID.randomUUID(), UUID.randomUUID());
-        var request = routeSchedulerFacade.schedule(routeDto);
+        var request = routeScheduler.schedule(routeDto);
 
 
         // when
-        var results = routeSchedulerFacade.getRequestFuture(request.getRequestUuid());
+        var results = routeScheduler.getRequestFuture(request.getRequestUuid());
 
         // then
         assertNotNull(results);
@@ -89,7 +100,7 @@ class RouteSchedulerFacadeTest {
     @Test
     void getRequestFuture_Should_ReturnNull_When_NonExistingRequestUuidIsGiven() {
         // given
-        var results = routeSchedulerFacade.getRequestFuture(UUID.randomUUID());
+        var results = routeScheduler.getRequestFuture(UUID.randomUUID());
 
         // then
         assertNull(results);
@@ -98,7 +109,7 @@ class RouteSchedulerFacadeTest {
     @Test
     void destroy_Should_ShutdownExecutorService_When_Called() {
         // given
-        routeSchedulerFacade.destroy();
+        routeScheduler.destroy();
 
         // then
         assertTrue(executorService.isShutdown());
