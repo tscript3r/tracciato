@@ -29,7 +29,7 @@ public class RouteFacade {
     public InternalResponse<RouteDto> addLocation(String token, UUID routeUuid,
                                                   RouteLocationEntity routeLocationEntity) {
         return authorizeAndGetRouteEntity(token, routeUuid)
-                .flatMap(dto -> routeDao.addRouteLocation(routeUuid, routeLocationEntity));
+                .override(routeDao.addRouteLocation(routeUuid, routeLocationEntity));
     }
 
     private InternalResponse<RouteEntity> authorizeAndGetRouteEntity(String token, UUID routeUuid) {
@@ -39,25 +39,25 @@ public class RouteFacade {
 
     public InternalResponse<RouteDto> setNewStartLocation(String token, UUID routeUuid, LocationDto locationDto) {
         return authorizeAndGetRouteEntity(token, routeUuid)
-                .flatMap(routeEntity -> locationFacade.addLocation(token, locationDto))
+                .override(locationFacade.addLocation(token, locationDto))
                 .flatMap(locationEntity -> routeDao.setStartLocation(routeUuid, locationEntity));
     }
 
     public InternalResponse<RouteDto> setExistingStartLocation(String token, UUID routeUuid, UUID locationUuid) {
         return authorizeAndGetRouteEntity(token, routeUuid)
-                .flatMap(routeEntity -> locationFacade.getLocationEntityByUuid(locationUuid))
+                .override(locationFacade.getLocationEntityByUuid(locationUuid))
                 .flatMap(locationEntity -> routeDao.setStartLocation(routeUuid, locationEntity));
     }
 
     public InternalResponse<RouteDto> setNewEndLocation(String token, UUID routeUuid, LocationDto locationDto) {
         return authorizeAndGetRouteEntity(token, routeUuid)
-                .flatMap(routeEntity -> locationFacade.addLocation(token, locationDto))
+                .override(locationFacade.addLocation(token, locationDto))
                 .flatMap(locationEntity -> routeDao.setEndLocation(routeUuid, locationEntity));
     }
 
     public InternalResponse<RouteDto> setExistingEndLocation(String token, UUID routeUuid, UUID locationUuid) {
         return authorizeAndGetRouteEntity(token, routeUuid)
-                .flatMap(routeEntity -> locationFacade.getLocationEntityByUuid(locationUuid))
+                .override(locationFacade.getLocationEntityByUuid(locationUuid))
                 .flatMap(locationEntity -> routeDao.setEndLocation(routeUuid, locationEntity));
     }
 
@@ -68,7 +68,7 @@ public class RouteFacade {
 
     public InternalResponse<RouteDto> addAvailability(String token, UUID routeUuid, AvailabilityEntity availabilityEntity) {
         return authorizeAndGetRouteEntity(token, routeUuid)
-                .flatMap(entity -> routeDao.addAvailability(routeUuid, availabilityEntity));
+                .override(routeDao.addAvailability(routeUuid, availabilityEntity));
     }
 
 }

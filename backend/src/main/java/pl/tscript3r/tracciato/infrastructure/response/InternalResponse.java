@@ -41,6 +41,10 @@ public class InternalResponse<T> implements Either<FailureResponse, T> {
         return new InternalResponse<>(either.flatMap(mapper));
     }
 
+    public <U> InternalResponse<U> override(InternalResponse<U> internalResponse) {
+        return either.isRight() ? internalResponse : InternalResponse.failure(either.getLeft());
+    }
+
     public InternalResponse<T> filterOrElse(Predicate<? super T> predicate, Function<? super T, ? extends FailureResponse> zero) {
         return new InternalResponse<>(either.filterOrElse(predicate, zero));
     }
