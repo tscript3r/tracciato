@@ -5,6 +5,7 @@ import pl.tscript3r.tracciato.infrastructure.validator.BindingFailureResponse;
 import pl.tscript3r.tracciato.route.api.RouteDto;
 import pl.tscript3r.tracciato.route.availability.api.AvailabilityDto;
 
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,15 +38,19 @@ public final class BeforeScheduleValidator {
     }
 
     private static void availabilityDates(RouteDto routeDto, Map<String, String> validationResults) {
-        var startDate = routeDto.getStartDate();
-        var endDate = routeDto.getMaxEndDate();
+        var startDate = routeDto.getStartDate().toLocalDate();
+        var endDate = routeDto.getMaxEndDate().toLocalDate();
         for (AvailabilityDto availabilityDto : routeDto.getAvailabilities()) {
-            var availabilityDate = availabilityDto.getDate().atStartOfDay();
-            if (availabilityDate.isBefore(startDate) || availabilityDate.isAfter(endDate))
+            var availabilityDate = availabilityDto.getDate();
+            if (!isDateInRange(availabilityDate, startDate, endDate))
                 validationResults.put("availability", String.format("Availability date is invalid: %s", availabilityDto.getUuid()));
             if (availabilityDto.getFrom().isAfter(availabilityDto.getTo()))
-                validationResults.put("availability", String.format("Availability hours is invalid: %s", availabilityDto.getUuid()));
+                validationResults.put("availability", String.format("Availability hours are invalid: %s", availabilityDto.getUuid()));
         }
+    }
+
+    private static boolean isDateInRange(LocalDate date, LocalDate rangeFrom, LocalDate rangeTo) {
+        return (date.isAfter(rangeFrom) || date.isEqual(rangeFrom)) && (date.isBefore(rangeTo) || date.isEqual(rangeTo));
     }
 
     private static void trafficPrediction(RouteDto routeDto, Map<String, String> validationResults) {
