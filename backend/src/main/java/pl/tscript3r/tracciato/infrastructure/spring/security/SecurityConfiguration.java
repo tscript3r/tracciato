@@ -22,6 +22,7 @@ import pl.tscript3r.tracciato.infrastructure.response.ResponseResolver;
 import pl.tscript3r.tracciato.user.UserFacade;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import static pl.tscript3r.tracciato.infrastructure.EndpointsMappings.PUBLIC_MAPPINGS;
 
@@ -37,7 +38,7 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().disable().csrf().disable()
+        http.cors().and().csrf().disable()
                 .authorizeRequests().antMatchers(PUBLIC_MAPPINGS).permitAll()
                 .anyRequest().authenticated()
                 .and()
@@ -69,8 +70,15 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowCredentials(true);
+        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+        configuration.setAllowedHeaders(Arrays.asList("X-Requested-With", "Origin", "Content-Type", "Accept", "Authorization"));
+        configuration.setExposedHeaders(Arrays.asList("Access-Control-Allow-Headers", "Authorization, x-xsrf-token, Access-Control-Allow-Headers, Origin, Accept, X-Requested-With, " +
+                "Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 
