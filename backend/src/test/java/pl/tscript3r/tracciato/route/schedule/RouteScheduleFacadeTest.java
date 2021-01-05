@@ -2,6 +2,7 @@ package pl.tscript3r.tracciato.route.schedule;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -13,6 +14,7 @@ import pl.tscript3r.tracciato.route.api.RouteDto;
 import pl.tscript3r.tracciato.route.schedule.scheduler.RouteSchedulerTest;
 import pl.tscript3r.tracciato.route.schedule.scheduler.RouteSimulationsResults;
 import pl.tscript3r.tracciato.route.schedule.scheduler.api.ScheduleRequestDto;
+import pl.tscript3r.tracciato.utils.ReplaceCamelCaseAndUnderscores;
 
 import java.util.Collections;
 import java.util.UUID;
@@ -25,6 +27,7 @@ import static org.mockito.Mockito.when;
 
 @DisplayName("Route schedule facade")
 @ExtendWith(MockitoExtension.class)
+@DisplayNameGeneration(ReplaceCamelCaseAndUnderscores.class)
 class RouteScheduleFacadeTest {
 
     @Mock

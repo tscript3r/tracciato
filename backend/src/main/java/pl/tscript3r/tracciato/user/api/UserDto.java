@@ -1,6 +1,7 @@
 package pl.tscript3r.tracciato.user.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
@@ -8,6 +9,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.UUID;
 
+@Schema(name = "User")
 @Data
 public class UserDto {
 

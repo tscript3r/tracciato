@@ -7,6 +7,9 @@ import java.time.LocalTime;
 
 public final class AvailabilityConst {
 
+    private AvailabilityConst() {
+    }
+
     public static AvailabilityDto getValidAvailabilityDto() {
         var results = new AvailabilityDto();
         results.setDate(RouteConst.START_DATE.plusDays(1).toLocalDate());
@@ -21,9 +24,6 @@ public final class AvailabilityConst {
         results.setTo(LocalTime.of(16, 0));
         results.setFrom(LocalTime.of(8, 0));
         return results;
-    }
-
-    private AvailabilityConst() {
     }
 
 }

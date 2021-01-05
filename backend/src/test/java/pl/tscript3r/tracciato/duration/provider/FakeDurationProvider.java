@@ -12,8 +12,8 @@ public class FakeDurationProvider implements DurationProvider {
 
     public final ExecutorService executorService = Executors.newSingleThreadExecutor();
     public final Map<String, Callable<DurationDto>> customCallableMap = new LinkedHashMap<>();
-    public int travelDurationCallsCount = 0;
     public final long meters = 100L;
+    public int travelDurationCallsCount = 0;
     public Duration duration = Duration.ofHours(5);
 
     @Override

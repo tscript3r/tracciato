@@ -12,6 +12,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.NoHandlerFoundException;
@@ -37,11 +38,13 @@ public final class ControllerExceptionHandler {
 
     private final ResponseResolver<ResponseEntity<?>> responseResolver;
 
+    @ResponseStatus(BAD_REQUEST) // <-- needed for OpenAPI docs
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public final ResponseEntity<?> handleMessageNotReadableException() {
         return responseResolver.resolve(FailureResponseDto.get("Body not readable / empty"), BAD_REQUEST.value());
     }
 
+    @ResponseStatus(BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public final ResponseEntity<?> handleBindingFail(MethodArgumentNotValidException e) {
         BindingResult bindingResult = e.getBindingResult();
@@ -65,6 +68,7 @@ public final class ControllerExceptionHandler {
                 NOT_FOUND.value());
     }
 
+    @ResponseStatus(INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<?> handleUnknownException(Exception exception, WebRequest webRequest) {
         log.error("Request: {} User: {} Params: {}",

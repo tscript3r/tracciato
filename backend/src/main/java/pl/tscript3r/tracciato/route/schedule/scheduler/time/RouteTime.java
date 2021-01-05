@@ -16,11 +16,9 @@ public class RouteTime {
 
     @Getter
     private final RouteTimeline routeTimeline;
-
+    private final RouteDto routeDto;
     @Getter
     private LocalDateTime futureNow;
-
-    private final RouteDto routeDto;
 
     public RouteTime(RouteDto routeDto) {
         this.routeDto = routeDto;

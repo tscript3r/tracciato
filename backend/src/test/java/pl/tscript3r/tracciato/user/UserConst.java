@@ -19,6 +19,9 @@ public final class UserConst {
 
     public static final String USERNAME_FIELD = "username";
 
+    private UserConst() {
+    }
+
     public static UserEntity getJohnUserEntity() {
         var user = new UserEntity();
         user.setId(JOHNS_ID);
@@ -53,9 +56,6 @@ public final class UserConst {
         validUserDto.setUsername(EDY_USERNAME);
         validUserDto.setPassword(EDY_PASSWORD);
         return validUserDto;
-    }
-
-    private UserConst() {
     }
 
 }

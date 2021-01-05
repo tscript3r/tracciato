@@ -20,17 +20,17 @@ import static org.springframework.http.HttpStatus.valueOf;
 public final class SpringResponseResolver implements ResponseResolver<ResponseEntity> {
 
     @Override
-    public ResponseEntity resolve(@NotNull FailureResponse failureResponse) {
+    public ResponseEntity<?> resolve(@NotNull FailureResponse failureResponse) {
         return createFailureResponse(failureResponse);
     }
 
     @Override
-    public ResponseEntity resolve(Object payload, @NotNull Integer httpStatus) {
+    public ResponseEntity<?> resolve(Object payload, @NotNull Integer httpStatus) {
         return new ResponseEntity<>(ResponseDto.of(ResponseStatus.get(httpStatus), payload), valueOf(httpStatus));
     }
 
     @Override
-    public ResponseEntity resolve(@NotNull Either<? extends FailureResponse, ?> response) {
+    public ResponseEntity<?> resolve(@NotNull Either<? extends FailureResponse, ?> response) {
         return response.map(ResponseDto::success)
                 .map(ResponseEntity::ok)
                 .getOrElseGet(this::createFailureResponse);
@@ -44,7 +44,7 @@ public final class SpringResponseResolver implements ResponseResolver<ResponseEn
     }
 
     @Override
-    public ResponseEntity resolve(@NotNull Either<? extends FailureResponse, ?> response, @NotNull Integer httpStatus) {
+    public ResponseEntity<?> resolve(@NotNull Either<? extends FailureResponse, ?> response, @NotNull Integer httpStatus) {
         return response.map(ResponseDto::success)
                 .map(responseDto ->
                         ResponseEntity.status(httpStatus)

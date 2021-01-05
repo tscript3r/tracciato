@@ -16,8 +16,6 @@ import java.util.UUID;
 
 public final class RouteConst {
 
-    private static final Calendar CALENDAR = Calendar.getInstance();
-
     public static final LocalDateTime START_DATE = LocalDateTime.of(LocalDateTime.now().toLocalDate().plusDays(1), LocalTime.of(8, 0));
     public static final String ROUTE_NAME = "CW52";
     public static final int START_DATE_YEAR = START_DATE.getYear();
@@ -25,16 +23,17 @@ public final class RouteConst {
     public static final int START_DATE_DAY = START_DATE.getDayOfMonth();
     public static final int START_DATE_HOUR = 8;
     public static final int START_DATE_MINUTE = 0;
-
     public static final LocalDateTime MAX_END_DATE = START_DATE.plusDays(5).plusHours(8);
-
     public static final int MAX_END_DATE_YEAR = MAX_END_DATE.getYear();
     public static final int MAX_END_DATE_MONTH = MAX_END_DATE.getDayOfMonth();
     public static final int MAX_END_DATE_DAY = MAX_END_DATE.getDayOfMonth();
     public static final int MAX_END_DATE_HOUR = MAX_END_DATE.getHour();
     public static final int MAX_END_DATE_MINUTE = MAX_END_DATE.getMinute();
-
     public static final TrafficPrediction TRAFFIC_PREDICTION = TrafficPrediction.BEST_GUESS;
+    private static final Calendar CALENDAR = Calendar.getInstance();
+
+    private RouteConst() {
+    }
 
     public static NewRouteDto getValidNewRouteDto() {
         var newRouteDto = new NewRouteDto();
@@ -82,9 +81,6 @@ public final class RouteConst {
         results.setFrom(LocalTime.of(8, 0));
         results.setTo(LocalTime.of(18, 0));
         return results;
-    }
-
-    private RouteConst() {
     }
 
 }

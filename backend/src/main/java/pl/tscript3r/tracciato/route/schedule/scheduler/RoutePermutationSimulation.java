@@ -26,11 +26,10 @@ class RoutePermutationSimulation {
     @Getter
     private final RouteTime routeTime;
     @Getter
-    private long travelledMeters = 0;
-    @Getter
     private final List<RouteLocationDto> missedAppointments = new ArrayList<>();
-
     private final Durations durations;
+    @Getter
+    private long travelledMeters = 0;
 
     private RoutePermutationSimulation(RouteDto routeDto, List<RouteLocationDto> orderedRoute, Durations durations) {
         this.routeDto = routeDto;

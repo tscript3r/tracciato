@@ -27,14 +27,11 @@ import static pl.tscript3r.tracciato.location.LocationConst.getValidLocationDto;
 @MockitoSettings(strictness = Strictness.LENIENT)
 class LocationFacadeTest {
 
+    final UUID userUuid = UUID.randomUUID();
     @Mock
     UserFacade userFacade;
-
     LocationFacade locationFacade;
-
     LocationRepositoryAdapter locationInMemoryRepositoryAdapter;
-
-    final UUID userUuid = UUID.randomUUID();
 
     @BeforeEach
     void setUp() {
