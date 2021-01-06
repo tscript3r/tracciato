@@ -1,14 +1,12 @@
 package pl.tscript3r.tracciato.location;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import pl.tscript3r.tracciato.infrastructure.db.SpringRepository;
 
 import java.util.Set;
 import java.util.UUID;
 
-public interface LocationSpringRepository extends JpaRepository<LocationEntity, Long> {
+public interface LocationSpringRepository extends SpringRepository<LocationEntity> {
 
     Set<LocationEntity> findAllByOwnerUuid(UUID uuid);
-
-    LocationEntity findByUuid(UUID uuid);
 
 }

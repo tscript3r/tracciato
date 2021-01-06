@@ -4,14 +4,14 @@ import io.vavr.control.Option;
 
 import java.util.UUID;
 
-public interface RepositoryAdapter<ID, T> {
+public interface RepositoryAdapter<E extends AbstractEntity> {
 
-    Option<T> findById(ID id);
+    Option<E> findById(Long id);
 
-    Option<T> findByUuid(UUID uuid);
+    Option<E> findByUuid(UUID uuid);
 
-    T save(T entity);
+    E save(E entity);
 
-    void delete(ID id);
+    void delete(Long id);
 
 }

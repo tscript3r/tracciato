@@ -1,11 +1,6 @@
 package pl.tscript3r.tracciato.route;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import pl.tscript3r.tracciato.infrastructure.db.SpringRepository;
 
-import java.util.UUID;
-
-interface RouteSpringRepository extends JpaRepository<RouteEntity, Long> {
-
-    RouteEntity findByUuid(UUID uuid);
-
+public interface RouteSpringRepository extends SpringRepository<RouteEntity> {
 }

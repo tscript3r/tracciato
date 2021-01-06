@@ -12,14 +12,14 @@ import java.util.function.Consumer;
 public class Dao<E extends AbstractEntity, D> {
 
     protected final ModelMapper modelMapper;
-    protected final RepositoryAdapter<Long, E> repositoryAdapter;
+    protected final RepositoryAdapter<E> repositoryAdapter;
     protected final FailureResponse notFoundFailureResponse;
 
     private final Class<E> entityType;
     private final Class<D> dtoType;
 
     @SuppressWarnings("unchecked")
-    public Dao(ModelMapper modelMapper, RepositoryAdapter<Long, E> repositoryAdapter, FailureResponse notFoundFailureResponse) {
+    public Dao(ModelMapper modelMapper, RepositoryAdapter<E> repositoryAdapter, FailureResponse notFoundFailureResponse) {
         Objects.requireNonNull(modelMapper);
         Objects.requireNonNull(repositoryAdapter);
         Objects.requireNonNull(notFoundFailureResponse);

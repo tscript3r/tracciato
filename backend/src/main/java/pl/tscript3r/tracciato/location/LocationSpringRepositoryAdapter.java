@@ -1,39 +1,23 @@
 package pl.tscript3r.tracciato.location;
 
-import io.vavr.control.Option;
-import lombok.AllArgsConstructor;
+import pl.tscript3r.tracciato.infrastructure.db.SpringRepositoryAdapter;
 
 import java.util.Set;
 import java.util.UUID;
 
-@AllArgsConstructor
-class LocationSpringRepositoryAdapter implements LocationRepositoryAdapter {
+class LocationSpringRepositoryAdapter extends SpringRepositoryAdapter<LocationEntity>
+        implements LocationRepositoryAdapter {
 
     private final LocationSpringRepository locationSpringRepository;
+
+    public LocationSpringRepositoryAdapter(LocationSpringRepository springRepository) {
+        super(springRepository);
+        this.locationSpringRepository = springRepository;
+    }
 
     @Override
     public Set<LocationEntity> findAllFromUser(UUID ownerUuid) {
         return locationSpringRepository.findAllByOwnerUuid(ownerUuid);
-    }
-
-    @Override
-    public Option<LocationEntity> findById(Long id) {
-        return Option.ofOptional(locationSpringRepository.findById(id));
-    }
-
-    @Override
-    public LocationEntity save(LocationEntity entity) {
-        return locationSpringRepository.save(entity);
-    }
-
-    @Override
-    public void delete(Long id) {
-        locationSpringRepository.deleteById(id);
-    }
-
-    @Override
-    public Option<LocationEntity> findByUuid(UUID uuid) {
-        return Option.of(locationSpringRepository.findByUuid(uuid));
     }
 
 }

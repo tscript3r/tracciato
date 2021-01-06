@@ -1,28 +1,15 @@
 package pl.tscript3r.tracciato.user;
 
 import io.vavr.control.Option;
-import lombok.RequiredArgsConstructor;
+import pl.tscript3r.tracciato.infrastructure.db.SpringRepositoryAdapter;
 
-import java.util.UUID;
-
-@RequiredArgsConstructor
-class UserSpringRepositoryAdapter implements UserRepositoryAdapter {
+class UserSpringRepositoryAdapter extends SpringRepositoryAdapter<UserEntity> implements UserRepositoryAdapter {
 
     private final UserSpringRepository userSpringRepository;
 
-    @Override
-    public Option<UserEntity> findById(Long id) {
-        return Option.ofOptional(userSpringRepository.findById(id));
-    }
-
-    @Override
-    public UserEntity save(UserEntity entity) {
-        return userSpringRepository.save(entity);
-    }
-
-    @Override
-    public void delete(Long id) {
-        userSpringRepository.deleteById(id);
+    public UserSpringRepositoryAdapter(UserSpringRepository userSpringRepository) {
+        super(userSpringRepository);
+        this.userSpringRepository = userSpringRepository;
     }
 
     @Override
@@ -45,8 +32,4 @@ class UserSpringRepositoryAdapter implements UserRepositoryAdapter {
         return Option.of(userSpringRepository.findByUsernameIgnoreCase(username));
     }
 
-    @Override
-    public Option<UserEntity> findByUuid(UUID uuid) {
-        return Option.of(userSpringRepository.findByUuid(uuid));
-    }
 }

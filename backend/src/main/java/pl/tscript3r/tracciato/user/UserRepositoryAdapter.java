@@ -3,7 +3,7 @@ package pl.tscript3r.tracciato.user;
 import io.vavr.control.Option;
 import pl.tscript3r.tracciato.infrastructure.db.RepositoryAdapter;
 
-interface UserRepositoryAdapter extends RepositoryAdapter<Long, UserEntity> {
+interface UserRepositoryAdapter extends RepositoryAdapter<UserEntity> {
 
     Boolean usernameExists(String username);
 
