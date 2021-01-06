@@ -42,7 +42,7 @@ public class RouteSchedulerTest {
     }
 
     @Test
-    void schedule_Should_ReturnRequestDtoWithSameUuidAsRouteDtoUuid_When_Called() {
+    void schedule_Should_ReturnRequestDtoWithSameRouteUuidAsRouteDtoUuid_When_Called() {
         // given
         var routeDto = RouteConst.getValidRouteDto(UUID.randomUUID(), UUID.randomUUID());
 
@@ -50,7 +50,7 @@ public class RouteSchedulerTest {
         var results = routeScheduler.schedule(routeDto);
 
         // then
-        assertEquals(routeDto.getUuid(), results.getRequestUuid());
+        assertEquals(routeDto.getUuid(), results.getRouteUuid());
     }
 
     @Test
@@ -76,7 +76,6 @@ public class RouteSchedulerTest {
         var firstCallRequest = routeScheduler.schedule(routeDto);
         var firstCallFuture = routeScheduler.getRequestFuture(firstCallRequest.getRequestUuid());
         firstCallFuture.get();
-
         var secondCallRequest = routeScheduler.schedule(routeDto);
 
         // then

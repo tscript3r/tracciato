@@ -154,13 +154,13 @@ class RouteScheduleFacadeTest {
     }
 
     @Test
-    void schedule_Should_ReturnScheduleRequestWithSameUuidAsRouteUuid_When_CalledAsync() {
+    void schedule_Should_ReturnScheduleRequestWithRouteUuid_When_CalledAsync() {
         // when
         var results = routeScheduleFacade.schedule("mocked", UUID.randomUUID(), false);
 
         // then
         assertTrue(results.isRight());
-        assertEquals(routeDto.getUuid(), ((ScheduleRequestDto) results.get()).getRequestUuid());
+        assertEquals(routeDto.getUuid(), ((ScheduleRequestDto) results.get()).getRouteUuid());
     }
 
     @Test

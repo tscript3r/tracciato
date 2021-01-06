@@ -31,9 +31,9 @@ public class RouteFeaturesStressTests extends AbstractFunctionalTests implements
 
     @Test
     @Order(0)
-    @DisplayName("Adding 1000 routes to random users")
+    @DisplayName("Adding 50 routes to random users")
     void addRoutes() throws ExecutionException {
-        var randomRouteJsons = routeFeatures.generateRandomRoutesJson(1000);
+        var randomRouteJsons = routeFeatures.generateRandomRoutesJson(50);
         var results = routeFeatures.addMultipleRoutes(new ArrayList<>(usersMap.values()),
                 randomRouteJsons, 100_000);
         unwrapFutures(results.getFuturesList())

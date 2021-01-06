@@ -8,6 +8,7 @@ import pl.tscript3r.tracciato.route.schedule.scheduler.api.ScheduleRequestDto;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -16,29 +17,42 @@ import java.util.concurrent.Future;
 @RequiredArgsConstructor
 public class RouteScheduler implements DisposableBean {
 
-    private final Map<UUID, Future<RouteSimulationsResults>> scheduleRequests = new LinkedHashMap<>();
+    private final Map<ScheduleRequestDto, Future<RouteSimulationsResults>> scheduleRequests = new LinkedHashMap<>();
     private final RoutePermutationsFactory routePermutationsFactory;
     private final ExecutorService executorService;
 
     public ScheduleRequestDto schedule(RouteDto routeDto) {
-        // TODO: for now schedule request uuid == route.uuid
-        submit(routeDto.getUuid(), routeDto);
-        var results = new ScheduleRequestDto();
-        results.setRequestUuid(routeDto.getUuid());
-        return results;
+        return getRouteScheduleRequestAndFilterIfUnderProcessingOptional(routeDto).orElseGet(() -> {
+            var results = new ScheduleRequestDto();
+            results.setRequestUuid(UUID.randomUUID());
+            results.setRouteUuid(routeDto.getUuid());
+            submit(results, routeDto);
+            return results;
+        });
     }
 
-    private void submit(UUID uuid, RouteDto routeDto) {
-        if ((!scheduleRequests.containsKey(uuid)) ||
-                (scheduleRequests.containsKey(uuid) && scheduleRequests.get(uuid).isDone())) {
-            var future = executorService.submit(new RouteSimulationsCallable(routePermutationsFactory.get(routeDto)));
-            scheduleRequests.put(uuid, future);
-        } else
-            log.warn("Schedule request for route uuid={} rejected (route is already processed)", routeDto.getUuid());
+    private Optional<ScheduleRequestDto> getRouteScheduleRequestAndFilterIfUnderProcessingOptional(RouteDto routeDto) {
+        return scheduleRequests.keySet()
+                .stream()
+                .filter(scheduleRequestDto -> scheduleRequestDto.getRouteUuid().equals(routeDto.getUuid()))
+                .findFirst()
+                .filter(scheduleRequestDto -> !scheduleRequests.get(scheduleRequestDto).isDone());
+    }
+
+    private void submit(ScheduleRequestDto scheduleRequestDto, RouteDto routeDto) {
+        var future = executorService.submit(new RouteSimulationsCallable(routePermutationsFactory.get(routeDto)));
+        scheduleRequests.put(scheduleRequestDto, future);
     }
 
     public Future<RouteSimulationsResults> getRequestFuture(UUID requestUuid) {
-        return scheduleRequests.get(requestUuid);
+        return scheduleRequests.get(findScheduleRequest(requestUuid).orElse(null));
+    }
+
+    private Optional<ScheduleRequestDto> findScheduleRequest(UUID uuid) {
+        return scheduleRequests.keySet()
+                .stream()
+                .filter(scheduleRequestDto -> scheduleRequestDto.getRequestUuid().equals(uuid))
+                .findFirst();
     }
 
     @Override

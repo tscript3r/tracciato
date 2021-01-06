@@ -31,13 +31,13 @@ public class LocationFeaturesStressTests extends AbstractFunctionalTests impleme
 
     @BeforeAll
     public void before() throws ExecutionException {
-        usersList = userFeatures.createRandomUsersAndGetTokens(1000, 100_000);
-        locationsList = locationFeatures.generateRandomLocationJson(10000);
+        usersList = userFeatures.createRandomUsersAndGetTokens(500, 100_000);
+        locationsList = locationFeatures.generateRandomLocationJson(5000);
     }
 
     @Test
     @Order(0)
-    @DisplayName("Adding 10000 locations for 1000 users")
+    @DisplayName("Adding 5000 locations for 500 users")
     void addLocations() throws ExecutionException {
         var results = locationFeatures.addMultipleLocations(new ArrayList<>(usersList.values()), locationsList, 100_000);
         assertEquals(0, results.getUncompletedCount());
@@ -46,7 +46,7 @@ public class LocationFeaturesStressTests extends AbstractFunctionalTests impleme
 
     @Test
     @Order(1)
-    @DisplayName("Receiving locations from 1000 users")
+    @DisplayName("Receiving locations from 500 users")
     void getLocations() throws ExecutionException {
         var results = locationFeatures.getMultipleLocations(new ArrayList<>(usersList.values()), 100_000);
         assertEquals(0, results.getUncompletedCount());
