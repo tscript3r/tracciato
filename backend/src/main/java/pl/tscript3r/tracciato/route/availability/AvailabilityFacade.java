@@ -18,7 +18,10 @@ public class AvailabilityFacade {
     public InternalResponse<RouteDto> addAvailability(String token, UUID routeUuid, AvailabilityDto availabilityDto) {
         return validator.validate(availabilityDto)
                 .map(AvailabilityMapper::map)
-                .flatMap(availabilityEntity -> routeFacade.addAvailability(token, routeUuid, availabilityEntity));
+                .flatMap(availabilityEntity -> {
+                    availabilityEntity.setUuid(UUID.randomUUID());
+                    return routeFacade.addAvailability(token, routeUuid, availabilityEntity);
+                });
     }
 
 }
