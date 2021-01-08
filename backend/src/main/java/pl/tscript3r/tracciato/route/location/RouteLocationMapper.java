@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-final class RouteLocationMapper {
+public final class RouteLocationMapper {
 
     private static final ModelMapper modelMapper = new ModelMapper();
 

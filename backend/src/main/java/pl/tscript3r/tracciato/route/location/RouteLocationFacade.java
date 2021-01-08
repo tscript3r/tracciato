@@ -34,7 +34,7 @@ public class RouteLocationFacade {
             return saveNewLocation(token, routeLocationEntity, routeLocationDto);
         if (routeLocationDto.getExistingLocationUuid() != null)
             return assignExistingLocationIfNoNewGiven(routeLocationEntity, routeLocationDto);
-
+        routeLocationEntity.setUuid(UUID.randomUUID());
         throw new IllegalArgumentException("Route location needs to be set as existing location uuid or new location");
     }
 

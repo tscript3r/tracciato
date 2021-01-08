@@ -2,6 +2,7 @@ package pl.tscript3r.tracciato.route.location.api;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 import pl.tscript3r.tracciato.infrastructure.validator.OneNotEmpty;
@@ -23,7 +24,13 @@ import static pl.tscript3r.tracciato.infrastructure.DateTimeFormats.TIME_FORMAT;
 public class RouteLocationDto {
 
     @JsonIgnore
+    private Long id;
+
+    @JsonIgnore
     private UUID ownerUuid;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private UUID uuid;
 
     @Valid
     private LocationDto location;
