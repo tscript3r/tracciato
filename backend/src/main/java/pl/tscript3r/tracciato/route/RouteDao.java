@@ -1,13 +1,13 @@
 package pl.tscript3r.tracciato.route;
 
 import org.modelmapper.ModelMapper;
+import pl.tscript3r.tracciato.availability.AvailabilityEntity;
 import pl.tscript3r.tracciato.infrastructure.db.Dao;
 import pl.tscript3r.tracciato.infrastructure.response.InternalResponse;
 import pl.tscript3r.tracciato.infrastructure.response.error.FailureResponse;
 import pl.tscript3r.tracciato.location.LocationEntity;
 import pl.tscript3r.tracciato.route.api.RouteDto;
-import pl.tscript3r.tracciato.route.availability.AvailabilityEntity;
-import pl.tscript3r.tracciato.route.location.RouteLocationEntity;
+import pl.tscript3r.tracciato.stop.StopEntity;
 
 import java.util.UUID;
 
@@ -20,8 +20,8 @@ final class RouteDao extends Dao<RouteEntity, RouteDto> {
         this.routeRepositoryAdapter = repositoryAdapter;
     }
 
-    public InternalResponse<RouteDto> addRouteLocation(UUID routeUuid, RouteLocationEntity routeLocationEntity) {
-        return update(routeUuid, entity -> entity.getLocations().add(routeLocationEntity));
+    public InternalResponse<RouteDto> addStop(UUID routeUuid, StopEntity stopEntity) {
+        return update(routeUuid, entity -> entity.getStops().add(stopEntity));
     }
 
     public InternalResponse<RouteEntity> getEntity(UUID routeUuid) {

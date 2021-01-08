@@ -2,6 +2,7 @@ package pl.tscript3r.tracciato.location.api;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
@@ -12,6 +13,7 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class LocationDto {
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private UUID uuid;
 
     @JsonIgnore

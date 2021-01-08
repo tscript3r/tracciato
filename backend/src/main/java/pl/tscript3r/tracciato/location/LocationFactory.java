@@ -19,7 +19,7 @@ class LocationFactory {
                     dto.setOwnerUuid(ownerUuid);
                     dto.setUuid(UUID.randomUUID());
                 })
-                .flatMap(locationDao::saveWithoutBackMapping);
+                .flatMap(locationDao::saveWithoutResultMapping);
     }
 
 }

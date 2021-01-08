@@ -14,7 +14,8 @@ final class LocationDao extends Dao<LocationEntity, LocationDto> {
 
     private final LocationRepositoryAdapter locationRepositoryAdapter;
 
-    public LocationDao(ModelMapper modelMapper, LocationRepositoryAdapter repositoryAdapter, FailureResponse notFoundFailureResponse) {
+    public LocationDao(ModelMapper modelMapper, LocationRepositoryAdapter repositoryAdapter,
+                       FailureResponse notFoundFailureResponse) {
         super(modelMapper, repositoryAdapter, notFoundFailureResponse);
         this.locationRepositoryAdapter = repositoryAdapter;
     }
@@ -30,7 +31,7 @@ final class LocationDao extends Dao<LocationEntity, LocationDto> {
                 .collect(Collectors.toSet());
     }
 
-    public InternalResponse<LocationEntity> saveWithoutBackMapping(LocationDto dto) {
+    public InternalResponse<LocationEntity> saveWithoutResultMapping(LocationDto dto) {
         return InternalResponse.payload(dto)
                 .map(this::map)
                 .peek(locationRepositoryAdapter::save);

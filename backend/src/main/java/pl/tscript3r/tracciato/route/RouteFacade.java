@@ -1,13 +1,13 @@
 package pl.tscript3r.tracciato.route;
 
 import lombok.AllArgsConstructor;
+import pl.tscript3r.tracciato.availability.AvailabilityEntity;
 import pl.tscript3r.tracciato.infrastructure.response.InternalResponse;
 import pl.tscript3r.tracciato.location.LocationFacade;
 import pl.tscript3r.tracciato.location.api.LocationDto;
 import pl.tscript3r.tracciato.route.api.NewRouteDto;
 import pl.tscript3r.tracciato.route.api.RouteDto;
-import pl.tscript3r.tracciato.route.availability.AvailabilityEntity;
-import pl.tscript3r.tracciato.route.location.RouteLocationEntity;
+import pl.tscript3r.tracciato.stop.StopEntity;
 import pl.tscript3r.tracciato.user.UserFacade;
 
 import java.util.UUID;
@@ -26,10 +26,10 @@ public class RouteFacade {
                 .flatMap(routeFactory::create);
     }
 
-    public InternalResponse<RouteDto> addLocation(String token, UUID routeUuid,
-                                                  RouteLocationEntity routeLocationEntity) {
+    public InternalResponse<RouteDto> addStop(String token, UUID routeUuid,
+                                              StopEntity stopEntity) {
         return authorizeAndGetRouteEntity(token, routeUuid)
-                .override(routeDao.addRouteLocation(routeUuid, routeLocationEntity));
+                .override(routeDao.addStop(routeUuid, stopEntity));
     }
 
     private InternalResponse<RouteEntity> authorizeAndGetRouteEntity(String token, UUID routeUuid) {

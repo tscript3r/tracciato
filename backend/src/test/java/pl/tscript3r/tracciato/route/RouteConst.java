@@ -1,10 +1,10 @@
 package pl.tscript3r.tracciato.route;
 
+import pl.tscript3r.tracciato.availability.api.AvailabilityDto;
 import pl.tscript3r.tracciato.location.LocationConst;
 import pl.tscript3r.tracciato.route.api.NewRouteDto;
 import pl.tscript3r.tracciato.route.api.RouteDto;
-import pl.tscript3r.tracciato.route.availability.api.AvailabilityDto;
-import pl.tscript3r.tracciato.route.location.RouteLocationConst;
+import pl.tscript3r.tracciato.stop.StopConst;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -55,7 +55,7 @@ public final class RouteConst {
         routeDto.setCreationTimestamp(LocalDateTime.now());
         routeDto.setOwnerUuid(ownerUuid);
         routeDto.setUuid(routeUuid);
-        routeDto.setLocations(RouteLocationConst.getValidLocationsSet(ownerUuid));
+        routeDto.setStops(StopConst.getValidLocationsSet(ownerUuid));
         routeDto.setStartLocation(LocationConst.getStartLocationDto());
         routeDto.setEndLocation(LocationConst.getEndLocationDto());
         routeDto.setAvailabilities(getAvailabilities());

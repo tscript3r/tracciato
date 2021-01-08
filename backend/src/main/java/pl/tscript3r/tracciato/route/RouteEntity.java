@@ -3,10 +3,10 @@ package pl.tscript3r.tracciato.route;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import pl.tscript3r.tracciato.availability.AvailabilityEntity;
 import pl.tscript3r.tracciato.infrastructure.db.AbstractEntity;
 import pl.tscript3r.tracciato.location.LocationEntity;
-import pl.tscript3r.tracciato.route.availability.AvailabilityEntity;
-import pl.tscript3r.tracciato.route.location.RouteLocationEntity;
+import pl.tscript3r.tracciato.stop.StopEntity;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -38,6 +38,6 @@ class RouteEntity extends AbstractEntity {
     private LocationEntity endLocation;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<RouteLocationEntity> locations = new HashSet<>();
+    private Set<StopEntity> stops = new HashSet<>();
 
 }

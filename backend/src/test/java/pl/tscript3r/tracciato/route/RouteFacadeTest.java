@@ -4,12 +4,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
+import pl.tscript3r.tracciato.availability.AvailabilityConst;
 import pl.tscript3r.tracciato.location.LocationConst;
 import pl.tscript3r.tracciato.location.LocationFacade;
 import pl.tscript3r.tracciato.location.LocationInMemoryRepositoryAdapter;
 import pl.tscript3r.tracciato.location.LocationSpringConfiguration;
-import pl.tscript3r.tracciato.route.availability.AvailabilityConst;
-import pl.tscript3r.tracciato.route.location.RouteLocationConst;
+import pl.tscript3r.tracciato.stop.StopConst;
 import pl.tscript3r.tracciato.user.UserFacade;
 import pl.tscript3r.tracciato.utils.ReplaceCamelCaseAndUnderscores;
 
@@ -93,27 +93,27 @@ public class RouteFacadeTest {
     }
 
     @Test
-    void addLocation_Should_SaveNewRouteLocation_When_GivenLocationIsValid() {
+    void addStop_Should_SaveNewStop_When_GivenLocationIsValid() {
         // given
-        var routeLocationEntity = RouteLocationConst.getValidRouteLocationEntity();
+        var routeLocationEntity = StopConst.getValidStopEntity();
         var existingRoute = routeFacade.create(token, RouteConst.getValidNewRouteDto()).get();
 
         // when
-        var results = routeFacade.addLocation(token, existingRoute.getUuid(), routeLocationEntity);
+        var results = routeFacade.addStop(token, existingRoute.getUuid(), routeLocationEntity);
 
         // then
         assertTrue(results.isRight());
         var routeEntity = routeRepositoryAdapter.findByUuid(existingRoute.getUuid());
-        assertEquals(1, routeEntity.get().getLocations().size());
+        assertEquals(1, routeEntity.get().getStops().size());
     }
 
     @Test
-    void addLocation_Should_Fail_When_RouteUuidIsNotExisting() {
+    void addStop_Should_Fail_When_RouteUuidIsNotExisting() {
         // given
         var nonExistingUuid = UUID.randomUUID();
 
         // when
-        var results = routeFacade.addLocation(token, nonExistingUuid, RouteLocationConst.getValidRouteLocationEntity());
+        var results = routeFacade.addStop(token, nonExistingUuid, StopConst.getValidStopEntity());
 
         // then
         assertTrue(results.isLeft());

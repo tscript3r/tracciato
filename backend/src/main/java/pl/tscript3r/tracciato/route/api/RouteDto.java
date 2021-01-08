@@ -2,10 +2,10 @@ package pl.tscript3r.tracciato.route.api;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import pl.tscript3r.tracciato.availability.api.AvailabilityDto;
 import pl.tscript3r.tracciato.location.api.LocationDto;
 import pl.tscript3r.tracciato.route.TrafficPrediction;
-import pl.tscript3r.tracciato.route.availability.api.AvailabilityDto;
-import pl.tscript3r.tracciato.route.location.api.RouteLocationDto;
+import pl.tscript3r.tracciato.stop.StopDto;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -25,6 +25,6 @@ public class RouteDto {
     private List<AvailabilityDto> availabilities = new ArrayList<>();
     private LocationDto startLocation;
     private LocationDto endLocation;
-    private Set<RouteLocationDto> locations = new HashSet<>();
+    private Set<StopDto> stops = new HashSet<>();
 
 }
