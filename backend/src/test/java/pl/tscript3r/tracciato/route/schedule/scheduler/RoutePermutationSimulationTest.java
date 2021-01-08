@@ -19,7 +19,7 @@ import static pl.tscript3r.tracciato.route.schedule.scheduler.DurationsTest.getA
 
 @DisplayName("Route permutation")
 @DisplayNameGeneration(ReplaceCamelCaseAndUnderscores.class)
-class RoutePermutationSimulationTest {
+public class RoutePermutationSimulationTest {
 
     RoutePermutationSimulation routePermutationSimulation;
     RouteDto routeDto;
@@ -34,6 +34,12 @@ class RoutePermutationSimulationTest {
         durations = Durations.get(new FakeDurationProvider(), getAllLocations(routeDto));
         orderedRoute = new ArrayList<>(routeDto.getLocations());
         routePermutationSimulation = RoutePermutationSimulation.simulate(routeDto, new ArrayList<>(routeDto.getLocations()), durations);
+    }
+
+    public static RoutePermutationSimulation getRoutePermutationSimulation(UUID ownerUuid, RouteDto r) {
+        r = RouteConst.getValidRouteDto(ownerUuid, UUID.randomUUID());
+        var durations = Durations.get(new FakeDurationProvider(), getAllLocations(r));
+        return RoutePermutationSimulation.simulate(r, new ArrayList<>(r.getLocations()), durations);
     }
 
     Set<RouteLocationDto> getRouteLocationsSet(UUID ownerUuid) {

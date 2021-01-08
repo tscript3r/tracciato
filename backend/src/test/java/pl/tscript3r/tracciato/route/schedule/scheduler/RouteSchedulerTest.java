@@ -63,8 +63,8 @@ public class RouteSchedulerTest {
         var secondCallRequest = routeScheduler.schedule(routeDto);
 
         // then
-        assertEquals(routeScheduler.getRequestFuture(firstCallRequest.getRequestUuid()),
-                routeScheduler.getRequestFuture(secondCallRequest.getRequestUuid()));
+        assertEquals(routeScheduler.getRequestSupplier(firstCallRequest.getRequestUuid()),
+                routeScheduler.getRequestSupplier(secondCallRequest.getRequestUuid()));
     }
 
     @Test
@@ -74,12 +74,12 @@ public class RouteSchedulerTest {
 
         // when
         var firstCallRequest = routeScheduler.schedule(routeDto);
-        var firstCallFuture = routeScheduler.getRequestFuture(firstCallRequest.getRequestUuid());
+        var firstCallFuture = routeScheduler.getRequestSupplier(firstCallRequest.getRequestUuid());
         firstCallFuture.get();
         var secondCallRequest = routeScheduler.schedule(routeDto);
 
         // then
-        assertNotEquals(firstCallFuture, routeScheduler.getRequestFuture(secondCallRequest.getRequestUuid()));
+        assertNotEquals(firstCallFuture, routeScheduler.getRequestSupplier(secondCallRequest.getRequestUuid()));
     }
 
     @Test
@@ -90,7 +90,7 @@ public class RouteSchedulerTest {
 
 
         // when
-        var results = routeScheduler.getRequestFuture(request.getRequestUuid());
+        var results = routeScheduler.getRequestSupplier(request.getRequestUuid());
 
         // then
         assertNotNull(results);
@@ -99,7 +99,7 @@ public class RouteSchedulerTest {
     @Test
     void getRequestFuture_Should_ReturnNull_When_NonExistingRequestUuidIsGiven() {
         // given
-        var results = routeScheduler.getRequestFuture(UUID.randomUUID());
+        var results = routeScheduler.getRequestSupplier(UUID.randomUUID());
 
         // then
         assertNull(results);

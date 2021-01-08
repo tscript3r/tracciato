@@ -10,6 +10,7 @@ import pl.tscript3r.tracciato.duration.provider.DurationProvider;
 import pl.tscript3r.tracciato.duration.provider.google.GoogleMapsDurationProvider;
 import pl.tscript3r.tracciato.route.RouteConst;
 import pl.tscript3r.tracciato.route.api.RouteDto;
+import pl.tscript3r.tracciato.route.schedule.scheduled.RouteScheduledVariationEntity;
 
 import java.util.UUID;
 import java.util.concurrent.Executors;
@@ -23,7 +24,7 @@ class RouteScheduleGoogleApiLiveTest {
     RouteDto validRoute;
     DurationProvider durationProvider;
     RoutePermutationsFactory routePermutationsFactory;
-    RouteSimulationsCallable routeSimulationsCallable;
+    RouteSimulationsSupplier routeSimulationsSupplier;
 
     @BeforeEach
     void setUp() {
@@ -36,49 +37,49 @@ class RouteScheduleGoogleApiLiveTest {
                         .build()
         );
         routePermutationsFactory = new RoutePermutationsFactory(durationProvider);
-        routeSimulationsCallable = new RouteSimulationsCallable(routePermutationsFactory.get(validRoute));
+        routeSimulationsSupplier = new RouteSimulationsSupplier(UUID.randomUUID(),
+                routePermutationsFactory.get(validRoute));
     }
 
     @Test
     void call() {
-        var results = routeSimulationsCallable.call();
+        var results = routeSimulationsSupplier.get();
         log.debug("\r\n\r\nMost accurate route");
-        logOut(results.getMostAccurateRoute());
+        logOut(results.getTuned());
         log.debug("\r\n\r\nMost optimal route");
-        logOut(results.getMostOptimalRoute());
+        logOut(results.getOptimal());
     }
 
-    private void logOut(RoutePermutationSimulation routePermutationSimulation) {
-        logOrder(routePermutationSimulation);
-        logMissedAppointments(routePermutationSimulation);
-        logTimeline(routePermutationSimulation);
+    private void logOut(RouteScheduledVariationEntity scheduledVariation) {
+        logOrder(scheduledVariation);
+        logMissedAppointments(scheduledVariation);
+        logTimeline(scheduledVariation);
     }
 
-    private void logOrder(RoutePermutationSimulation routePermutationSimulation) {
-        log.debug("\r\nTotal distance: {}km", routePermutationSimulation.getTravelledMeters() / 1000);
+    private void logOrder(RouteScheduledVariationEntity scheduledVariation) {
+        log.debug("\r\nTotal distance: {}km", scheduledVariation.getTravelledMeters() / 1000);
         log.debug("\r\nOrder:");
-        log.debug("- {}", routePermutationSimulation.getRouteDto().getStartLocation().getCity());
-        routePermutationSimulation.getOrderedRoute()
+        log.debug("- {}", validRoute.getStartLocation().getCity());
+        scheduledVariation.getOrder()
                 .forEach(routeLocationDto -> log.debug("- {}", routeLocationDto.getLocation().getCity()));
-        log.debug("- {}", routePermutationSimulation.getRouteDto().getEndLocation().getCity());
+        log.debug("- {}", validRoute.getEndLocation().getCity());
     }
 
-    private void logMissedAppointments(RoutePermutationSimulation routePermutationSimulation) {
-        if (routePermutationSimulation.getMissedAppointmentsCount() == 0)
+    private void logMissedAppointments(RouteScheduledVariationEntity scheduledVariation) {
+        if (scheduledVariation.getMissedAppointmentsCount() == 0)
             log.debug("\r\nNo appointments missed.");
         else {
             log.debug("\r\nMissed appointments:");
-            routePermutationSimulation.getMissedAppointments().forEach(routeLocationDto -> {
+            scheduledVariation.getMissedAppointments().forEach(routeLocationDto -> {
                 log.debug("- {}: {}", routeLocationDto.getLocation().getCity(), routeLocationDto.getAvailability().toString());
             });
         }
     }
 
-    private void logTimeline(RoutePermutationSimulation routePermutationSimulation) {
+    private void logTimeline(RouteScheduledVariationEntity scheduledVariation) {
         log.debug("\r\nTimeline:");
-        routePermutationSimulation.getRouteTime().getRouteTimeline().getEvents().forEach(timelineEvent -> {
-            log.debug(timelineEvent.toString());
-        });
+        scheduledVariation.getTimeline()
+                .forEach(log::debug);
     }
 
 }

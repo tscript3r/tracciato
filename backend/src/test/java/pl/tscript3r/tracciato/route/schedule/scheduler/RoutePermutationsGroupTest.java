@@ -46,14 +46,14 @@ class RoutePermutationsGroupTest {
     void getResults_Should_ReturnPopulatedRouteScheduleResults_When_Called() {
         var results = routePermutationsGroup.executeAndGetSimulationsResults();
         assertNotNull(results);
-        assertNotNull(results.getMostAccurateRoute());
+        assertNotNull(results.getMostTunedRoute());
         assertNotNull(results.getMostOptimalRoute());
     }
 
     @Test
     void getResults_Should_ReturnMostAccurateRouteWithLessMissedAppointmentsThanMostOptimalRoute_When_Called() {
         var results = routePermutationsGroup.executeAndGetSimulationsResults();
-        assertTrue(results.getMostAccurateRoute().getMissedAppointmentsCount() <
+        assertTrue(results.getMostTunedRoute().getMissedAppointmentsCount() <
                 results.getMostOptimalRoute().getMissedAppointmentsCount());
     }
 
@@ -62,7 +62,7 @@ class RoutePermutationsGroupTest {
         var results = routePermutationsGroup.executeAndGetSimulationsResults();
         assertTrue(results.getMostOptimalRoute()
                 .getEndingDate()
-                .isBefore(results.getMostAccurateRoute().getEndingDate()));
+                .isBefore(results.getMostTunedRoute().getEndingDate()));
     }
 
     @Test

@@ -9,7 +9,6 @@ import pl.tscript3r.tracciato.route.location.api.RouteLocationDto;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -32,15 +31,17 @@ class RoutePermutationsGroup {
         );
     }
 
-    private Optional<RoutePermutationSimulation> findMostAccurateRoute() {
+    private RoutePermutationSimulation findMostAccurateRoute() {
         return simulations.stream()
                 .min(Comparator.comparing(RoutePermutationSimulation::getMissedAppointmentsCount)
-                        .thenComparing(RoutePermutationSimulation::getEndingDate));
+                        .thenComparing(RoutePermutationSimulation::getEndingDate))
+                .orElse(null);
     }
 
-    private Optional<RoutePermutationSimulation> findMostOptimalRoute() {
+    private RoutePermutationSimulation findMostOptimalRoute() {
         return simulations.stream()
-                .min(Comparator.comparing(RoutePermutationSimulation::getEndingDate));
+                .min(Comparator.comparing(RoutePermutationSimulation::getEndingDate))
+                .orElse(null);
     }
 
 }

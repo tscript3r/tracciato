@@ -4,20 +4,21 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import pl.tscript3r.tracciato.route.api.RouteDto;
+import pl.tscript3r.tracciato.route.schedule.scheduled.RouteScheduledResultsEntity;
 import pl.tscript3r.tracciato.route.schedule.scheduler.api.ScheduleRequestDto;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 
 @Slf4j
 @RequiredArgsConstructor
 public class RouteScheduler implements DisposableBean {
 
-    private final Map<ScheduleRequestDto, Future<RouteSimulationsResults>> scheduleRequests = new LinkedHashMap<>();
+    private final Map<ScheduleRequestDto, CompletableFuture<RouteScheduledResultsEntity>> scheduleRequests = new LinkedHashMap<>();
     private final RoutePermutationsFactory routePermutationsFactory;
     private final ExecutorService executorService;
 
@@ -40,11 +41,13 @@ public class RouteScheduler implements DisposableBean {
     }
 
     private void submit(ScheduleRequestDto scheduleRequestDto, RouteDto routeDto) {
-        var future = executorService.submit(new RouteSimulationsCallable(routePermutationsFactory.get(routeDto)));
+        var supplier = new RouteSimulationsSupplier(scheduleRequestDto.getRequestUuid(),
+                routePermutationsFactory.get(routeDto));
+        var future = CompletableFuture.supplyAsync(supplier, executorService);
         scheduleRequests.put(scheduleRequestDto, future);
     }
 
-    public Future<RouteSimulationsResults> getRequestFuture(UUID requestUuid) {
+    public CompletableFuture<RouteScheduledResultsEntity> getRequestSupplier(UUID requestUuid) {
         return scheduleRequests.get(findScheduleRequest(requestUuid).orElse(null));
     }
 
