@@ -1,5 +1,6 @@
 package pl.tscript3r.tracciato.route.api;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import pl.tscript3r.tracciato.location.api.LocationDto;
 import pl.tscript3r.tracciato.route.TrafficPrediction;
@@ -12,6 +13,8 @@ import java.util.*;
 @Data
 public class RouteDto {
 
+    @JsonIgnore
+    private Long id;
     private UUID uuid;
     private UUID ownerUuid;
     private String name;
@@ -23,7 +26,5 @@ public class RouteDto {
     private LocationDto startLocation;
     private LocationDto endLocation;
     private Set<RouteLocationDto> locations = new HashSet<>();
-
-    // TODO overtime duration field, default from & to locations availability
 
 }
