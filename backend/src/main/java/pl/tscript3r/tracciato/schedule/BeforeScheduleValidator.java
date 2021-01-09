@@ -1,4 +1,4 @@
-package pl.tscript3r.tracciato.schedule.validator;
+package pl.tscript3r.tracciato.schedule;
 
 import pl.tscript3r.tracciato.availability.api.AvailabilityDto;
 import pl.tscript3r.tracciato.infrastructure.response.InternalResponse;
@@ -10,7 +10,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class BeforeScheduleValidator {
+final class BeforeScheduleValidator {
 
     private static final long MINIMAL_HOUR_ROUTE_DURATION = 5;
 

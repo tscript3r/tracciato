@@ -14,8 +14,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-public
-class ScheduledResultsEntity extends AbstractEntity {
+public class ScheduledResultsEntity extends AbstractEntity {
 
     private UUID requestUuid;
     private UUID routeUuid;

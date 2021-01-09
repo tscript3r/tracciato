@@ -8,7 +8,6 @@ import pl.tscript3r.tracciato.route.RouteFacade;
 import pl.tscript3r.tracciato.route.api.RouteDto;
 import pl.tscript3r.tracciato.schedule.optimization.Optimizer;
 import pl.tscript3r.tracciato.schedule.optimization.api.ScheduleRequestDto;
-import pl.tscript3r.tracciato.schedule.validator.BeforeScheduleValidator;
 import pl.tscript3r.tracciato.scheduled.ScheduledResultsEntity;
 
 import java.util.UUID;

@@ -18,7 +18,7 @@ class StopSpringConfiguration {
     private final LocationFacade locationFacade;
 
     @Bean
-    public StopFacade getRouteLocationFacade() {
+    public StopFacade getStopFacade() {
         Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
         DefaultValidator<StopDto> routeLocationValidator = new DefaultValidator<>(validator);
         return new StopFacade(routeFacade, locationFacade, routeLocationValidator);

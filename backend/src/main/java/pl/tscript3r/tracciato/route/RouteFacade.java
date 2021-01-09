@@ -7,6 +7,7 @@ import pl.tscript3r.tracciato.location.LocationFacade;
 import pl.tscript3r.tracciato.location.api.LocationDto;
 import pl.tscript3r.tracciato.route.api.NewRouteDto;
 import pl.tscript3r.tracciato.route.api.RouteDto;
+import pl.tscript3r.tracciato.schedule.optimization.TracciatoSchedulerException;
 import pl.tscript3r.tracciato.stop.StopEntity;
 import pl.tscript3r.tracciato.user.UserFacade;
 
@@ -69,6 +70,11 @@ public class RouteFacade {
     public InternalResponse<RouteDto> addAvailability(String token, UUID routeUuid, AvailabilityEntity availabilityEntity) {
         return authorizeAndGetRouteEntity(token, routeUuid)
                 .override(routeDao.addAvailability(routeUuid, availabilityEntity));
+    }
+
+    public RouteEntity getByUuid(UUID uuid) {
+        return routeDao.getEntity(uuid)
+                .getOrElseThrow(() -> new TracciatoSchedulerException("Route with UUID: " + uuid.toString() + " not found"));
     }
 
 }

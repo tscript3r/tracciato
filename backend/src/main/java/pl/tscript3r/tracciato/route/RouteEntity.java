@@ -15,7 +15,7 @@ import java.util.*;
 @Entity
 @Getter
 @Setter
-class RouteEntity extends AbstractEntity {
+public class RouteEntity extends AbstractEntity {
 
     private UUID ownerUuid;
     private String name;

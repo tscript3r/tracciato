@@ -1,4 +1,4 @@
-package pl.tscript3r.tracciato.route.schedule.scheduled.util;
+package pl.tscript3r.tracciato.scheduled.util;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

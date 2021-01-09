@@ -10,7 +10,6 @@ import pl.tscript3r.tracciato.duration.provider.DurationProvider;
 import pl.tscript3r.tracciato.duration.provider.google.GoogleMapsDurationProvider;
 import pl.tscript3r.tracciato.route.RouteConst;
 import pl.tscript3r.tracciato.route.api.RouteDto;
-import pl.tscript3r.tracciato.scheduled.ScheduledVariationEntity;
 
 import java.util.UUID;
 import java.util.concurrent.Executors;
@@ -37,49 +36,50 @@ class RouteScheduleGoogleApiLiveTest {
                         .build()
         );
         permutationsFactory = new PermutationsFactory(durationProvider);
-        simulationsSupplier = new SimulationsSupplier(UUID.randomUUID(),
-                permutationsFactory.get(validRoute));
+        simulationsSupplier = new SimulationsSupplier(permutationsFactory.get(validRoute));
     }
 
     @Test
     void call() {
         var results = simulationsSupplier.get();
-        log.debug("\r\n\r\nMost accurate route");
-        logOut(results.getTuned());
+        log.debug("\r\n\r\nMost tuned route");
+        logOut(results.getMostTunedRoute());
         log.debug("\r\n\r\nMost optimal route");
-        logOut(results.getOptimal());
+        logOut(results.getMostOptimalRoute());
     }
 
-    private void logOut(ScheduledVariationEntity scheduledVariation) {
-        logOrder(scheduledVariation);
-        logMissedAppointments(scheduledVariation);
-        logTimeline(scheduledVariation);
+    private void logOut(PermutationSimulation permutationSimulation) {
+        logOrder(permutationSimulation);
+        logMissedAppointments(permutationSimulation);
+        logTimeline(permutationSimulation);
     }
 
-    private void logOrder(ScheduledVariationEntity scheduledVariation) {
-        log.debug("\r\nTotal distance: {}km", scheduledVariation.getTravelledMeters() / 1000);
+    private void logOrder(PermutationSimulation permutationSimulation) {
+        log.debug("\r\nTotal distance: {}km", permutationSimulation.getTravelledMeters() / 1000);
         log.debug("\r\nOrder:");
         log.debug("- {}", validRoute.getStartLocation().getCity());
-        scheduledVariation.getOrder()
+        permutationSimulation.getOrderedRoute()
                 .forEach(routeLocationDto -> log.debug("- {}", routeLocationDto.getLocation().getCity()));
         log.debug("- {}", validRoute.getEndLocation().getCity());
     }
 
-    private void logMissedAppointments(ScheduledVariationEntity scheduledVariation) {
-        if (scheduledVariation.getMissedAppointmentsCount() == 0)
+    private void logMissedAppointments(PermutationSimulation permutationSimulation) {
+        if (permutationSimulation.getMissedAppointmentsCount() == 0)
             log.debug("\r\nNo appointments missed.");
         else {
             log.debug("\r\nMissed appointments:");
-            scheduledVariation.getMissedAppointments().forEach(routeLocationDto -> {
+            permutationSimulation.getMissedAppointments().forEach(routeLocationDto -> {
                 log.debug("- {}: {}", routeLocationDto.getLocation().getCity(), routeLocationDto.getAvailability().toString());
             });
         }
     }
 
-    private void logTimeline(ScheduledVariationEntity scheduledVariation) {
+    private void logTimeline(PermutationSimulation permutationSimulation) {
         log.debug("\r\nTimeline:");
-        scheduledVariation.getTimeline()
-                .forEach(log::debug);
+        permutationSimulation.getRouteTime()
+                .getRouteTimeline()
+                .getEvents()
+                .forEach(timelineEvent -> log.debug(timelineEvent.toString()));
     }
 
 }

@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import pl.tscript3r.tracciato.route.api.RouteDto;
 import pl.tscript3r.tracciato.schedule.optimization.api.ScheduleRequestDto;
+import pl.tscript3r.tracciato.scheduled.ScheduledFacade;
 import pl.tscript3r.tracciato.scheduled.ScheduledResultsEntity;
 
 import java.util.LinkedHashMap;
@@ -21,6 +22,7 @@ public class Optimizer implements DisposableBean {
     private final Map<ScheduleRequestDto, CompletableFuture<ScheduledResultsEntity>> scheduleRequests = new LinkedHashMap<>();
     private final PermutationsFactory permutationsFactory;
     private final ExecutorService executorService;
+    private final ScheduledFacade scheduledFacade;
 
     public ScheduleRequestDto optimize(RouteDto routeDto) {
         return getScheduleRequestAndFilterIfUnderProcessingOptional(routeDto).orElseGet(() -> {
@@ -41,9 +43,10 @@ public class Optimizer implements DisposableBean {
     }
 
     private void submit(ScheduleRequestDto scheduleRequestDto, RouteDto routeDto) {
-        var supplier = new SimulationsSupplier(scheduleRequestDto.getRequestUuid(),
-                permutationsFactory.get(routeDto));
-        var future = CompletableFuture.supplyAsync(supplier, executorService);
+        var supplier = new SimulationsSupplier(permutationsFactory.get(routeDto));
+        var future = CompletableFuture.supplyAsync(supplier, executorService)
+                .thenApply(scheduledFacade::save);
+
         scheduleRequests.put(scheduleRequestDto, future);
     }
 

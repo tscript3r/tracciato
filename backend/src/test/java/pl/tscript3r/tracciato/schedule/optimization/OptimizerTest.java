@@ -4,8 +4,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import pl.tscript3r.tracciato.duration.provider.FakeDurationProvider;
 import pl.tscript3r.tracciato.route.RouteConst;
+import pl.tscript3r.tracciato.scheduled.ScheduledFacade;
 import pl.tscript3r.tracciato.utils.ReplaceCamelCaseAndUnderscores;
 
 import java.util.UUID;
@@ -16,29 +20,33 @@ import java.util.concurrent.Executors;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Optimizer")
+@ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(ReplaceCamelCaseAndUnderscores.class)
 public class OptimizerTest {
 
     PermutationsFactory permutationsFactory;
     Optimizer optimizer;
     ExecutorService executorService;
+    @Mock
+    ScheduledFacade scheduledFacade;
 
     public static Optimizer getOptimizer(PermutationsFactory permutationsFactory,
-                                         ExecutorService executorService) {
-        return new Optimizer(permutationsFactory, executorService);
+                                         ExecutorService executorService,
+                                         ScheduledFacade scheduledFacade) {
+        return new Optimizer(permutationsFactory, executorService, scheduledFacade);
     }
 
-    public static Optimizer getFakeOptimizer() {
+    public static Optimizer getFakeOptimizer(ScheduledFacade scheduledFacade) {
         var routePermutationsFactory = new PermutationsFactory(new FakeDurationProvider());
         var executorService = Executors.newSingleThreadExecutor();
-        return getOptimizer(routePermutationsFactory, executorService);
+        return getOptimizer(routePermutationsFactory, executorService, scheduledFacade);
     }
 
     @BeforeEach
     void setUp() {
         permutationsFactory = new PermutationsFactory(new FakeDurationProvider());
         executorService = Executors.newSingleThreadExecutor();
-        optimizer = getOptimizer(permutationsFactory, executorService);
+        optimizer = getOptimizer(permutationsFactory, executorService, scheduledFacade);
     }
 
     @Test
