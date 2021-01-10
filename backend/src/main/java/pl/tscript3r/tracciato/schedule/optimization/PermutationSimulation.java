@@ -17,7 +17,7 @@ import java.util.List;
 
 @Slf4j
 @ToString
-class PermutationSimulation {
+public class PermutationSimulation {
 
     @Getter
     private final RouteDto routeDto;

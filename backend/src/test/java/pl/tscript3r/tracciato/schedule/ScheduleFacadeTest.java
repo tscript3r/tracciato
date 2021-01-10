@@ -12,7 +12,6 @@ import pl.tscript3r.tracciato.route.RouteConst;
 import pl.tscript3r.tracciato.route.RouteFacade;
 import pl.tscript3r.tracciato.route.api.RouteDto;
 import pl.tscript3r.tracciato.schedule.optimization.OptimizerTest;
-import pl.tscript3r.tracciato.schedule.optimization.SimulationsResults;
 import pl.tscript3r.tracciato.schedule.optimization.api.ScheduleRequestDto;
 import pl.tscript3r.tracciato.scheduled.ScheduledFacade;
 import pl.tscript3r.tracciato.utils.ReplaceCamelCaseAndUnderscores;
@@ -42,8 +41,8 @@ class ScheduleFacadeTest {
 
     @BeforeEach
     void setUp() {
-        var routeScheduler = OptimizerTest.getFakeOptimizer(scheduledFacade);
-        scheduleFacade = new ScheduleFacade(routeFacade, routeScheduler);
+        var optimizer = OptimizerTest.getFakeOptimizer(scheduledFacade);
+        scheduleFacade = new ScheduleFacade(routeFacade, optimizer);
         routeDto = RouteConst.getValidRouteDto(UUID.randomUUID(), UUID.randomUUID());
         when(routeFacade.getRoute(any(), any())).thenReturn(InternalResponse.payload(routeDto));
     }
@@ -174,7 +173,6 @@ class ScheduleFacadeTest {
 
         // then
         assertTrue(results.isRight());
-        assertTrue(results.get() instanceof SimulationsResults);
     }
 
 }

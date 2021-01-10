@@ -18,6 +18,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @DisplayName("Optimizer")
 @ExtendWith(MockitoExtension.class)
@@ -102,6 +105,19 @@ public class OptimizerTest {
 
         // then
         assertNotNull(results);
+    }
+
+    @Test
+    void optimize_Should_InvokeScheduledFacade_When_OptimizationDone() throws InterruptedException, ExecutionException {
+        // given
+        var routeDto = RouteConst.getValidRouteDto(UUID.randomUUID(), UUID.randomUUID());
+
+        // when
+        var request = optimizer.optimize(routeDto);
+
+        // then
+        optimizer.getRequestSupplier(request.getRequestUuid()).get();
+        verify(scheduledFacade, times(1)).save(any(), any());
     }
 
     @Test

@@ -31,7 +31,8 @@ public class DurationLocationTimelineEvent extends LocationTimelineEvent {
         var map = new LinkedHashMap<String, String>();
         map.put("event", routeEvent.name());
         map.put("beginning", beginning.toString());
-        map.put("location", location.toString());
+        if (location != null)
+            map.put("location", location.toString());
         map.put("duration", duration.toString());
         return map;
     }

@@ -1,13 +1,11 @@
 package pl.tscript3r.tracciato.scheduled.util;
 
 import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
 import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
 
-@Converter
 public class StringListConverter implements AttributeConverter<List<String>, String> {
 
     private static final String SPLIT_CHAR = ";";
@@ -19,7 +17,7 @@ public class StringListConverter implements AttributeConverter<List<String>, Str
 
     @Override
     public List<String> convertToEntityAttribute(String string) {
-        return string != null ? Arrays.asList(string.split(SPLIT_CHAR)) : emptyList();
+        return string != null && !string.isEmpty() ? Arrays.asList(string.split(SPLIT_CHAR)) : emptyList();
     }
 
 }

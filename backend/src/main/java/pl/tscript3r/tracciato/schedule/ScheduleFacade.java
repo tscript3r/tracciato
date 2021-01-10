@@ -8,7 +8,7 @@ import pl.tscript3r.tracciato.route.RouteFacade;
 import pl.tscript3r.tracciato.route.api.RouteDto;
 import pl.tscript3r.tracciato.schedule.optimization.Optimizer;
 import pl.tscript3r.tracciato.schedule.optimization.api.ScheduleRequestDto;
-import pl.tscript3r.tracciato.scheduled.ScheduledResultsEntity;
+import pl.tscript3r.tracciato.scheduled.ScheduledResultsDto;
 
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -31,13 +31,13 @@ public class ScheduleFacade {
                 .flatMap(routeDto -> await ? schedule(routeDto) : scheduleAsync(routeDto));
     }
 
-    private InternalResponse<ScheduledResultsEntity> schedule(RouteDto routeDto) {
+    private InternalResponse<ScheduledResultsDto> schedule(RouteDto routeDto) {
         return InternalResponse.payload(optimizer.optimize(routeDto))
                 .map(scheduleRequestDto -> optimizer.getRequestSupplier(scheduleRequestDto.getRequestUuid()))
                 .flatMap(this::unwrap);
     }
 
-    private InternalResponse<ScheduledResultsEntity> unwrap(Future<ScheduledResultsEntity> routeScheduleResultsFuture) {
+    private InternalResponse<ScheduledResultsDto> unwrap(Future<ScheduledResultsDto> routeScheduleResultsFuture) {
         try {
             return InternalResponse.payload(routeScheduleResultsFuture.get());
         } catch (InterruptedException | ExecutionException e) {

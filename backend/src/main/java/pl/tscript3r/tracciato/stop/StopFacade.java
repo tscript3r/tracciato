@@ -23,6 +23,7 @@ public class StopFacade {
     private InternalResponse<RouteDto> validateAndMap(String token, UUID routeUuid, StopDto stopDto) {
         return routeLocationValidator.validate(stopDto)
                 .map(StopMapper::map)
+                .peek(stopEntity -> stopEntity.setUuid(UUID.randomUUID()))
                 .flatMap(routeLocationEntity -> handleLocation(token, routeLocationEntity, stopDto))
                 .flatMap(routeLocationEntity -> routeFacade.addStop(token, routeUuid, routeLocationEntity));
     }

@@ -83,7 +83,7 @@ class RouteTimelineTest {
     void assertLocationTimelineEvent(RouteEvent routeEvent, LocationDto location, TimelineEvent locationTimelineEvent) {
         assertTimelineEvent(routeEvent, locationTimelineEvent);
         assertTrue(locationTimelineEvent instanceof LocationTimelineEvent);
-        assertEquals(location, ((LocationTimelineEvent) locationTimelineEvent).getLocationDto());
+        assertEquals(location.getUuid(), ((LocationTimelineEvent) locationTimelineEvent).getLocation());
     }
 
     @Test
@@ -151,7 +151,7 @@ class RouteTimelineTest {
     void assertTravelLocationTimelineEvent(RouteEvent routeEvent, LocationDto fromLocation,
                                            LocationDto destination, Duration duration, TimelineEvent event) {
         assertDurationLocationTimelineEvent(routeEvent, fromLocation, duration, event);
-        assertEquals(destination, ((TravelLocationTimelineEvent) event).getDestination());
+        assertEquals(destination.getUuid(), ((TravelLocationTimelineEvent) event).getDestination());
     }
 
     @Test

@@ -1,11 +1,10 @@
-package pl.tscript3r.tracciato.schedule.scheduled.util;
+package pl.tscript3r.tracciato.scheduled.util;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
-import pl.tscript3r.tracciato.scheduled.util.StringListConverter;
 import pl.tscript3r.tracciato.utils.ReplaceCamelCaseAndUnderscores;
 
 import java.util.Arrays;
@@ -18,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class StringListConverterTest {
 
     List<String> stringList;
-    String toListString = "A;B;C";
+    final String toListString = "A;B;C";
     StringListConverter stringListConverter = new StringListConverter();
 
     @BeforeEach
