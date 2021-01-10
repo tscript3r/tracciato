@@ -35,23 +35,23 @@ public class RouteTimeline {
     }
 
     public void travelArrival(LocalDateTime date, LocationDto destination) {
-        events.add(new LocationTimelineEvent(TRAVEL_ARRIVAL, date, destination));
+        events.add(new LocationTimelineEvent(TRAVEL_ARRIVAL, date, destination.getUuid()));
     }
 
     public void finish(LocalDateTime date, LocationDto destination) {
-        events.add(new LocationTimelineEvent(FINISH, date, destination));
+        events.add(new LocationTimelineEvent(FINISH, date, destination.getUuid()));
     }
 
     public void onsite(LocalDateTime date, Duration duration, LocationDto location) {
-        events.add(new DurationLocationTimelineEvent(ONSITE, date, location, duration));
+        events.add(new DurationLocationTimelineEvent(ONSITE, date, location.getUuid(), duration));
     }
 
     public void travelContinue(LocalDateTime date, Duration duration, LocationDto location) {
-        events.add(new DurationLocationTimelineEvent(TRAVEL_CONTINUE, date, location, duration));
+        events.add(new DurationLocationTimelineEvent(TRAVEL_CONTINUE, date, location.getUuid(), duration));
     }
 
     public void travelStart(LocalDateTime date, LocationDto from, LocationDto destination, Duration travelDuration) {
-        events.add(new TravelLocationTimelineEvent(TRAVEL_START, date, travelDuration, from, destination));
+        events.add(new TravelLocationTimelineEvent(TRAVEL_START, date, travelDuration, from.getUuid(), destination.getUuid()));
     }
 
     public void routeMaxEndingPassed(LocalDateTime date) {
@@ -59,7 +59,7 @@ public class RouteTimeline {
     }
 
     public void travelTimeOver(LocalDateTime date, LocationDto destination, Duration durationLeft) {
-        events.add(new DurationLocationTimelineEvent(TRAVEL_TIME_OVER, date, destination, durationLeft));
+        events.add(new DurationLocationTimelineEvent(TRAVEL_TIME_OVER, date, destination.getUuid(), durationLeft));
     }
 
     public void dayExcluded(LocalDate date) {
@@ -67,11 +67,11 @@ public class RouteTimeline {
     }
 
     public void appointmentMismatched(LocalDateTime date, LocationDto location) {
-        events.add(new LocationTimelineEvent(ONSITE_APPOINTMENTS_MISMATCHED, date, location));
+        events.add(new LocationTimelineEvent(ONSITE_APPOINTMENTS_MISMATCHED, date, location.getUuid()));
     }
 
     public void appointmentMatched(LocalDateTime date, LocationDto location) {
-        events.add(new LocationTimelineEvent(ONSITE_APPOINTMENTS_MATCHED, date, location));
+        events.add(new LocationTimelineEvent(ONSITE_APPOINTMENTS_MATCHED, date, location.getUuid()));
     }
 
 }

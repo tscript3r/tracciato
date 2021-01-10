@@ -1,18 +1,20 @@
 package pl.tscript3r.tracciato.schedule.optimization.time.timeline.events;
 
 import lombok.Getter;
-import pl.tscript3r.tracciato.location.api.LocationDto;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @Getter
 public class TravelLocationTimelineEvent extends DurationLocationTimelineEvent {
 
-    private final LocationDto destination;
+    private final UUID destination;
 
     public TravelLocationTimelineEvent(RouteEvent routeEvent, LocalDateTime beginning,
-                                       Duration duration, LocationDto fromLocation, LocationDto destination) {
+                                       Duration duration, UUID fromLocation, UUID destination) {
         super(routeEvent, beginning, fromLocation, duration);
         this.destination = destination;
     }
@@ -24,6 +26,16 @@ public class TravelLocationTimelineEvent extends DurationLocationTimelineEvent {
                 ", routeEvent=" + routeEvent +
                 ", beginning=" + beginning +
                 '}';
+    }
+
+    public Map<String, String> toMap() {
+        var map = new LinkedHashMap<String, String>();
+        map.put("event", routeEvent.name());
+        map.put("beginning", beginning.toString());
+        map.put("location", location.toString());
+        map.put("destination", destination.toString());
+        map.put("duration", duration.toString());
+        return map;
     }
 
 }
