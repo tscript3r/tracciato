@@ -1,5 +1,6 @@
 package pl.tscript3r.tracciato.scheduled;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
@@ -11,6 +12,8 @@ import java.util.UUID;
 public class ScheduledResultsDto {
 
     private UUID uuid;
+    @JsonIgnore
+    private UUID ownerUuid;
     private UUID requestUuid;
     private UUID routeUuid;
     private LocalDateTime creationTimestamp;

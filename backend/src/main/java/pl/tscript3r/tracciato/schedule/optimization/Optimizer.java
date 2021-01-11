@@ -29,6 +29,7 @@ public class Optimizer implements DisposableBean {
             var results = new ScheduleRequestDto();
             results.setRequestUuid(UUID.randomUUID());
             results.setRouteUuid(routeDto.getUuid());
+            results.setOwnerUuid(routeDto.getOwnerUuid());
             submit(results, routeDto);
             return results;
         });

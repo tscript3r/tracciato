@@ -18,6 +18,7 @@ class ScheduledResultsEntity extends AbstractEntity {
 
     private UUID requestUuid;
     private UUID routeUuid;
+    private UUID ownerUuid;
 
     @CreationTimestamp
     private LocalDateTime creationTimestamp;
