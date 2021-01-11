@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import pl.tscript3r.tracciato.infrastructure.response.ResponseResolver;
 import pl.tscript3r.tracciato.infrastructure.response.error.FailureResponseDto;
@@ -52,7 +53,14 @@ public final class ControllerExceptionHandler {
         bindingResult.getAllErrors().forEach(objectError ->
                 results.put(((FieldError) objectError).getField(), objectError.getDefaultMessage())
         );
-        return responseResolver.resolve(FailureResponseDto.get("Validation").add("fields", results), BAD_REQUEST.value());
+        return responseResolver.resolve(FailureResponseDto.get("Validation").add("fields", results),
+                BAD_REQUEST.value());
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public final ResponseEntity<?> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
+        return responseResolver.resolve(FailureResponseDto.get("Invalid method argument")
+                .add("variable", e.getParameter().getParameterName()), BAD_REQUEST.value());
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)

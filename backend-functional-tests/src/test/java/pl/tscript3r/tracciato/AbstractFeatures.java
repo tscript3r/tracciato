@@ -14,7 +14,7 @@ public abstract class AbstractFeatures implements ApplicationListener<WebServerI
 
     public static final String PAYLOAD = "payload";
 
-    protected int servicePort;
+    public int servicePort;
 
     protected String postRequest(String token, String uri, String content, int expectedHttpStatus) {
         var requestSpecification = given().port(servicePort);

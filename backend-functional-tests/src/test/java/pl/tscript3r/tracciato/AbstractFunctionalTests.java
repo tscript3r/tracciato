@@ -22,7 +22,7 @@ import static pl.tscript3r.tracciato.user.UserJson.*;
 @SpringBootTest(
         classes = Application.class,
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles({"development", "fakeDurationProvider"})
+@ActiveProfiles({"development", "fakeDurationProvider", "errorController"})
 public abstract class AbstractFunctionalTests {
 
     @Autowired
