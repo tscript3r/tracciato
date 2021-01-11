@@ -59,6 +59,7 @@ public final class RouteConst {
         routeDto.setStartLocation(LocationConst.getStartLocationDto());
         routeDto.setEndLocation(LocationConst.getEndLocationDto());
         routeDto.setAvailabilities(getAvailabilities());
+        routeDto.setScheduled(false);
         return routeDto;
     }
 

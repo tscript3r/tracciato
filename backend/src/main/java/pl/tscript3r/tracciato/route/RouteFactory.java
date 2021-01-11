@@ -18,13 +18,14 @@ class RouteFactory {
 
     InternalResponse<RouteDto> create(NewRouteDto newRouteDto) {
         return validator.validate(newRouteDto)
-                .map(this::createRouteEntity)
+                .map(this::createRoute)
                 .flatMap(routeDao::save);
     }
 
-    private RouteDto createRouteEntity(NewRouteDto newRouteDto) {
+    private RouteDto createRoute(NewRouteDto newRouteDto) {
         var routeEntity = modelMapper.map(newRouteDto, RouteDto.class);
         routeEntity.setUuid(UUID.randomUUID());
+        routeEntity.setScheduled(false);
         return routeEntity;
     }
 

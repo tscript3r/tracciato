@@ -16,6 +16,7 @@ final class BeforeScheduleValidator {
 
     public static InternalResponse<RouteDto> validate(RouteDto routeDto) {
         Map<String, String> validationResults = new HashMap<>();
+        scheduled(routeDto, validationResults);
         duration(routeDto, validationResults);
         availabilityDates(routeDto, validationResults);
         trafficPrediction(routeDto, validationResults);
@@ -25,6 +26,11 @@ final class BeforeScheduleValidator {
             return InternalResponse.payload(routeDto);
         else
             return InternalResponse.failure(BindingFailureResponse.get(validationResults));
+    }
+
+    private static void scheduled(RouteDto routeDto, Map<String, String> validationResults) {
+        if (routeDto.getScheduled())
+            validationResults.put("scheduled", "This route has been already scheduled in current version");
     }
 
     private static void duration(RouteDto routeDto, Map<String, String> validationResults) {

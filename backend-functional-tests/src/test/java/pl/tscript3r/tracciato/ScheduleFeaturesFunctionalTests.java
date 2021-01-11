@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import pl.tscript3r.tracciato.route.RouteJson;
 import pl.tscript3r.tracciato.schedule.ScheduleFeatures;
 import pl.tscript3r.tracciato.stop.StopFeatures;
+import pl.tscript3r.tracciato.stop.StopJson;
 import pl.tscript3r.tracciato.utils.ReplaceCamelCaseAndUnderscores;
 
 import java.util.UUID;
@@ -113,5 +114,25 @@ public class ScheduleFeaturesFunctionalTests extends AbstractFunctionalTests {
         assertNotNull(json.get("optimal"));
     }
 
+    @Test
+    void scheduleRoute_Should_Return400_When_RouteInCurrentVersionHasBeenAlreadyScheduled() throws JSONException {
+        // given
+        var routeUuid = routeFeatures.createCompleteValidRoute(token);
+
+        // when & then
+        scheduleFeatures.schedule(token, routeUuid, true, 200);
+        scheduleFeatures.schedule(token, routeUuid, true, 400);
+    }
+
+    @Test
+    void scheduleRoute_Should_ScheduleRoute_When_RouteAfterBeingScheduledHasBeenUpdated() throws JSONException {
+        // given
+        var routeUuid = routeFeatures.createCompleteValidRoute(token);
+        scheduleFeatures.schedule(token, routeUuid, true, 200);
+        stopFeatures.addStop(token, routeUuid, StopJson.newValid().json(), 201);
+
+        // when & then
+        scheduleFeatures.schedule(token, routeUuid, true, 200);
+    }
 
 }

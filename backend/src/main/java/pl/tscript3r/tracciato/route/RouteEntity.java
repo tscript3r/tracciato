@@ -21,6 +21,9 @@ class RouteEntity extends AbstractEntity {
     private String name;
     private LocalDateTime startDate;
     private LocalDateTime maxEndDate;
+    private Boolean scheduled;
+    private LocalDateTime lastSchedule;
+    private LocalDateTime lastUpdate;
 
     @CreationTimestamp
     private LocalDateTime creationTimestamp;
@@ -28,16 +31,16 @@ class RouteEntity extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     private TrafficPrediction trafficPrediction;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL)
     private List<AvailabilityEntity> availabilities = new ArrayList<>();
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL)
     private LocationEntity startLocation;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL)
     private LocationEntity endLocation;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL)
     private Set<StopEntity> stops = new HashSet<>();
 
 }

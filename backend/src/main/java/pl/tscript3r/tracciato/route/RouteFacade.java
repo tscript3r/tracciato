@@ -11,8 +11,10 @@ import pl.tscript3r.tracciato.schedule.optimization.TracciatoSchedulerException;
 import pl.tscript3r.tracciato.stop.StopEntity;
 import pl.tscript3r.tracciato.user.UserFacade;
 
+import javax.transaction.Transactional;
 import java.util.UUID;
 
+@Transactional
 @AllArgsConstructor
 public class RouteFacade {
 
@@ -75,6 +77,10 @@ public class RouteFacade {
     public RouteEntity getByUuid(UUID uuid) {
         return routeDao.getEntity(uuid)
                 .getOrElseThrow(() -> new TracciatoSchedulerException("Route with UUID: " + uuid.toString() + " not found"));
+    }
+
+    public void setAsScheduled(UUID uuid) {
+        routeDao.setAsScheduled(uuid);
     }
 
 }

@@ -26,5 +26,8 @@ public class RouteDto {
     private LocationDto startLocation;
     private LocationDto endLocation;
     private Set<StopDto> stops = new HashSet<>();
+    private Boolean scheduled;
+    private LocalDateTime lastSchedule;
+    private LocalDateTime lastUpdate;
 
 }

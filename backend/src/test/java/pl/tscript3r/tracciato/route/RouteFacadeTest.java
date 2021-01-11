@@ -93,6 +93,19 @@ public class RouteFacadeTest {
     }
 
     @Test
+    void create_Should_CreateNewRouteWithScheduledMarkedAsFalse_When_RouteDtoAndTokenAreValid() {
+        // given
+        var newRouteDto = RouteConst.getValidNewRouteDto();
+
+        // when
+        var results = routeFacade.create(token, newRouteDto);
+
+        // then
+        assertTrue(results.isRight());
+        assertFalse(results.get().getScheduled());
+    }
+
+    @Test
     void addStop_Should_SaveNewStop_When_GivenLocationIsValid() {
         // given
         var routeLocationEntity = StopConst.getValidStopEntity();

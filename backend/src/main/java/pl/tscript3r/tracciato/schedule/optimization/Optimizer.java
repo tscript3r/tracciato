@@ -19,7 +19,8 @@ import java.util.concurrent.ExecutorService;
 @RequiredArgsConstructor
 public class Optimizer implements DisposableBean {
 
-    private final Map<ScheduleRequestDto, CompletableFuture<ScheduledResultsDto>> scheduleRequests = new LinkedHashMap<>();
+    private final Map<ScheduleRequestDto, CompletableFuture<ScheduledResultsDto>>
+            scheduleRequests = new LinkedHashMap<>();
     private final PermutationsFactory permutationsFactory;
     private final ExecutorService executorService;
     private final ScheduledFacade scheduledFacade;

@@ -175,4 +175,16 @@ class ScheduleFacadeTest {
         assertTrue(results.isRight());
     }
 
+    @Test
+    void schedule_Should_ReturnFailureResponse_When_CurrentRouteIsAlreadyScheduled() {
+        // given
+        routeDto.setScheduled(true);
+
+        // when
+        var results = scheduleFacade.schedule("mocked", UUID.randomUUID(), true);
+
+        // then
+        assertTrue(results.isLeft());
+    }
+
 }

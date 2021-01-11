@@ -4,8 +4,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import pl.tscript3r.tracciato.infrastructure.db.InMemoryRepositoryAdapter;
 import pl.tscript3r.tracciato.route.RouteConst;
+import pl.tscript3r.tracciato.route.RouteFacade;
 import pl.tscript3r.tracciato.route.api.RouteDto;
 import pl.tscript3r.tracciato.schedule.optimization.PermutationSimulationTest;
 import pl.tscript3r.tracciato.schedule.optimization.SimulationsResults;
@@ -16,11 +20,14 @@ import pl.tscript3r.tracciato.utils.ReplaceCamelCaseAndUnderscores;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static pl.tscript3r.tracciato.infrastructure.spring.security.SecurityConstants.TOKEN_PREFIX;
 import static pl.tscript3r.tracciato.user.UserConst.*;
 
 @DisplayName("Scheduled Facade")
 @DisplayNameGeneration(ReplaceCamelCaseAndUnderscores.class)
+@ExtendWith(MockitoExtension.class)
 class ScheduledFacadeTest {
 
     ScheduledFacade scheduledFacade;
@@ -31,6 +38,8 @@ class ScheduledFacadeTest {
     ScheduleRequestDto scheduleRequestDto;
     String registeredUserToken;
     String otherRegisteredUserToken;
+    @Mock
+    RouteFacade routeFacade;
 
     @BeforeEach
     void setUp() {
@@ -41,13 +50,13 @@ class ScheduledFacadeTest {
         routeDto = RouteConst.getValidRouteDto(ownerUuid, UUID.randomUUID());
         routeDto.setId(1L);
         repository = new InMemoryRepositoryAdapter<>();
-        scheduledFacade = ScheduledSpringConfiguration.getInMemoryScheduledFacade(userFacade, repository);
+        scheduledFacade = ScheduledSpringConfiguration.getInMemoryScheduledFacade(userFacade, repository, routeFacade);
         var tunedVariationSimulation = PermutationSimulationTest.getRoutePermutationSimulation(ownerUuid, routeDto);
         var optimalVariationSimulation = PermutationSimulationTest.getRoutePermutationSimulation(ownerUuid, routeDto);
         simulationsResults = new SimulationsResults(tunedVariationSimulation, optimalVariationSimulation);
         scheduleRequestDto = new ScheduleRequestDto();
         scheduleRequestDto.setRequestUuid(UUID.randomUUID());
-        scheduleRequestDto.setRouteUuid(UUID.randomUUID());
+        scheduleRequestDto.setRouteUuid(routeDto.getUuid());
         var response = userFacade.validateAndGetUuidFromToken(registeredUserToken);
         scheduleRequestDto.setOwnerUuid(response.get());
     }
@@ -60,6 +69,15 @@ class ScheduledFacadeTest {
         // then
         assertNotNull(results);
         assertTrue(repository.findByUuid(results.getUuid()).isDefined());
+    }
+
+    @Test
+    void save_Should_InvokeRouteFacadeToSetRouteCurrentVersionAsScheduled_When_Called() {
+        // when
+        var results = scheduledFacade.save(scheduleRequestDto, simulationsResults);
+
+        // then
+        verify(routeFacade, times(1)).setAsScheduled(scheduleRequestDto.getRouteUuid());
     }
 
     @Test
