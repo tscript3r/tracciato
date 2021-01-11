@@ -59,7 +59,10 @@ public class RouteTime {
 
     private LocalTime currentDayMaxEndTime(Duration acceptedOvertime) {
         // TODO refactor after adding RouteDto field default availability / work hours
-        return getAvailability(futureNow.toLocalDate()).getTo().plus(acceptedOvertime);
+        var currentAvailabilityTo = getAvailability(futureNow.toLocalDate()).getTo();
+        var currentIncrementedWithOvertime = currentAvailabilityTo.plus(acceptedOvertime);
+        return currentAvailabilityTo.toSecondOfDay() <= currentIncrementedWithOvertime.toSecondOfDay() ?
+                currentAvailabilityTo : currentIncrementedWithOvertime;
     }
 
     private AvailabilityDto getAvailability(LocalDate day) {
@@ -67,7 +70,7 @@ public class RouteTime {
                 .stream()
                 .filter(a -> a.getDate().isEqual(day))
                 .findFirst()
-                .orElse(routeDto.getAvailabilities().get(0)); // TODO tmp solution
+                .orElseGet(() -> AvailabilityDto.get24hAvailabilityDay(day));
     }
 
     private Duration subtractTodaysTimeLeft(Duration travelTime) {

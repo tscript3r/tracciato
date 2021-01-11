@@ -19,7 +19,7 @@ class ScheduleSpringController {
     private final ResponseResolver<ResponseEntity<?>> responseResolver;
     private final ScheduleFacade scheduleFacade;
 
-    @GetMapping(ROUTE_SCHEDULE_VALIDATION_MAPPING)
+    @PostMapping(ROUTE_SCHEDULE_VALIDATION_MAPPING)
     public HttpEntity<?> validate(@RequestHeader(TOKEN_HEADER) String token,
                                   @PathVariable(ROUTE_UUID_VARIABLE) UUID routeUuid) {
         return responseResolver.resolve(scheduleFacade.validate(token, routeUuid));

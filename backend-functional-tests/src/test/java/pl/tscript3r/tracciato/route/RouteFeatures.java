@@ -6,7 +6,11 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.tscript3r.tracciato.AbstractFeatures;
+import pl.tscript3r.tracciato.location.LocationConst;
+import pl.tscript3r.tracciato.location.LocationJson;
 import pl.tscript3r.tracciato.route.api.NewRouteDto;
+import pl.tscript3r.tracciato.stop.StopFeatures;
+import pl.tscript3r.tracciato.stop.StopJson;
 import pl.tscript3r.tracciato.user.UserFacade;
 import pl.tscript3r.tracciato.utils.ConcurrentStressTest;
 import pl.tscript3r.tracciato.utils.StressTestResult;
@@ -28,9 +32,12 @@ public class RouteFeatures extends AbstractFeatures implements ConcurrentStressT
     RouteFacade routeFacade;
 
     @Autowired
+    StopFeatures stopFeatures;
+
+    @Autowired
     RouteSpringRepository routeSpringRepository;
 
-    public JSONObject addRoute(String token, String routeJson, int expectedHttpStatus) throws JSONException {
+    public JSONObject postRoute(String token, String routeJson, int expectedHttpStatus) throws JSONException {
         JSONObject jsonObject = new JSONObject(postRequest(token, ROUTE_MAPPING, routeJson, expectedHttpStatus));
         return jsonObject.getJSONObject(PAYLOAD);
     }
@@ -68,7 +75,7 @@ public class RouteFeatures extends AbstractFeatures implements ConcurrentStressT
 
     public TrafficPrediction getRandomTrafficPrediction() {
         TrafficPrediction result;
-        switch (new Random().nextInt(3)) { // bleh
+        switch (new Random().nextInt(4)) { // bleh
             case 0:
                 result = TrafficPrediction.NONE;
                 break;
@@ -92,7 +99,7 @@ public class RouteFeatures extends AbstractFeatures implements ConcurrentStressT
         return concurrentStressTest(10, routeQueue.size(), executionTimeMilli, () -> {
             var routeJson = Objects.requireNonNull(routeQueue.poll());
             var randomToken = tokens.get(random.nextInt(tokens.size()));
-            return Maps.immutableEntry(randomToken, addRoute(randomToken, routeJson.json(), 201));
+            return Maps.immutableEntry(randomToken, postRoute(randomToken, routeJson.json(), 201));
         });
     }
 
@@ -104,6 +111,45 @@ public class RouteFeatures extends AbstractFeatures implements ConcurrentStressT
             var routeUuid = routeEntry.getValue().getString("uuid");
             return getRoute(routeEntry.getKey(), UUID.fromString(routeUuid), 200);
         });
+    }
+
+    public UUID createCompleteValidRoute(String token) throws JSONException {
+        // route creation
+        var routeUuid = UUID.fromString(
+                postRoute(token, RouteJson.newValid().json(), 201).getString("uuid")
+        );
+
+        // start location
+        var startLocation = LocationJson.of(LocationConst.getBerlinLocationDto());
+        stopFeatures.setStartLocation(token, routeUuid, startLocation.json(), 201);
+
+        // end location
+        var endLocation = LocationJson.of(LocationConst.getHamburgLocationDto());
+        stopFeatures.setRouteEndLocation(token, routeUuid, endLocation.json(), 201);
+
+        // stops (required >=3)
+        stopFeatures.addStop(token,
+                routeUuid,
+                StopJson.newValid()
+                        .setLocationDto(LocationConst.getEssenLocationDto())
+                        .json(),
+                201
+        );
+        stopFeatures.addStop(token,
+                routeUuid,
+                StopJson.newValid()
+                        .setLocationDto(LocationConst.getStuttgartLocationDto())
+                        .json(),
+                201
+        );
+        stopFeatures.addStop(token,
+                routeUuid,
+                StopJson.newValid()
+                        .setLocationDto(LocationConst.getLuneburgLocationDto())
+                        .json(),
+                201
+        );
+        return routeUuid;
     }
 
 

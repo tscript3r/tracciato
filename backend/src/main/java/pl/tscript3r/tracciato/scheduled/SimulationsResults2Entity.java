@@ -22,7 +22,7 @@ final class SimulationsResults2Entity {
     public static ScheduledResultsEntity map(ScheduleRequestDto request, SimulationsResults simulationsResults) {
         var results = new ScheduledResultsEntity();
         results.setRequestUuid(request.getRequestUuid());
-        results.setUuid(UUID.randomUUID());
+        results.setUuid(request.getRequestUuid());
         results.setOwnerUuid(request.getOwnerUuid());
         if (simulationsResults.getMostTunedRoute() != null) {
             var accurate = simulationsResults.getMostTunedRoute();

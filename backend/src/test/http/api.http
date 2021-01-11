@@ -158,7 +158,7 @@ Content-Type: application/json
 }
 
 ### Prepared route validation
-GET http://localhost:8080/api/v1/routes/{{route_uuid}}/schedule/validate
+POST http://localhost:8080/api/v1/routes/{{route_uuid}}/schedule/validate
 Authorization: {{auth_token}}
 Content-Type: application/json
 

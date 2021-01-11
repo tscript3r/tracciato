@@ -7,13 +7,9 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import pl.tscript3r.tracciato.location.LocationFeatures;
 import pl.tscript3r.tracciato.location.LocationJson;
 import pl.tscript3r.tracciato.location.LocationSpringRepository;
-import pl.tscript3r.tracciato.user.UserFacade;
-import pl.tscript3r.tracciato.user.UserJson;
 import pl.tscript3r.tracciato.utils.ReplaceCamelCaseAndUnderscores;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static pl.tscript3r.tracciato.user.UserJson.EXISTING_PASSWORD;
-import static pl.tscript3r.tracciato.user.UserJson.EXISTING_USERNAME;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DisplayName("Location features")
@@ -22,21 +18,14 @@ import static pl.tscript3r.tracciato.user.UserJson.EXISTING_USERNAME;
 public class LocationFeaturesFunctionalTests extends AbstractFunctionalTests {
 
     @Autowired
-    UserFacade userFacade;
-
-    @Autowired
     LocationFeatures locationFeatures;
 
     @Autowired
     LocationSpringRepository locationSpringRepository;
 
-    String token;
-
     @BeforeAll
     public void before() throws JSONException {
-        if (!userFeatures.isUsernameExisting(EXISTING_USERNAME))
-            userFeatures.registerUser(UserJson.existing().json(), 201);
-        token = userFeatures.loginUser(EXISTING_USERNAME, EXISTING_PASSWORD, 200);
+        registerUserAndLogin();
     }
 
     @Test

@@ -21,7 +21,7 @@ public class StopFeatures extends AbstractFeatures {
         return ROUTE_LOCATION_MAPPING.replace("{" + ROUTE_UUID_VARIABLE + "}", routeUuid.toString());
     }
 
-    public JSONObject setStopLocation(String token, UUID routeUuid, String routeLocationJson, int expectedHttpStatus) throws JSONException {
+    public JSONObject setStartLocation(String token, UUID routeUuid, String routeLocationJson, int expectedHttpStatus) throws JSONException {
         JSONObject jsonObject = new JSONObject(postRequest(token, getRouteStartLocationMapping(routeUuid), routeLocationJson, expectedHttpStatus));
         return jsonObject.getJSONObject(PAYLOAD);
     }

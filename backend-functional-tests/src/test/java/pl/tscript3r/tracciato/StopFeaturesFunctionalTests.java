@@ -9,14 +9,11 @@ import pl.tscript3r.tracciato.location.LocationJson;
 import pl.tscript3r.tracciato.route.RouteJson;
 import pl.tscript3r.tracciato.stop.StopFeatures;
 import pl.tscript3r.tracciato.stop.StopJson;
-import pl.tscript3r.tracciato.user.UserJson;
 import pl.tscript3r.tracciato.utils.ReplaceCamelCaseAndUnderscores;
 
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static pl.tscript3r.tracciato.user.UserJson.EXISTING_PASSWORD;
-import static pl.tscript3r.tracciato.user.UserJson.EXISTING_USERNAME;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DisplayName("Route location features")
@@ -24,7 +21,6 @@ import static pl.tscript3r.tracciato.user.UserJson.EXISTING_USERNAME;
 @EnableAutoConfiguration
 public class StopFeaturesFunctionalTests extends AbstractFunctionalTests {
 
-    String token;
     UUID routeUuid;
 
     @Autowired
@@ -35,10 +31,8 @@ public class StopFeaturesFunctionalTests extends AbstractFunctionalTests {
 
     @BeforeAll
     public void before() throws JSONException {
-        if (!userFeatures.isUsernameExisting(EXISTING_USERNAME))
-            userFeatures.registerUser(UserJson.existing().json(), 201);
-        token = userFeatures.loginUser(EXISTING_USERNAME, EXISTING_PASSWORD, 200);
-        routeUuid = UUID.fromString(routeFeatures.addRoute(token, RouteJson.newValid().json(), 201).getString("uuid"));
+        registerUserAndLogin();
+        routeUuid = UUID.fromString(routeFeatures.postRoute(token, RouteJson.newValid().json(), 201).getString("uuid"));
     }
 
     @Test
@@ -80,7 +74,7 @@ public class StopFeaturesFunctionalTests extends AbstractFunctionalTests {
 
     @Test
     void addRouteStartLocation_Should_Fail_When_TokenHeaderIsMissing() throws JSONException {
-        stopFeatures.setStopLocation(null, routeUuid, LocationJson.valid().json(), 403);
+        stopFeatures.setStartLocation(null, routeUuid, LocationJson.valid().json(), 403);
     }
 
     @Test
@@ -100,7 +94,7 @@ public class StopFeaturesFunctionalTests extends AbstractFunctionalTests {
     @Test
     void addRouteStartLocation_Should_Succeed_When_ValidRouteLocationJsonIsPassed() throws JSONException {
         var locationJson = LocationJson.valid();
-        stopFeatures.setStopLocation(token, routeUuid, locationJson.json(), 201);
+        stopFeatures.setStartLocation(token, routeUuid, locationJson.json(), 201);
     }
 
     @Test
