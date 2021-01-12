@@ -22,7 +22,7 @@ class PermutationsGroup {
 
     public SimulationsResults executeAndGetSimulationsResults() {
         executeSimulations();
-        return new SimulationsResults(findMostAccurateRoute(), findMostOptimalRoute());
+        return new SimulationsResults(routeDto, findMostAccurateRoute(), findMostOptimalRoute());
     }
 
     private void executeSimulations() {

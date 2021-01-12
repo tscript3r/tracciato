@@ -1,5 +1,6 @@
 package pl.tscript3r.tracciato.scheduled;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
@@ -20,22 +21,25 @@ class ScheduledSpringConfiguration {
 
     private static ScheduledFacade getScheduledFacade(UserFacade userFacade,
                                                       RepositoryAdapter<ScheduledResultsEntity> repository,
-                                                      RouteFacade routeFacade) {
+                                                      RouteFacade routeFacade,
+                                                      ObjectMapper mapper) {
         var modelMapper = new ModelMapper();
         var dao = new ScheduledDao(modelMapper, repository, GlobalFailureResponse.NOT_FOUND);
-        return new ScheduledFacade(dao, userFacade, routeFacade);
+        var entityMapper = new SimulationsResults2Entity(mapper);
+        return new ScheduledFacade(dao, userFacade, routeFacade, entityMapper);
     }
 
     public static ScheduledFacade getInMemoryScheduledFacade(UserFacade userFacade,
                                                              InMemoryRepositoryAdapter<ScheduledResultsEntity> repositoryAdapter,
-                                                             RouteFacade routeFacade) {
-        return getScheduledFacade(userFacade, repositoryAdapter, routeFacade);
+                                                             RouteFacade routeFacade,
+                                                             ObjectMapper mapper) {
+        return getScheduledFacade(userFacade, repositoryAdapter, routeFacade, mapper);
     }
 
     @Bean
-    public ScheduledFacade getScheduledFacade() {
+    public ScheduledFacade getScheduledFacade(ObjectMapper mapper) {
         var scheduledRepositoryAdapter = new ScheduledSpringRepositoryAdapter(scheduledSpringRepository);
-        return getScheduledFacade(userFacade, scheduledRepositoryAdapter, routeFacade);
+        return getScheduledFacade(userFacade, scheduledRepositoryAdapter, routeFacade, mapper);
     }
 
 }

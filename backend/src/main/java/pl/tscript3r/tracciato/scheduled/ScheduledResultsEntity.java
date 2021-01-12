@@ -7,6 +7,7 @@ import pl.tscript3r.tracciato.infrastructure.db.AbstractEntity;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -19,6 +20,9 @@ class ScheduledResultsEntity extends AbstractEntity {
     private UUID requestUuid;
     private UUID routeUuid;
     private UUID ownerUuid;
+
+    @Lob
+    private String routeDto;
 
     @CreationTimestamp
     private LocalDateTime creationTimestamp;

@@ -1,5 +1,7 @@
 package pl.tscript3r.tracciato.scheduled;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -8,20 +10,22 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.tscript3r.tracciato.infrastructure.db.InMemoryRepositoryAdapter;
+import pl.tscript3r.tracciato.location.LocationConst;
 import pl.tscript3r.tracciato.route.RouteConst;
 import pl.tscript3r.tracciato.route.RouteFacade;
 import pl.tscript3r.tracciato.route.api.RouteDto;
 import pl.tscript3r.tracciato.schedule.optimization.PermutationSimulationTest;
 import pl.tscript3r.tracciato.schedule.optimization.SimulationsResults;
+import pl.tscript3r.tracciato.schedule.optimization.TracciatoSchedulerException;
 import pl.tscript3r.tracciato.schedule.optimization.api.ScheduleRequestDto;
+import pl.tscript3r.tracciato.user.UserFacade;
 import pl.tscript3r.tracciato.user.UserFacadeTest;
 import pl.tscript3r.tracciato.utils.ReplaceCamelCaseAndUnderscores;
 
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static pl.tscript3r.tracciato.infrastructure.spring.security.SecurityConstants.TOKEN_PREFIX;
 import static pl.tscript3r.tracciato.user.UserConst.*;
 
@@ -36,24 +40,29 @@ class ScheduledFacadeTest {
     UUID ownerUuid;
     RouteDto routeDto;
     ScheduleRequestDto scheduleRequestDto;
+    UserFacade userFacade;
     String registeredUserToken;
     String otherRegisteredUserToken;
     @Mock
     RouteFacade routeFacade;
+    ObjectMapper mapper;
+    @Mock
+    ObjectMapper mockedMapper;
 
     @BeforeEach
     void setUp() {
-        var userFacade = UserFacadeTest.getUserFacadeWithRegisteredJohn();
+        userFacade = UserFacadeTest.getUserFacadeWithRegisteredJohn();
         userFacade.register(getValidEdyUserDto());
         otherRegisteredUserToken = userFacade.getToken(EDY_USERNAME).get();
         registeredUserToken = TOKEN_PREFIX + userFacade.getToken(JOHNS_USERNAME).get();
         routeDto = RouteConst.getValidRouteDto(ownerUuid, UUID.randomUUID());
         routeDto.setId(1L);
         repository = new InMemoryRepositoryAdapter<>();
-        scheduledFacade = ScheduledSpringConfiguration.getInMemoryScheduledFacade(userFacade, repository, routeFacade);
+        mapper = new ObjectMapper();
+        scheduledFacade = ScheduledSpringConfiguration.getInMemoryScheduledFacade(userFacade, repository, routeFacade, mapper);
         var tunedVariationSimulation = PermutationSimulationTest.getRoutePermutationSimulation(ownerUuid, routeDto);
         var optimalVariationSimulation = PermutationSimulationTest.getRoutePermutationSimulation(ownerUuid, routeDto);
-        simulationsResults = new SimulationsResults(tunedVariationSimulation, optimalVariationSimulation);
+        simulationsResults = new SimulationsResults(routeDto, tunedVariationSimulation, optimalVariationSimulation);
         scheduleRequestDto = new ScheduleRequestDto();
         scheduleRequestDto.setRequestUuid(UUID.randomUUID());
         scheduleRequestDto.setRouteUuid(routeDto.getUuid());
@@ -116,6 +125,38 @@ class ScheduledFacadeTest {
         // then
         assertTrue(results.isLeft());
         assertEquals(404, results.getLeft().getHttpStatus());
+    }
+
+    @Test
+    void getScheduledResults_Should_ReturnNotMutatedRouteDto_When_OriginalRouteHasBeenChanged() throws JsonProcessingException {
+        // given
+        var request = scheduledFacade.save(scheduleRequestDto, simulationsResults);
+
+        // when
+        var results = scheduledFacade.getScheduledResults(registeredUserToken,
+                request.getUuid());
+        routeFacade.setNewStartLocation(registeredUserToken, routeDto.getUuid(), LocationConst.getGetyngaLocationDto());
+        routeDto.setName("changed name");
+
+        // then
+        var mappedRouteDto = new ObjectMapper().readValue(results.get().getRouteDto(), RouteDto.class);
+        assertNotEquals(routeDto.getName(), mappedRouteDto.getName());
+    }
+
+    @Test
+    void save_Should_ReturnResultsDespiteObjectMapperDidThrowJsonProcessingException_When_Called()
+            throws JsonProcessingException {
+        // given
+        scheduledFacade = ScheduledSpringConfiguration.getInMemoryScheduledFacade(userFacade, repository, routeFacade,
+                mockedMapper);
+
+        // when
+        when(mockedMapper.writeValueAsString(any())).thenThrow(TracciatoSchedulerException.class);
+        var results = scheduledFacade.save(scheduleRequestDto, simulationsResults);
+
+        // then
+        verify(mockedMapper, times(1)).writeValueAsString(any());
+        assertNotNull(results);
     }
 
 }

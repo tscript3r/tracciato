@@ -9,18 +9,18 @@ import pl.tscript3r.tracciato.user.UserFacade;
 
 import java.util.UUID;
 
-import static pl.tscript3r.tracciato.scheduled.SimulationsResults2Entity.map;
-
 @AllArgsConstructor
 public class ScheduledFacade {
 
     private final ScheduledDao dao;
     private final UserFacade userFacade;
     private final RouteFacade routeFacade;
+    private final SimulationsResults2Entity mapper;
 
     public ScheduledResultsDto save(ScheduleRequestDto request, SimulationsResults simulationsResults) {
+        var results = dao.save(mapper.map(request, simulationsResults));
         routeFacade.setAsScheduled(request.getRouteUuid());
-        return dao.save(map(request, simulationsResults));
+        return results;
     }
 
     public InternalResponse<ScheduledResultsDto> getScheduledResults(String token, UUID scheduleUuid) {
