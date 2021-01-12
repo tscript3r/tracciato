@@ -1,5 +1,6 @@
 package pl.tscript3r.tracciato.infrastructure.spring.web;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.NotImplementedException;
@@ -21,6 +22,7 @@ import pl.tscript3r.tracciato.infrastructure.response.ResponseResolver;
 import pl.tscript3r.tracciato.infrastructure.response.error.FailureResponseDto;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.DateTimeException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +43,11 @@ public final class ControllerExceptionHandler {
 
     @ResponseStatus(BAD_REQUEST) // <-- needed for OpenAPI docs
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public final ResponseEntity<?> handleMessageNotReadableException() {
+    public final ResponseEntity<?> handleMessageNotReadableException(HttpMessageNotReadableException e) {
+        if (e.getCause() instanceof InvalidFormatException && e.getCause().getCause() instanceof DateTimeException) {
+            DateTimeException dateTimeException = (DateTimeException) (e.getCause()).getCause();
+            return responseResolver.resolve(FailureResponseDto.get(dateTimeException.getMessage()), BAD_REQUEST.value());
+        }
         return responseResolver.resolve(FailureResponseDto.get("Body not readable / empty"), BAD_REQUEST.value());
     }
 
